@@ -202,7 +202,7 @@ public:
 
 	MapReturnObj getProps(int player, int usestation, int prison, int free)
 	{
-		MapReturnObj out(0,Owner,Config.Rentarr[Houses + 1],0,"");
+		MapReturnObj out(-1,Owner,Config.Rentarr[Houses + 1],0,"");
 		switch (Config.Type)
 		{
 		case TypeStreet:
@@ -218,18 +218,10 @@ public:
 			}
 			break;
 		case TypeChance:
-			//getChanceCard
-			out.SpaceNr;
-			out.Msg;
-			out.Rent;
-			out.Prison;
+			out = _chanceCards[(int)(size(_chanceCards)*rand())];
 			break;
 		case TypeChest:
-			//getChestCard
-			out.SpaceNr;
-			out.Msg;
-			out.Rent;
-			out.Prison;
+			out = _chestCards[(int)(size(_chestCards) * rand())];
 			break;
 		case TypeGo:
 			out.Rent = -200;
@@ -305,6 +297,20 @@ public:
 	void buyHouse()
 	{
 		Houses++;
+	}
+
+	int HouseCount(int player)
+	{
+		int out = 0;
+		if (Houses > 0 && Houses < 5)
+		{
+			out = Houses;
+		}
+		else if (Houses == 5)
+		{
+			out = 3;
+		}
+		return out;
 	}
 
 	void setPrice(float mult)

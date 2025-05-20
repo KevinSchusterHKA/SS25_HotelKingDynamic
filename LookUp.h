@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <string>
 #include "SpaceConfig.h"
+#include "MapReturnObj.h"
 
 using namespace std;
 
@@ -222,4 +223,40 @@ const int _streetarr[8][3] = {
     {26,27,29},
     {31,32,34},
     {37,39,-1}
+};
+
+const MapReturnObj _chestCards[] = {
+    MapReturnObj(0, -1, 0, 0, "Rücke vor bis auf Los (Ziehe 200€ ein)"),
+    MapReturnObj(-1, -1, -200, 0, "Bankirrtum zu deinen Gunsten. Ziehe 200€ ein"),
+    MapReturnObj(-1, -1, 50, 0, "Arztkosten. Zahle 50€"),
+    MapReturnObj(-1, -1, -50, 0, "Verkauf von Aktien bringt dir 50€"),
+    MapReturnObj(-1, -1, 0, -1, "Du erhältst eine Freiheitskarte"),
+    MapReturnObj(10, -1, 0, 1, "Gehe ins Gefängnis. Begib dich direkt dorthin. Gehe nicht über Los, ziehe nicht 200€ ein"),
+    MapReturnObj(-1, -1, -100, 0, "Dein Urlaubsfonds wird fällig. Ziehe 100€ ein"),
+    MapReturnObj(-1, -1, -20, 0, "Steuerrückzahlung. Ziehe 20€ ein"),
+    MapReturnObj(-1, -2, -10, 0, "Es ist dein Geburtstag. Ziehe 10€ von jedem Spieler ein"),
+    MapReturnObj(-1, -1, -100, 0, "Deine Lebensversicherung wird fällig. Ziehe 100€ ein"),
+    MapReturnObj(-1, -1, 100, 0, "Krankenhausgebühren. Zahle 100€"),
+    MapReturnObj(-1, -1, 50, 0, "Schulgebühren. Zahle 50€"),
+    MapReturnObj(-1, -1, -25, 0, "Beratungshonorar. Ziehe 25€ ein"),
+    MapReturnObj(-1, -3, 40, 0, "Straßenreparaturkosten. Zahle 40€ pro Haus und 120€ pro Hotel"),
+    MapReturnObj(-1, -1, -10, 0, "Du hast den zweiten Preis in einem Schönheitswettbewerb gewonnen. Ziehe 10€ ein"),
+    MapReturnObj(-1, -1, -100, 0, "Du hast geerbt. Ziehe 100€ ein"),
+};
+
+const MapReturnObj _chanceCards[] = {
+    MapReturnObj(0, -1, 0, 0, "Rücke vor bis auf Los (Ziehe 200€ ein)"),
+    MapReturnObj(39, -1, 0, 0, "Rücke vor bis zur Schlossallee. Falls du über Los kommst, ziehe 200€ ein"),
+    MapReturnObj(11, -1, 0, 0, "Rücke vor bis zur Seestraße. Falls du über Los kommst, ziehe 200€ ein"),
+    MapReturnObj(-1, -1, -50, 0, "Zahle 50€ Strafe"),
+    MapReturnObj(-1, -1, 0, -1, "Du erhältst eine Freiheitskarte"),
+    MapReturnObj(10, -1, 0, 1, "Gehe ins Gefängnis. Begib dich direkt dorthin. Gehe nicht über Los, ziehe nicht 200€ ein"),
+    MapReturnObj(-1, -1, -150, 0, "Zahle eine Gebühr von 150€"),
+    MapReturnObj(-1, -1, -100, 0, "Zahle 100€ für Renovierungsarbeiten"),
+    MapReturnObj(-1, -1, -20, 0, "Ziehe 20€ ein"),
+    MapReturnObj(-1, -1, -50, 0, "Zahle 50€ für eine Feier"),
+    MapReturnObj(-1, -1, -25, 0, "Ziehe 25€ ein"),
+    MapReturnObj(-1, -3, 40, 0, "Straßenreparaturkosten. Zahle 40€ pro Haus und 120€ pro Hotel"),
+    MapReturnObj(-1, -1, -10, 0, "Du hast den zweiten Preis in einem Schönheitswettbewerb gewonnen. Ziehe 10€ ein"),
+    MapReturnObj(-1, -1, -100, 0, "Du hast geerbt. Ziehe 100€ ein"),
 };

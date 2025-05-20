@@ -144,7 +144,7 @@ public:
 	{
 		MapReturnObj out(Spaces[Playerpos[player]].getProps(player,usestation,PlayerPrison[player],free));
 		PlayerPrison[player] = out.Prison;
-		if (out.SpaceNr == 0)
+		if (out.SpaceNr == -1)
 		{
 			out.SpaceNr = Playerpos[player];
 		}
@@ -152,6 +152,15 @@ public:
 			
 			movePlayer(player,(out.SpaceNr - Playerpos[player]) + 40, out.Prison);	
 			out.flag = 1;
+		}
+		if (out.Owner == -3)
+		{
+			int j = out.Rent;
+			out.Rent = 0;
+			for (int i = 0; i < 40; i++)
+			{
+				out.Rent += j * Spaces[i].HouseCount(player);
+			}
 		}
 		return out;
 	}
