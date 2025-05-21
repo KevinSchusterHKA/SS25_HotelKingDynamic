@@ -14,16 +14,20 @@ int main()
     }
     std::cout << out.c_str() << "\n\n";
     Map board = Map(4);
+    MapReturnObj Obj(0, 0, 0, 0, "");
     int player = 0;
     int distance = 0;
     while (1)
     {
         cout << board.toStr().c_str();
-        while (board.getPlayerProps(player, 0, 0).flag)
+        Obj = board.getPlayerProps(player, 0, 0);
+        while (Obj.flag)
         {
             cout << board.toStr().c_str();
+            Obj = board.getPlayerProps(player, 0, 0);
         }
-        cout << board.getPlayerProps(player, 0, 0).Rent << "\n";
+        cout << Obj.Rent << "\n";
+        cout << Obj.Msg << "\n";
         cin >> player;
         cin >> distance;
         cout << board.clear();
