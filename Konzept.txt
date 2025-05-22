@@ -1,0 +1,162 @@
+Konzept: Spielregeleinstellungen für Hotel King
+
+Ziel:
+
+Ermöglicht das Konfigurieren von Monopoly-Regeln über eine externe Datei (z.B. rules.cfg) und das dynamische Anpassen im Spiel (z.B. für Hausregeln und Varianten, Dynamic).
+
+1. Speicherformat der Regeln
+
+Einfaches textbasiertes Schlüssel-Wert-Format:
+
+
+# rules.cfg
+
+startgeld=1500
+miete_verdoppeln_bei_bebauung=true
+gefaengnis_runden_max=3
+max_spieler=6
+anzahl_haeuser_vor_hotel=4
+frei_parken_jackpot=true
+hypothek_zins_prozent=10
+
+| Kategorie            | Schlüsselbeispiele                   | Typ       | Beschreibung                               |
+| -------------------- | ------------------------------------ | --------- | ------------------------------------------ |
+| Finanzen             | `startgeld`, `hypothek_zins_prozent` | int/float | Startgeld, Zinsen                          |
+| Spiellogik           | `gefaengnis_runden_max`              | int       | Wie lange darf man im Gefängnis bleiben    |
+| Bebauung             | `anzahl_haeuser_vor_hotel`           | int       | Häuser vor Hotel                           |
+| Sonderregeln         | `frei_parken_jackpot`                | bool      | Jackpot auf freies Parken aktiv?           |
+| Spieleranzahl        | `max_spieler`                        | int       | Maximale Spieleranzahl                     |
+| Varianten/Hausregeln | `miete_verdoppeln_bei_bebauung`      | bool      | Miete verdoppeln bei Besitz aller Straßen? |
+
+
+class RuleSet 
+{
+private:
+
+    std::unordered_map<std::string, std::string> regeln;
+
+public:
+
+    bool ladeVonDatei(const std::string& dateiname);
+    std::string getString(const std::string& key) const;
+    int getInt(const std::string& key) const;
+    bool getBool(const std::string& key) const;
+    void set(const std::string& key, const std::string& value);
+    void anzeigen() const;
+};
+
+
+class ConfigManager 
+{
+private:
+    RuleSet spielregeln;
+
+public:
+    bool ladeRegeln(const std::string& pfad);
+    RuleSet& getRuleSet();
+};
+
+Fehlerbehebung:
+
+if (!regeln.count("startgeld")) {
+    std::cerr << "WARNUNG: Regel 'startgeld' fehlt, Standardwert 1500 wird genutzt\n";
+    regeln["startgeld"] = "1500";
+}
+
+
+Konzept Spielstände speichern und laden:
+
+Ziel: 
+Das Monopoly-Spiel soll jederzeit pausiert und später exakt an der gleichen Stelle wieder fortgesetzt werden können. Dazu werden Spielfortschritt und alle spielrelevanten Zustände in eine Datei gespeichert und wieder geladen.
+
+Speicherfromat bsp. JSON
+
+# spielstand.sav
+[Runde]
+nummer=1
+
+[Spieler_1]
+name=Jannis
+geld=1300
+position=12
+im_gefaengnis=false
+gefaengnis_runden=0
+besitz=1,3,5,7
+
+[Spieler_2]
+name=Christoph
+geld=1500
+position=6
+im_gefaengnis=true
+gefaengnis_runden=1
+besitz=2,8
+
+Welche Informationen müssen gespeichert werden?
+
+| Bereich     | Daten                                                             |
+| ----------- | ----------------------------------------------------------------- |
+| Spielstatus | Aktuelle Runde, Spieler am Zug                                    |
+| Spieler     | Name, Geld, Position, Gefängnisstatus, Runden im Gefängnis        |
+| Besitz      | IDs der besessenen Grundstücke                                    |
+| Gebäude     | Anzahl Häuser/Hotels auf jedem Feld                               |
+| Karten      | Besitz von Ereignis-/Gemeinschaftskarten (z. B. "Gefängnis frei") |
+| Regeln      | (Optional) aktuelle Spielregeln (aus `RuleSet`)                   |
+
+
+Klassenstruktur für Save/Load:
+
+struct PlayerState 
+{
+    std::string name;
+    int geld;
+    int position;
+    bool imGefaengnis;
+    int gefaengnisRunden;
+    std::vector<int> besitz;
+};
+
+class GameState 
+{
+public:
+    int aktuelleRunde;
+    int aktuellerSpielerIndex;
+    std::vector<PlayerState> spieler;
+
+    bool speichern(const std::string& pfad) const;
+    bool laden(const std::string& pfad);
+};
+
+Ablauf Spiel speichern:
+1. Aufruf von GameState :: speichern()
+2. alle aktuellen Zustände werden serialisiert
+3. Datei spielstand.sav wird geschrieben
+4. Logging: log.txt
+
+Ablauf Spiel wird geladen:
+1. Benutzer wählt Spiel laden
+2. GameState :: laden() list Datei
+3. Objekte werden neu erzeugt oder aktualisiert
+4. Der Spielfluss setzt an korrekter Stelle fort
+
+Bei Fehlern:
+
+- Datei fehlt => Fehlermeldung + Option: Neues Spiel starten
+- Format fehlerhaft => Zeilenweise Analyse + logging
+- Validierung: z.B. keine negativen Geldwerte, ungültige Feldpositionen
+
+Log Datei für Wiederherstellung:
+
+[Log]
+Runde 1: Spieler Jannis bewegt sich von 10 auf 12 (Miete bezahlt: 100)
+Runde 1: Spieler Christoph würfelt eine 4 und kommt ins Gefängnis
+
+Möglich: Speicheroption im Menü
+
+Menüoptionen:
+1. Spiel speichern
+2. Spiel laden
+3. Spiel speichern unter
+4. Letzten Speicherstand laden
+
+
+
