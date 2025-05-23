@@ -1,9 +1,11 @@
-#include <iostream>
 #include <string>
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
+#include <iostream>
+#include <curses.h>
+#include <algorithm>
+// #define KEY_UP 72
+// #define KEY_DOWN 80
+// #define KEY_LEFT 75
+// #define KEY_RIGHT 77
 
 class TControl{
 private:
@@ -21,3 +23,4 @@ public:
     void PrintSpielerInformationen(std::string Namen[4],int Budget[4],int AnzahlGekaufterObjekte[4],int AnzahlGebauterObjekte[4]);
     void AuswahlMenu(void);
 };
+
