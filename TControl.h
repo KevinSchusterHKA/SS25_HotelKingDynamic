@@ -1,12 +1,13 @@
 #include <string>
 #include <iostream>
-//#include <curses.h>
+#include <ncurses.h>
 //#include <conio.h>
 #include <algorithm>
- #define KEY_UP 72
- #define KEY_DOWN 80
- #define KEY_LEFT 75
- #define KEY_RIGHT 77
+#include <vector>
+//  #define KEY_UP 72
+//  #define KEY_DOWN 80
+//  #define KEY_LEFT 75
+//  #define KEY_RIGHT 77
 
 class TControl{
 private:
@@ -68,7 +69,11 @@ public:
     ~TControl();
     void PrintMenu();
     void PrintFeld(std::string Feld[]);
-    void PrintSpielerInformationen(std::string Namen[4],int Budget[4],int AnzahlGekaufterObjekte[4],int AnzahlGebauterObjekte[4],int AnzSpieler);
-    void AuswahlMenu(void);
+    void PrintSpielerInformationen( std::string Namen[4],
+                                    int Budget[4],
+                                    int AnzahlGekaufterObjekte[4],
+                                    int AnzahlGebauterObjekte[4],
+                                    int AnzSpieler);
+    int AuswahlMenu(void);
 };
 

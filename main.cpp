@@ -7,5 +7,6 @@ int main(){
     int gekObj[4]={5,15,2,3};
     int gebObj[4]={0,2,3,99};
     ControlEngine.PrintSpielerInformationen(playerNames,budget,gekObj,gebObj,4);
+    ControlEngine.PrintMenu();
     return 0;
 }

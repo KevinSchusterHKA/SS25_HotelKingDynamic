@@ -1,13 +1,12 @@
 
 #include "TControl.h"
-#include <iterator>
 
 TControl::TControl(){
-    // Initialize ncurses
-    // initscr();            // Start PDCurses mode
-    // keypad(stdscr, TRUE); // Enable special keys
-    // noecho();             // Don't echo pressed keys
-
+    // Initialize ncurses;
+    initscr(); // Start ncurses mode
+    cbreak(); // Disable line buffering
+    noecho(); // Don't echo pressed keys
+    keypad(stdscr, TRUE); // Enable arrow keys
 }
 TControl::~TControl(){
     
@@ -95,13 +94,34 @@ void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int 
     std::cout<<std::endl;
 
 }
-void TControl::AuswahlMenu(void){       
+int TControl::AuswahlMenu(void){    
+    enum OptionenMenu{Start=3,Highscore=4,Beenden=5};
+    std::string temp[7];
     
-        int c = 0;//_getch();
+    int option = 3;
+    int c = 0;
+    do {
+        for (int i = 0; i < 7; ++i) {
+            temp[i] = MenueStartText[i]; 
+            if (i==option) {
+                temp[option].replace(temp[option].find(GetDigitsInt(option-2))-1,1,1,'>');
+            }
+            std::cout<<temp<<std::endl;
+        }
+
+        c=getchar();
+    
+
         switch(c) {
         case KEY_UP:
+                if (option>0) {
+                    option--;            
+                }
             break;
         case KEY_DOWN:
+                if (option<3) {
+                    option++;            
+                }
             break;
         case KEY_LEFT:
             break;
@@ -111,6 +131,8 @@ void TControl::AuswahlMenu(void){
             break;
         }
 
+    }while (c!='\n');
+    return option;
 }
 
 void TControl::SetCursorPosition(int x, int y) {
@@ -134,6 +156,7 @@ std::string TControl::GetDigitsInt(int Zahl){
     //std::reverse(digits.begin(), digits.end());
     return digits;
 }
+
 std::string TControl::GetFarbe(Farbe farbe) {
         switch (farbe) {
             case Farbe::Schwarz:   return "\033[30m";
@@ -179,6 +202,3 @@ void TControl::SetFarbe(Farbe farbe) {
             default:               std::cout << "\033[0m"; break; // Standardfarbe
         }
 }
-
-
-
