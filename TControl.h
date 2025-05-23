@@ -61,6 +61,8 @@ private:
     void SetCursorPosition(int x, int y);
     void ClearConsole();
     std::string GetDigitsInt(int Zahl);
+    std::string GetFarbe(Farbe farbe);
+    void SetFarbe(Farbe farbe);
 public:
     TControl();
     ~TControl();
