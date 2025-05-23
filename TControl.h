@@ -1,11 +1,12 @@
 #include <string>
 #include <iostream>
-#include <curses.h>
+//#include <curses.h>
+#include <conio.h>
 #include <algorithm>
-// #define KEY_UP 72
-// #define KEY_DOWN 80
-// #define KEY_LEFT 75
-// #define KEY_RIGHT 77
+ #define KEY_UP 72
+ #define KEY_DOWN 80
+ #define KEY_LEFT 75
+ #define KEY_RIGHT 77
 
 class TControl{
 private:

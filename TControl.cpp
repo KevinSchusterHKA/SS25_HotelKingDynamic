@@ -98,7 +98,7 @@ void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int 
     }   
         for (int j=0; j<7; j++) {
             for (int k=0;k<4;k++) {
-                            TempString=AusgabeTextSpielerN[0].substr(j*tempLengthSpielerBox,tempLengthSpielerBox);
+                            TempString=AusgabeTextSpielerN[k].substr(j*tempLengthSpielerBox,tempLengthSpielerBox);
                             std::cout<<TempString;
             }
             std::cout<<std::endl;
@@ -106,7 +106,7 @@ void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int 
 }
 void TControl::AuswahlMenu(void){       
     
-        int c = getch();
+        int c = _getch();
         switch(c) {
         case KEY_UP:
             break;
