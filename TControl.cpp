@@ -16,6 +16,35 @@ TControl::~TControl(){
 }
 
 void TControl::PrintFeld(std::string Feld[]){
+    std::string out = _fgcolortable[4];
+    for (int i = 0; i < _dimY; i++)
+    {
+        for (int j = 20; j < 31; j++)
+        {
+            out += Spaces[j].toStr(i);
+        }
+        out += "\n";
+    }
+    for (int i = 19; i > 10; i--)
+    {
+        for (int j = 0; j < _dimY; j++)
+        {
+            out += Spaces[i].toStr(j) + Buffer + Spaces[50 - i].toStr(j);
+            out += "\n";
+        }
+
+    }
+    for (int i = 0; i < _dimY; i++)
+    {
+        for (int j = 10; j >= 0; j--)
+        {
+            out += Spaces[j].toStr(i);
+
+        }
+        out += "\n";
+    }
+    out += "\033[0m";
+    std::cout<<out;
 
 }
 void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int AnzahlGekaufterObjekte[4],int AnzahlGebauterObjekte[4],int AnzSpieler){    
@@ -94,7 +123,7 @@ void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int 
     std::cout<<std::endl;
 
 }
-int TControl::PrintMenu(void){
+int TControl::Menu(void){
     enum OptionenMenu{Start=3,Highscore=4,Beenden=5};
     std::string temp[7];
     int option = 3;

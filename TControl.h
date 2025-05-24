@@ -73,7 +73,7 @@ private:
 public:
     TControl();
     ~TControl();
-    int PrintMenu();
+    int Menu();
     void PrintFeld(std::string Feld[]);
     void PrintSpielerInformationen( std::string Namen[4],
                                     int Budget[4],
