@@ -7,12 +7,13 @@ int main(){
     int gekObj[4]={5,15,2,3};
     int gebObj[4]={0,2,3,99};
     int option=3;
-    while (true)
+    int Spiellaueft = 1;
+    while (Spiellaueft!=5) //5 ist Beenden Code
     {
         DWORD start_time = GetTickCount64();
 
-        ControlEngine.PrintSpielerInformationen(playerNames, budget, gekObj, gebObj, 4);
-        ControlEngine.PrintMenu(option);
+        ControlEngine.PrintSpielerInformationen(playerNames, budget, gekObj, gebObj, 3);
+        Spiellaueft=ControlEngine.PrintMenu(option);
 
         DWORD elapsed_time = GetTickCount64() - start_time;
         if (elapsed_time < FRAME_DURATION) {

@@ -121,7 +121,7 @@ void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int 
     std::cout<<std::endl;
 
 }
-void TControl::PrintMenu(int &option){
+int TControl::PrintMenu(int &option){
     enum OptionenMenu{Start=3,Highscore=4,Beenden=5};
     std::string temp[7];
     int inputCh = 0;
@@ -149,6 +149,9 @@ void TControl::PrintMenu(int &option){
         break;
     case KEY_RIGHT:
         break;
+    case KEY_ENTER:     if (option == Beenden) return Beenden;
+                        else return 0;
+        break;
     default:
         break;
     }
@@ -162,12 +165,7 @@ void TControl::PrintMenu(int &option){
     }
     std::cout << oss.str();
 
-}
-
-void TControl::SetCursorPosition(int x, int y) {
-    std::cout << "\033[" << y << ";" << x << "H";
-    std::cout.flush(); // Ensure the output is sent to the console immediately
-
+    return true;
 }
 
 void TControl::ClearConsole() {

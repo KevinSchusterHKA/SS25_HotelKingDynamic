@@ -7,6 +7,8 @@
 #include <windows.h> 
 #include <sstream>
 #include "LookUp.h"
+
+
 #define KEY_UP 72     
 #define KEY_DOWN 80   
 #define KEY_LEFT 75   
@@ -65,14 +67,13 @@ private:
         "#Anzahl gebauter Objekte:        XX  #",
         "######################################"
     }; 
-    void SetCursorPosition(int x, int y);
     std::string GetDigitsInt(int Zahl);
     std::string GetFarbe(Farbe farbe);
     void SetFarbe(Farbe farbe);
 public:
     TControl();
     ~TControl();
-    void PrintMenu(int& option);
+    int PrintMenu(int& option);
     void PrintFeld(std::string Feld[]);
     void PrintSpielerInformationen( std::string Namen[4],
                                     int Budget[4],
