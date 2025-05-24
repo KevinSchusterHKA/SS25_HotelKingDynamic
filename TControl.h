@@ -6,7 +6,7 @@
 #include <vector>
 #include <windows.h> 
 #include <sstream>
-
+#include "LookUp.h"
 #define KEY_UP 72     
 #define KEY_DOWN 80   
 #define KEY_LEFT 75   
