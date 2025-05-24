@@ -14,38 +14,36 @@ TControl::TControl(){
 TControl::~TControl(){
     
 }
-
 void TControl::PrintFeld(std::string FeldBlock[]){
-    std::string out = _fgcolortable[4];
-    for (int i = 0; i < _dimY; i++)
-    {
-        for (int j = 20; j < 31; j++)
-        {
-            out += FeldBlock[j].toStr(i);
-        }
-        out += "\n";
-    }
-    for (int i = 19; i > 10; i--)
-    {
-        for (int j = 0; j < _dimY; j++)
-        {
-            out += FeldBlock[i].toStr(j) + Buffer + FeldBlock[50 - i].toStr(j);
-            out += "\n";
-        }
+    //std::string out = _fgcolortable[4];
+    //for (int i = 0; i < _dimY; i++)
+    //{
+    //    for (int j = 20; j < 31; j++)
+    //    {
+    //        out += FeldBlock[j].toStr(i);
+    //    }
+    //    out += "\n";
+    //}
+    //for (int i = 19; i > 10; i--)
+    //{
+    //    for (int j = 0; j < _dimY; j++)
+    //    {
+    //        out += FeldBlock[i].toStr(j) + Buffer + FeldBlock[50 - i].toStr(j);
+    //        out += "\n";
+    //    }
 
-    }
-    for (int i = 0; i < _dimY; i++)
-    {
-        for (int j = 10; j >= 0; j--)
-        {
-            out += FeldBlock[j].toStr(i);
+    //}
+    //for (int i = 0; i < _dimY; i++)
+    //{
+    //    for (int j = 10; j >= 0; j--)
+    //    {
+    //        out += FeldBlock[j].toStr(i);
 
-        }
-        out += "\n";
-    }
-    out += "\033[0m";
-    std::cout<<out;
-
+    //    }
+    //    out += "\n";
+    //}
+    //out += "\033[0m";
+    std::cout<< FeldBlock;
 }
 void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int AnzahlGekaufterObjekte[4],int AnzahlGebauterObjekte[4],int AnzSpieler){    
     //Ausgabe #-Zeichen
@@ -123,59 +121,47 @@ void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int 
     std::cout<<std::endl;
 
 }
-int TControl::Menu(void){
+void TControl::PrintMenu(int &option){
     enum OptionenMenu{Start=3,Highscore=4,Beenden=5};
     std::string temp[7];
-    int option = 3;
     int inputCh = 0;
-    system("cls");
-    do {
         std::ostringstream oss;
 
-        DWORD start_time = GetTickCount64();
+    
+    inputCh = 0;
 
-        for (int i = 0; i < 7; ++i) {
-            temp[i] = MenueStartText[i]; 
-            if (i==option) {
-                temp[option].replace(temp[option].find(GetDigitsInt(option-2))-1,1,1,'>');
+    if (_kbhit()) { // Check if a key is pressed
+        inputCh = _getch(); 
+    }
+
+    switch(inputCh) {
+    case KEY_UP:
+            if ( option > 3) {
+                option--;            
             }
-            temp[i] += "\n";
-			oss << temp[i]; 
+        break;
+    case KEY_DOWN:
+            if (option <5) {
+                option++;            
+            }
+        break;
+    case KEY_LEFT:
+        break;
+    case KEY_RIGHT:
+        break;
+    default:
+        break;
+    }
+    for (int i = 0; i < 7; ++i) {
+        temp[i] = MenueStartText[i];
+        if (i == option) {
+            temp[option].replace(temp[option].find(GetDigitsInt(option - 2)) - 1, 1, 1, '>');
         }
-        inputCh = 0;
+        temp[i] += "\n";
+        oss << temp[i];
+    }
+    std::cout << oss.str();
 
-		std::cout << oss.str(); 
-        if (_kbhit()) { // Check if a key is pressed
-            inputCh = _getch(); 
-        }
-
-        switch(inputCh) {
-        case KEY_UP:
-                if ( option > 3) {
-                    option--;            
-                }
-            break;
-        case KEY_DOWN:
-                if (option <5) {
-                    option++;            
-                }
-            break;
-        case KEY_LEFT:
-            break;
-        case KEY_RIGHT:
-            break;
-        default:
-            break;
-        }
-        DWORD elapsed_time = GetTickCount64() - start_time;
-        if (elapsed_time < FRAME_DURATION) {
-            Sleep(FRAME_DURATION - elapsed_time); 
-        }
-		this->ClearConsole();//muss in die Hauptschleife, zu Testzwecken hier
-
-
-    }while (inputCh!= KEY_ENTER);
-    return option;
 }
 
 void TControl::SetCursorPosition(int x, int y) {

@@ -12,11 +12,11 @@
 #define KEY_LEFT 75   
 #define KEY_RIGHT 77  
 #define KEY_ENTER 13
+#define TARGET_FPS 60
+#define FRAME_DURATION 1000 / TARGET_FPS
 
 class TControl{
 private:
-    int TARGET_FPS = 60;
-    int FRAME_DURATION = 1000 / TARGET_FPS; // Milliseconds per frame
     enum class Farbe {
     Zuruecksetzen=0,
     Schwarz=30,
@@ -66,19 +66,19 @@ private:
         "######################################"
     }; 
     void SetCursorPosition(int x, int y);
-    void ClearConsole();
     std::string GetDigitsInt(int Zahl);
     std::string GetFarbe(Farbe farbe);
     void SetFarbe(Farbe farbe);
 public:
     TControl();
     ~TControl();
-    int Menu();
+    void PrintMenu(int& option);
     void PrintFeld(std::string Feld[]);
     void PrintSpielerInformationen( std::string Namen[4],
                                     int Budget[4],
                                     int AnzahlGekaufterObjekte[4],
                                     int AnzahlGebauterObjekte[4],
                                     int AnzSpieler);
+    void ClearConsole();
 };
 
