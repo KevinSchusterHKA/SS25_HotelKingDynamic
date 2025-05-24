@@ -141,7 +141,8 @@ int TControl::PrintMenu(void){
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time); 
         }
-        this->ClearConsole();
+		this->ClearConsole();//muss in die Hauptschleife, zu Testzwecken hier
+
 
     }while (inputCh!= KEY_ENTER);
     return option;
