@@ -15,13 +15,13 @@ TControl::~TControl(){
     
 }
 
-void TControl::PrintFeld(std::string Feld[]){
+void TControl::PrintFeld(std::string FeldBlock[]){
     std::string out = _fgcolortable[4];
     for (int i = 0; i < _dimY; i++)
     {
         for (int j = 20; j < 31; j++)
         {
-            out += Spaces[j].toStr(i);
+            out += FeldBlock[j].toStr(i);
         }
         out += "\n";
     }
@@ -29,7 +29,7 @@ void TControl::PrintFeld(std::string Feld[]){
     {
         for (int j = 0; j < _dimY; j++)
         {
-            out += Spaces[i].toStr(j) + Buffer + Spaces[50 - i].toStr(j);
+            out += FeldBlock[i].toStr(j) + Buffer + FeldBlock[50 - i].toStr(j);
             out += "\n";
         }
 
@@ -38,7 +38,7 @@ void TControl::PrintFeld(std::string Feld[]){
     {
         for (int j = 10; j >= 0; j--)
         {
-            out += Spaces[j].toStr(i);
+            out += FeldBlock[j].toStr(i);
 
         }
         out += "\n";
