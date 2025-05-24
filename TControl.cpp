@@ -3,18 +3,18 @@
 
 TControl::TControl(){
     // Initialize ncurses;
-    initscr(); // Start ncurses mode
-    cbreak(); // Disable line buffering
-    noecho(); // Don't echo pressed keys
-    keypad(stdscr, TRUE); // Enable arrow keys
+    //initscr(); // Start ncurses mode
+    //cbreak(); // Disable line buffering
+    //noecho(); // Don't echo pressed keys
+    //keypad(stdscr, TRUE); // Enable arrow keys
+
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 }
 TControl::~TControl(){
     
 }
-void TControl::PrintMenu(){
 
-    std::cout<<this->MenueStartText<<std::endl;
-}
 void TControl::PrintFeld(std::string Feld[]){
 
 }
@@ -94,32 +94,39 @@ void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int 
     std::cout<<std::endl;
 
 }
-int TControl::AuswahlMenu(void){    
+int TControl::PrintMenu(void){
     enum OptionenMenu{Start=3,Highscore=4,Beenden=5};
     std::string temp[7];
-    
     int option = 3;
-    int c = 0;
+    int inputCh = 0;
     do {
+        std::ostringstream oss;
+
+        DWORD start_time = GetTickCount64();
+
         for (int i = 0; i < 7; ++i) {
             temp[i] = MenueStartText[i]; 
             if (i==option) {
                 temp[option].replace(temp[option].find(GetDigitsInt(option-2))-1,1,1,'>');
             }
-            std::cout<<temp<<std::endl;
+            temp[i] += "\n";
+			oss << temp[i]; 
+        }
+        inputCh = 0;
+
+		std::cout << oss.str(); 
+        if (_kbhit()) { // Check if a key is pressed
+            inputCh = _getch();
         }
 
-        c=getchar();
-    
-
-        switch(c) {
+        switch(inputCh) {
         case KEY_UP:
-                if (option>0) {
+                if ( option > 3) {
                     option--;            
                 }
             break;
         case KEY_DOWN:
-                if (option<3) {
+                if (option <5) {
                     option++;            
                 }
             break;
@@ -130,8 +137,13 @@ int TControl::AuswahlMenu(void){
         default:
             break;
         }
+        DWORD elapsed_time = GetTickCount64() - start_time;
+        if (elapsed_time < FRAME_DURATION) {
+            Sleep(FRAME_DURATION - elapsed_time); 
+        }
+        this->ClearConsole();
 
-    }while (c!='\n');
+    }while (inputCh!= KEY_ENTER);
     return option;
 }
 
@@ -140,7 +152,8 @@ void TControl::SetCursorPosition(int x, int y) {
 }
 
 void TControl::ClearConsole() {
-    std::cout << "\033[2J\033[1;1H"; // Clear screen and move cursor to top-left
+    //std::cout << "\033[2J\033[1;1H"; // Clear screen and move cursor to top-left
+    system("cls"); 
     std::cout.flush(); // Ensure the output is sent to the console immediately
 }
 
@@ -181,24 +194,24 @@ std::string TControl::GetFarbe(Farbe farbe) {
     }
 
 void TControl::SetFarbe(Farbe farbe) {
-        switch (farbe) {
-            case Farbe::Schwarz:   std::cout << "\033[30m"; break;
-            case Farbe::Rot:       std::cout << "\033[31m"; break;
-            case Farbe::Gruen:     std::cout << "\033[32m"; break;
-            case Farbe::Gelb:      std::cout << "\033[33m"; break;
-            case Farbe::Blau:      std::cout << "\033[34m"; break;
-            case Farbe::Magenta:   std::cout << "\033[35m"; break;
-            case Farbe::Cyan:      std::cout << "\033[36m"; break;
-            case Farbe::Weiss:     std::cout << "\033[37m"; break;
-            case Farbe::BG_Schwarz: std::cout << "\033[40m"; break; // Schwarzer Hintergrund
-            case Farbe::BG_Rot:    std::cout << "\033[41m"; break; // Roter Hintergrund
-            case Farbe::BG_Gruen:  std::cout << "\033[42m"; break; // Grüner Hintergrund
-            case Farbe::BG_Gelb:   std::cout << "\033[43m"; break; // Gelber Hintergrund
-            case Farbe::BG_Blau:   std::cout << "\033[44m"; break; // Blauer Hintergrund
-            case Farbe::BG_Magenta: std::cout << "\033[45m"; break; // Magenta Hintergrund
-            case Farbe::BG_Cyan:   std::cout << "\033[46m"; break; // Cyan Hintergrund
-            case Farbe::BG_Weiss:  std::cout << "\033[47m"; break; // Weißer Hintergrund
-            case Farbe::Zuruecksetzen: std::cout << "\033[0m"; break; // Zurücksetzen auf Standardfarbe
-            default:               std::cout << "\033[0m"; break; // Standardfarbe
-        }
+    switch (farbe) {
+    case Farbe::Schwarz:   std::cout << "\033[30m"; break;
+    case Farbe::Rot:       std::cout << "\033[31m"; break;
+    case Farbe::Gruen:     std::cout << "\033[32m"; break;
+    case Farbe::Gelb:      std::cout << "\033[33m"; break;
+    case Farbe::Blau:      std::cout << "\033[34m"; break;
+    case Farbe::Magenta:   std::cout << "\033[35m"; break;
+    case Farbe::Cyan:      std::cout << "\033[36m"; break;
+    case Farbe::Weiss:     std::cout << "\033[37m"; break;
+    case Farbe::BG_Schwarz: std::cout << "\033[40m"; break; // Schwarzer Hintergrund
+    case Farbe::BG_Rot:    std::cout << "\033[41m"; break; // Roter Hintergrund
+    case Farbe::BG_Gruen:  std::cout << "\033[42m"; break; // Grüner Hintergrund
+    case Farbe::BG_Gelb:   std::cout << "\033[43m"; break; // Gelber Hintergrund
+    case Farbe::BG_Blau:   std::cout << "\033[44m"; break; // Blauer Hintergrund
+    case Farbe::BG_Magenta: std::cout << "\033[45m"; break; // Magenta Hintergrund
+    case Farbe::BG_Cyan:   std::cout << "\033[46m"; break; // Cyan Hintergrund
+    case Farbe::BG_Weiss:  std::cout << "\033[47m"; break; // Weißer Hintergrund
+    case Farbe::Zuruecksetzen: std::cout << "\033[0m"; break; // Zurücksetzen auf Standardfarbe
+    default:               std::cout << "\033[0m"; break; // Standardfarbe
+    }
 }

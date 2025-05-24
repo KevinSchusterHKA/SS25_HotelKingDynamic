@@ -1,16 +1,22 @@
 #include <string>
 #include <iostream>
-#include <ncurses.h>
-//#include <conio.h>
+//#include <ncurses.h>
+#include <conio.h>
 #include <algorithm>
 #include <vector>
-//  #define KEY_UP 72
-//  #define KEY_DOWN 80
-//  #define KEY_LEFT 75
-//  #define KEY_RIGHT 77
+#include <windows.h> 
+#include <sstream>
+
+#define KEY_UP 72     
+#define KEY_DOWN 80   
+#define KEY_LEFT 75   
+#define KEY_RIGHT 77  
+#define KEY_ENTER 13
 
 class TControl{
 private:
+    int TARGET_FPS = 60;
+    int FRAME_DURATION = 1000 / TARGET_FPS; // Milliseconds per frame
     enum class Farbe {
     Zuruecksetzen=0,
     Schwarz=30,
@@ -67,13 +73,12 @@ private:
 public:
     TControl();
     ~TControl();
-    void PrintMenu();
+    int PrintMenu();
     void PrintFeld(std::string Feld[]);
     void PrintSpielerInformationen( std::string Namen[4],
                                     int Budget[4],
                                     int AnzahlGekaufterObjekte[4],
                                     int AnzahlGebauterObjekte[4],
                                     int AnzSpieler);
-    int AuswahlMenu(void);
 };
 
