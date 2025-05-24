@@ -99,6 +99,7 @@ int TControl::PrintMenu(void){
     std::string temp[7];
     int option = 3;
     int inputCh = 0;
+    system("cls");
     do {
         std::ostringstream oss;
 
@@ -116,7 +117,7 @@ int TControl::PrintMenu(void){
 
 		std::cout << oss.str(); 
         if (_kbhit()) { // Check if a key is pressed
-            inputCh = _getch();
+            inputCh = _getch(); 
         }
 
         switch(inputCh) {
@@ -150,11 +151,13 @@ int TControl::PrintMenu(void){
 
 void TControl::SetCursorPosition(int x, int y) {
     std::cout << "\033[" << y << ";" << x << "H";
+    std::cout.flush(); // Ensure the output is sent to the console immediately
+
 }
 
 void TControl::ClearConsole() {
-    //std::cout << "\033[2J\033[1;1H"; // Clear screen and move cursor to top-left
-    system("cls"); 
+    std::cout << "\033[1;1H"; // Clear screen and move cursor to top-left
+    //system("cls"); 
     std::cout.flush(); // Ensure the output is sent to the console immediately
 }
 
