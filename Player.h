@@ -1,1 +1,42 @@
+#pragma once
+#include <iostream>;
+#include <string>;
+#include <vector>;
+#include "space.h";
+#include <random>;
+using namespace std;
+
+class players
+{
+private:
+	float Budget=1000.0;
+	int Position=0;
+	int Augenzahl;
+	vector<space> gekaufteStrasse; 
+	vector<space> gebauteHaueser; 
+
+public:
+	players();
+	~players();
+	float getBudget();
+	void setBudget(float f);
+
+	int getPosition();
+	void setPosition(int p);
+
+	int getAugenzahl();
+	void setAugenzahl(int a);
+	int wurfel();
+	space handel(space request);
+	//Handeln
+
+};
+
+players::players()
+{
+}
+
+players::~players()
+{
+}
 
