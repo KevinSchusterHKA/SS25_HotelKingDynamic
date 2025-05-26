@@ -1,7 +1,7 @@
 #include "Player.h"
 
 mt19937 Zufall(time(nullptr));
-int Player::wurfel() {
+int player::wurfel() {
 	int Zufallszahl;
 	Zufallszahl = (Zufall() % 6) + 1;
 	return Zufallszahl;
@@ -9,8 +9,8 @@ int Player::wurfel() {
 
 
 int main() {
-	vector<player> p1, p2;
-
+	vector<player*> p;
+	p.push_back(new player());
 
 	while (true) {
 		char k;
@@ -22,11 +22,11 @@ int main() {
 		case '1':
 			int temp = 0;
 			for (int i = 0; i < 2; i++) {
-				cout << "Wuerfel " << i+1 << ":\t " << p1->wurfel() << endl;
-				temp += p1.wurfel()
+				cout << "Wuerfel " << i+1 << ":\t " << p[0]->wurfel() << endl;
+				temp += p[0]->wurfel();
 			}
-			p1->setAugenzahl(temp);
-			cout << "Gesamtaugenzahl:\t" << p1->getAugenzahl << endl;
+			p[0]->setAugenzahl(temp);
+			cout << "Gesamtaugenzahl:\t" << p[0]->getAugenzahl() << endl;
 			break;
 
 		case '2':
