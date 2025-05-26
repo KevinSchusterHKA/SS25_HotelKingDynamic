@@ -250,7 +250,7 @@ void TControl::AusgabeHighscore(std::string Namen[], int HighscoreWert[],int siz
 
         SetConsoleCursorPosition(this->hConsole, this->coord);
 
-        std::cout << "#" << std::setw(3) << std::left << (to_string(i + 1) + "]") << std::setw(maxSizeNames) << std::left << Namen[i] <<"|" << std::setw(8) << std::right << HighscoreWert[i] << "#" << std::endl;
+        std::cout << "#" << std::setw(4) << std::left << ("["+to_string(i + 1) + "]") << std::setw(maxSizeNames-1) << std::left << Namen[i].substr(0,maxSizeNames-1) << "|" << std::setw(8) << std::right << HighscoreWert[i] << "#" << std::endl;
 
         if (i == size - 1) {
             coord.Y = y + 4 + i;
@@ -297,7 +297,7 @@ void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
                         << setw(maxSizeOption / 2 - this->MenueSpielOptionen[this->MenueSpielOptionen.size() - 1].size() / 2-2) << ""
                         <<"#";
     
-    for (size_t i = 0; i < maxSizeOption; i++)
+    for (size_t i = 0; i < maxSizeOption; i++) 
     {
         coord.X = x + i;
         coord.Y = y+2;
@@ -311,12 +311,16 @@ void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
         coord.X = x;
         coord.Y = y + 3 + i;
         SetConsoleCursorPosition(this->hConsole, this->coord);
-        std::cout << "#" << setw(10) << std::right << ("[" + to_string(i + 1) + "]") << setw(39) << std::left << this->MenueSpielOptionen[i] << "#";
-
+        //std::cout << "#" << setw(10) << std::right << ("[" + to_string(i + 1) + "]") << setw(39) << std::left << this->MenueSpielOptionen[i] << "#";
+        std::cout   << "#"
+                    << setw(15) << ""
+                    << setw(4) << "["+to_string(i+1)+"]"
+                    << setw(30) << this->MenueSpielOptionen[i]
+                    << "#";
     }
 
 
-    coord.X = x+7;
+    coord.X = x+15;
     coord.Y = y + option;
     SetConsoleCursorPosition(this->hConsole, this->coord);
     std::cout << setw(1) << ">";
