@@ -168,7 +168,7 @@ int TControl::AusgabeStartMenu(int &option,int x,int y){
     this->SetFarbe(Farbe::Weiss);
     std::string temp[7];
     int inputCh = 0;
-        std::ostringstream oss;
+    std::ostringstream oss;
 
     
     inputCh = 0;
@@ -193,7 +193,8 @@ int TControl::AusgabeStartMenu(int &option,int x,int y){
     case KEY_RIGHT:
         break;
     case KEY_ENTER:     if (option == Beenden) return Beenden;
-                        else return 0;
+                        //if (option == Highscore) { this->AusgabeHighscore(, , 0, 50); }
+                        if (option == Start) { return Start; }
         break;
     default:
         break;
@@ -201,7 +202,7 @@ int TControl::AusgabeStartMenu(int &option,int x,int y){
     for (int i = 0; i < 7; ++i) {
         temp[i] = MenueStartText[i];
         if (i == option) {
-            temp[option].replace(temp[option].find(GetDigitsInt(option - 2)) - 1, 1, 1, '>');
+            temp[option].replace(temp[option].find("["+GetDigitsInt(option - 2)) - 1, 1, 1, '>');
         }
         temp[i] += "\n";
         oss << temp[i];

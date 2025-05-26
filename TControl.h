@@ -90,11 +90,11 @@ private:
         };
     std::string MenueStartText[7] = {
         "###################################################",
-        "#             Hotel King Dynamic                  #",
+        "#              Hotel King Dynamic                 #",
         "###################################################",
-        "#               1. Spiel Starten                  #",
-        "#               2. Highscore                      #",
-        "#               3. Beenden                        #",
+        "#               [1] Spiel Starten                 #",
+        "#               [2] Highscore                     #",
+        "#               [3] Beenden                       #",
         "###################################################"
     };
 
