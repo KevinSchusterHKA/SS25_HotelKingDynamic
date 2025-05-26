@@ -6,7 +6,7 @@
 #include <random>;
 using namespace std;
 
-class players
+class player
 {
 private:
 	float Budget=1000.0;
@@ -16,8 +16,8 @@ private:
 	vector<space> gebauteHaueser; 
 
 public:
-	players();
-	~players();
+	player();
+	~player();
 	float getBudget();
 	void setBudget(float f);
 
@@ -32,11 +32,11 @@ public:
 
 };
 
-players::players()
+player::player()
 {
 }
 
-players::~players()
+player::~player()
 {
 }
 
