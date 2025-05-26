@@ -7,14 +7,49 @@ TControl::TControl(){
     //cbreak(); // Disable line buffering
     //noecho(); // Don't echo pressed keys
     //keypad(stdscr, TRUE); // Enable arrow keys
-
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+    //std::ios::sync_with_stdio(false);
+    //std::cin.tie(nullptr);
+    this->hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    this->HideCursor(hConsole);
+    
 }
 TControl::~TControl(){
     
 }
-void TControl::PrintFeld(std::string FeldBlock[]){
+void TControl::AusgabeSpielerBox(   std::string Namen ,
+                                    int Budget ,
+                                    int AnzahlGekaufterObjekte ,
+                                    int AnzahlGebauterObjekte ,
+                                    int x,
+                                    int y,
+                                    Farbe f) {
+    this->SetFarbe(f);
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "###################################################";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "#" << setw(49) << std::left<<Namen.substr(0,49) << "#";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "###################################################";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "#" << setw(25) << std::left << "Budget:" << setw(22) << std::right << Budget << "$ " << "#";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord); 
+    std::cout << "#" << setw(25) << std::left << "Anzahl gekaufter Objekte:" << setw(23) << std::right << AnzahlGekaufterObjekte << " #";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord); 
+    std::cout << "#" << setw(25) << std::left << "Anzahl gebauter Objekte:" << setw(23) << std::right << AnzahlGebauterObjekte << " #";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "###################################################";
+    this->SetFarbe(Farbe::Zuruecksetzen);
+    
+}
+void TControl::AusgabeFeld(std::string FeldBlock[]){
     //std::string out = _fgcolortable[4];
     //for (int i = 0; i < _dimY; i++)
     //{
@@ -45,7 +80,7 @@ void TControl::PrintFeld(std::string FeldBlock[]){
     //out += "\033[0m";
     std::cout<< FeldBlock;
 }
-void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int AnzahlGekaufterObjekte[4],int AnzahlGebauterObjekte[4],int AnzSpieler){    
+void TControl::AusgabeSpielerInformationen(std::string Namen[4],int Budget[4],int AnzahlGekaufterObjekte[4],int AnzahlGebauterObjekte[4],int AnzSpieler){    
     //Ausgabe #-Zeichen
     for (int j=0;j<AnzSpieler;j++) {
         this->SetFarbe(static_cast<Farbe>(j+static_cast<int>(Farbe::Rot)));
@@ -121,8 +156,16 @@ void TControl::PrintSpielerInformationen(std::string Namen[4],int Budget[4],int 
     std::cout<<std::endl;
 
 }
-int TControl::PrintMenu(int &option){
+void TControl::AusgabeSpielerInformationenMitPosition(std::string Namen[4], int Budget[4], int AnzahlGekaufterObjekte[4], int AnzahlGebauterObjekte[4], int AnzSpieler,int x,int y) {
+
+    Farbe start = Farbe::Rot;
+    for (int i = 0; i < AnzSpieler; i++) {
+        this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * 52+x, y, static_cast<Farbe>(static_cast<int>(start) + i));
+    }
+}
+int TControl::AusgabeStartMenu(int &option,int x,int y){
     enum OptionenMenu{Start=3,Highscore=4,Beenden=5};
+    this->SetFarbe(Farbe::Weiss);
     std::string temp[7];
     int inputCh = 0;
         std::ostringstream oss;
@@ -167,12 +210,124 @@ int TControl::PrintMenu(int &option){
 
     return true;
 }
+void TControl::AusgabeHighscore(std::string Namen[], int HighscoreWert[],int size,int x,int y) {
+    int maxSizeNames = 0;
+    this->SetFarbe(Farbe::BG_Weiss);
+    this->SetFarbe(Farbe::Schwarz);
+    for (size_t i = 0; i < size; i++)
+    {
+        if (maxSizeNames < Namen[i].size()){
+            maxSizeNames = Namen[i].size();
+        }
+    }
+
+
+    coord.X = x;
+    coord.Y = y;
+    //HEADER HIGHSCORE
+    for (size_t i = 0; i < maxSizeNames+1+8+2+3; i++)
+    {
+        coord.X = x + i;
+        coord.Y = y;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+        coord.X = x;
+        coord.Y = y + 1;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+                                      //NAMEN SIZE  + # + xx- + Wert - Korrektur
+        std::cout << "#" << std::setw((maxSizeNames + 1 + 3   + 8 - 6) / 2) << "" << std::setw((maxSizeNames +3+ 1 + 8 + 7) / 2)<<std::left<<"HIGHSCORE"<<"#";
+        coord.X = x+i;
+        coord.Y = y + 2;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+    std::cout << std::endl;
+    //AUSGABE HIGHSCORES
+    for (size_t i = 0; i < size; i++)
+    {
+        coord.X = x;
+        coord.Y = y +3+ i;
+
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+
+        std::cout << "#" << std::setw(3) << std::left << (to_string(i + 1) + "]") << std::setw(maxSizeNames) << std::left << Namen[i] <<"|" << std::setw(8) << std::right << HighscoreWert[i] << "#" << std::endl;
+
+        if (i == size - 1) {
+            coord.Y = y + 4 + i;
+        }
+    }
+    //ABSCHLUSS AUSGABE FENSTER
+    for (size_t i = 0; i < maxSizeNames + 1 +3+ 8 + 2; i++)
+    {
+        coord.X = x + i;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+    this->SetFarbe(Farbe::Zuruecksetzen);
+}
+void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
+    int maxSizeOption = 0;
+    this->SetFarbe(Farbe::BG_Rot);
+    this->SetFarbe(Farbe::Schwarz);
+    for (size_t i = 0; i < this->MenueSpielOptionen.size(); i++)
+    {
+        if (maxSizeOption < this->MenueSpielOptionen[i].size()) {
+            maxSizeOption = this->MenueSpielOptionen[i].size();
+        }
+    }
+    for (size_t i = 0; i < maxSizeOption; i++)
+    {
+        coord.X = x + i;
+        coord.Y = y;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+    for (size_t i = 0; i < maxSizeOption; i++)
+    {
+        coord.X = x + i;
+        coord.Y = y+1;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+    for (size_t i = 0; i < maxSizeOption; i++)
+    {
+        coord.X = x + i;
+        coord.Y = y+2;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+    for (size_t i = 0; i < this->MenueSpielOptionen.size()-3; i++)
+    {
+        coord.X = x;
+        coord.Y = y + 3 + i;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#" << setw(10) << std::right << ("["+to_string(i + 1) + "]") << setw(39) << std::left << this->MenueSpielOptionen[i]<<"#";
+    }
+    coord.Y = coord.Y + 1;
+    for (size_t i = 0; i < maxSizeOption; i++)
+    {
+        coord.X = x + i;
+
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+    this->SetFarbe(Farbe::Zuruecksetzen);
+}
+
+
 
 void TControl::ClearConsole() {
     std::cout << "\033[1;1H"; // Clear screen and move cursor to top-left
     //system("cls"); 
     std::cout.flush(); // Ensure the output is sent to the console immediately
 }
+void TControl::HideCursor(HANDLE hConsole) {
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(hConsole, &cursorInfo);
+    cursorInfo.bVisible = FALSE;
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
+}
+
 
 std::string TControl::GetDigitsInt(int Zahl){
     std::string digits;

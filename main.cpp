@@ -8,19 +8,30 @@ int main(){
     int gebObj[4]={0,2,3,99};
     int option=3;
     int Spiellaueft = 1;
+
+    
+
+
     while (Spiellaueft!=5) //5 ist Beenden Code
     {
         DWORD start_time = GetTickCount64();
+        Spiellaueft = ControlEngine.AusgabeStartMenu(option, 0, 0);
 
-        ControlEngine.PrintSpielerInformationen(playerNames, budget, gekObj, gebObj, 3);
-        Spiellaueft=ControlEngine.PrintMenu(option);
+
+        ControlEngine.AusgabeSpielerInformationen(playerNames, budget, gekObj, gebObj, 4);
+        ControlEngine.AusgabeSpielerInformationenMitPosition(playerNames, budget, gekObj, gebObj,4,12,70);
+        ControlEngine.AusgabeHighscore(playerNames, budget, 4, 30, 30); 
+        ControlEngine.AusgabeSpielOptionen(option,50, 50);
+        
+
+
 
         DWORD elapsed_time = GetTickCount64() - start_time;
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
-        ControlEngine.ClearConsole();
 
+        ControlEngine.ClearConsole();
     }
 
     return 0;
