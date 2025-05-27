@@ -1,4 +1,5 @@
 #include <iostream>
+#include <windows.h>
 #include <string>
 #include <map>
 #include "Map.h"
@@ -7,6 +8,8 @@ using namespace std;
 
 int main()
 {
+    SetConsoleOutputCP(850);
+
     string out = "";
     for (int i = 0; i < 16; i++)
     {
