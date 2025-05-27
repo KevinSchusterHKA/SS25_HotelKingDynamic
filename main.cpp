@@ -19,7 +19,7 @@ int main(){
 
 
         //ControlEngine.AusgabeSpielerInformationen(playerNames, budget, gekObj, gebObj, 4);
-        ControlEngine.AusgabeSpielerInformationenMitPosition(playerNames, budget, gekObj, gebObj,4,12,70);
+        ControlEngine.AusgabeSpielerInformationen(playerNames, budget, gekObj, gebObj,4,12,70);
         ControlEngine.AusgabeHighscore(playerNames, budget, 4, 30, 30); 
         ControlEngine.AusgabeSpielOptionen(option,0, 10);
         
@@ -30,12 +30,12 @@ int main(){
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
-        /*ClearScreenCounter++;
-        if (ClearScreenCounter ==12*60)//5Sekunden
+        ClearScreenCounter++;
+        if (ClearScreenCounter ==12*5)//*t in Sekunden
         {
             ClearScreenCounter = 0;
             system("cls");
-        } */
+        } 
         ControlEngine.ClearConsole();
     }
 

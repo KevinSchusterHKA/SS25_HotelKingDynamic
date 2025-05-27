@@ -132,12 +132,7 @@ public:
     ~TControl();
     int AusgabeStartMenu(int& option, int x, int y);
     void AusgabeFeld(std::string Feld[]);
-    void AusgabeSpielerInformationen(   std::string Namen[4],
-                                        int Budget[4],
-                                        int AnzahlGekaufterObjekte[4],
-                                        int AnzahlGebauterObjekte[4],
-                                        int AnzSpieler);
-    void AusgabeSpielerInformationenMitPosition(  std::string Namen[4],
+    void AusgabeSpielerInformationen(  std::string Namen[4],
                                                 int Budget[4],
                                                 int AnzahlGekaufterObjekte[4],
                                                 int AnzahlGebauterObjekte[4],
