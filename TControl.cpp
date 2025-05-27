@@ -2,16 +2,10 @@
 #include "TControl.h"
 
 TControl::TControl(){
-    // Initialize ncurses;
-    //initscr(); // Start ncurses mode
-    //cbreak(); // Disable line buffering
-    //noecho(); // Don't echo pressed keys
-    //keypad(stdscr, TRUE); // Enable arrow keys
-    //std::ios::sync_with_stdio(false);
-    //std::cin.tie(nullptr);
     this->hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
     this->HideCursor(hConsole);
-    
+	//this->SetConsoleFontSize(1); // funktioniert nicht
 }
 TControl::~TControl(){
     
@@ -48,6 +42,23 @@ void TControl::AusgabeSpielerBox(   std::string Namen ,
     std::cout << "###################################################";
     this->SetFarbe(Farbe::Zuruecksetzen);
     
+}
+void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
+
+    this->coord.X = x - 84/2;
+    
+    this->coord.Y = y - 22 / 2; 
+    for (std::string var : this->Hotelking) {
+        for (size_t i = 0; i < 21; i++){
+            this->coord.Y += 1;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            for (size_t j  = 0; j < 83; j++)
+            {
+                std::cout << var[j * (1 + i)];
+            }
+        }
+    }
+        
 }
 void TControl::AusgabeFeld(std::string FeldBlock[]){
     //std::string out = _fgcolortable[4];
@@ -276,7 +287,19 @@ void TControl::HideCursor(HANDLE hConsole) {
     cursorInfo.bVisible = FALSE;
     SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
+#include <windows.h>
 
+void TControl::SetConsoleFontSize(int size) {
+    CONSOLE_FONT_INFOEX cfi = { 0 };
+    cfi.cbSize = sizeof(cfi);
+    cfi.dwFontSize.Y = size;
+    wcscpy_s(cfi.FaceName, L"Lucida Console");
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (!SetCurrentConsoleFontEx(hConsole, FALSE, &cfi)) {
+        std::cerr << "Error changing font size!\n";
+    }
+}
 
 std::string TControl::GetDigitsInt(int Zahl){
     std::string digits;

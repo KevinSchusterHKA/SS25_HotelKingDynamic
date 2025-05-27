@@ -119,6 +119,7 @@ private:
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord;
     void HideCursor(HANDLE hConsole);
+    void SetConsoleFontSize(int size);
     //BOOL WINAPI SetConsoleCursorPosition(_In_ HANDLE hConsoleOutput,_In_ COORD  dwCursorPosition);
     void AusgabeSpielerBox( std::string Namen,
                             int Budget,
@@ -141,6 +142,7 @@ public:
                                                 int y);
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
+    void AusgabeStartBildschirm(bool flip, int x, int y);
     void ClearConsole();
 };
 
