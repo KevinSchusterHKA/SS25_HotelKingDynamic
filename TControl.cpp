@@ -44,15 +44,38 @@ void TControl::AusgabeSpielerBox(   std::string Namen ,
     
 }
 void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
+    static bool flipper = false;
+    static int counter = 0;
+	flipper = !flipper; // Toggle the flipper state
+    this->coord.X = x;
+    this->coord.Y = y;
+    counter++;
 
-    this->coord.X = x - 84/2;
-    y = y - 22 / 2;
-    this->coord.Y = y; 
-    for (int i = 0; i < 22;i++) {
-        this->coord.Y =y+i;
-        SetConsoleCursorPosition(this->hConsole, this->coord);
-		std::cout << this->Hotelking[0][i];
+
+
+    if (counter >= 12 * 3)
+    {
+        for (int i = 0; i < 22; i++) {
+            this->coord.Y = y + i;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            std::cout << setw(86) << std::left << this->Hotelking[1][i];
+        }
+        if (counter >= 12 * 6) // Reset after 6 seconds
+        {
+            counter = 0; // Reset the flipper state
+		}
+        
     }
+    else
+    {
+        for (int i = 0; i < 22; i++) {
+            this->coord.Y = y + i;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            std::cout<<setw(86)<<std::left << this->Hotelking[0][i];
+        }
+    }
+    
+
         
 }
 void TControl::AusgabeFeld(std::string FeldBlock[]){

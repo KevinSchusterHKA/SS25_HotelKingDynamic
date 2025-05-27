@@ -20,14 +20,14 @@ int main(){
         //ControlEngine.AusgabeHighscore(playerNames, budget, 4, 30, 30); 
         //ControlEngine.AusgabeSpielOptionen(option,0, 10);
         
-        ControlEngine.AusgabeStartBildschirm(TRUE, 50, 50);
+        ControlEngine.AusgabeStartBildschirm(TRUE, 20, 20);
 
         DWORD elapsed_time = GetTickCount64() - start_time;
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
         ClearScreenCounter++;
-        if (ClearScreenCounter ==12*1)//*t in Sekunden
+        if (ClearScreenCounter ==12*6)//*t in Sekunden
         {
             ClearScreenCounter = 0;
             system("cls");
