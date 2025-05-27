@@ -46,17 +46,12 @@ void TControl::AusgabeSpielerBox(   std::string Namen ,
 void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
 
     this->coord.X = x - 84/2;
-    
-    this->coord.Y = y - 22 / 2; 
-    for (std::string var : this->Hotelking) {
-        for (size_t i = 0; i < 21; i++){
-            this->coord.Y += 1;
-            SetConsoleCursorPosition(this->hConsole, this->coord);
-            for (size_t j  = 0; j < 83; j++)
-            {
-                std::cout << var[j * (1 + i)];
-            }
-        }
+    y = y - 22 / 2;
+    this->coord.Y = y; 
+    for (int i = 0; i < 22;i++) {
+        this->coord.Y =y+i;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+		std::cout << this->Hotelking[0][i];
     }
         
 }

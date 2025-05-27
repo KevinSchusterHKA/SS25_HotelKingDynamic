@@ -20,7 +20,7 @@ int main(){
         //ControlEngine.AusgabeHighscore(playerNames, budget, 4, 30, 30); 
         //ControlEngine.AusgabeSpielOptionen(option,0, 10);
         
-        ControlEngine.AusgabeStartBildschirm(TRUE, 0, 0);
+        ControlEngine.AusgabeStartBildschirm(TRUE, 50, 50);
 
         DWORD elapsed_time = GetTickCount64() - start_time;
         if (elapsed_time < FRAME_DURATION) {
