@@ -137,7 +137,7 @@ private:
 public:
     TControl();
     ~TControl();
-    int AusgabeStartMenu(int& option, int x, int y);
+    void AusgabeStartMenu(int& option, int x, int y);
     void AusgabeFeld(std::string Feld[]);
     void AusgabeSpielerInformationen(  std::string Namen[4],
                                                 int Budget[4],
@@ -149,6 +149,7 @@ public:
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
     void AusgabeStartBildschirm(bool flip, int x, int y);
-    void ClearConsole();
+    void ResetConsole();
+    void UnitTest();
 };
 

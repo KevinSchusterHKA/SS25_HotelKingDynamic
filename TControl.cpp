@@ -46,6 +46,7 @@ void TControl::AusgabeSpielerBox(   std::string Namen ,
 void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
     static bool flipper = false;
     static int counter = 0;
+	int FlipZeit = 3; // Zeit in Sekunden, nach der der Text wechselt
 	flipper = !flipper; // Toggle the flipper state
     this->coord.X = x;
     this->coord.Y = y;
@@ -53,16 +54,16 @@ void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
 
 
 
-    if (counter >= 12 * 3)
+    if (counter >= 12 * FlipZeit)
     {
         for (int i = 0; i < 22; i++) {
             this->coord.Y = y + i;
             SetConsoleCursorPosition(this->hConsole, this->coord);
             std::cout << setw(86) << std::left << this->Hotelking[1][i];
         }
-        if (counter >= 12 * 6) // Reset after 6 seconds
+        if (counter >= 12 * FlipZeit*2) 
         {
-            counter = 0; // Reset the flipper state
+            counter = 0; 
 		}
         
     }
@@ -116,53 +117,22 @@ void TControl::AusgabeSpielerInformationen(std::string Namen[4], int Budget[4], 
         this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * 51+x, y, static_cast<Farbe>(static_cast<int>(start) + i));
     }
 }
-int TControl::AusgabeStartMenu(int &option,int x,int y){
-    enum OptionenMenu{Start=3,Highscore=4,Beenden=5};
+void TControl::AusgabeStartMenu(int &option,int x,int y){
     this->SetFarbe(Farbe::Weiss);
     std::string temp[7];
-    int inputCh = 0;
-    std::ostringstream oss;
 
-    
-    inputCh = 0;
+    this->coord.X = x;
+    this->coord.Y = y;
 
-    if (_kbhit()) { // Check if a key is pressed
-        inputCh = _getch(); 
-    }
-
-    switch(inputCh) {
-    case KEY_UP:
-            if ( option > 3) {
-                option--;            
-            }
-        break;
-    case KEY_DOWN:
-            if (option <5) {
-                option++;            
-            }
-        break;
-    case KEY_LEFT:
-        break;
-    case KEY_RIGHT:
-        break;
-    case KEY_ENTER:     if (option == Beenden) return Beenden;
-                        //if (option == Highscore) { this->AusgabeHighscore(, , 0, 50); }
-                        if (option == Start) { return Start; }
-        break;
-    default:
-        break;
-    }
     for (int i = 0; i < 7; ++i) {
+		this->coord.Y = y + i;
+		SetConsoleCursorPosition(this->hConsole, this->coord);
         temp[i] = MenueStartText[i];
         if (i == option) {
             temp[option].replace(temp[option].find("["+GetDigitsInt(option - 2)) - 1, 1, 1, '>');
         }
-        temp[i] += "\n";
-        oss << temp[i];
+		std::cout << temp[i];
     }
-    std::cout << oss.str();
-
-    return true;
 }
 void TControl::AusgabeHighscore(std::string Namen[], int HighscoreWert[],int size,int x,int y) {
     int maxSizeNames = 0;
@@ -294,10 +264,9 @@ void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
 
 
 
-void TControl::ClearConsole() {
-    std::cout << "\033[1;1H"; // Clear screen and move cursor to top-left
-    //system("cls"); 
-    std::cout.flush(); // Ensure the output is sent to the console immediately
+void TControl::ResetConsole() {
+    std::cout << "\033[1;1H"; //  move cursor to top-left
+    std::cout.flush();
 }
 void TControl::HideCursor(HANDLE hConsole) {
     CONSOLE_CURSOR_INFO cursorInfo;
@@ -377,3 +346,68 @@ void TControl::SetFarbe(Farbe farbe) {
     default:               std::cout << "\033[0m"; break; // Standardfarbe
     }
 }
+void TControl::UnitTest() {
+    enum OptionenMenu { Reset = 0, Start = 3, Highscore = 4, Beenden = 5 };
+
+    TControl TestControl;
+    std::string playerNames[4] = { "a","bbbb","ccccc","ddddddddddddddddddddddddddddddddddddddddddddddddddd" };
+    int budget[4] = { 100,10000,100000,99999999 };
+    int gekObj[4] = { 5,15,2,3 };
+    int gebObj[4] = { 0,2,3,99 };
+    int option = 3;
+    int Spiellaueft = 1;
+    int ClearScreenCounter = 0;
+    char inputCh = 0;
+
+    while (Spiellaueft != 5) //5 ist Beenden Code
+    {
+        DWORD start_time = GetTickCount64();
+
+        inputCh = Reset;
+        if (_kbhit()) { // Check if a key is pressed
+            inputCh = _getch();
+        }
+
+        switch (inputCh) {
+        case KEY_UP:
+            if (option > 3) {
+                option--;
+            }
+            break;
+        case KEY_DOWN:
+            if (option < 5) {
+                option++;
+            }
+            break;
+        case KEY_LEFT:
+            break;
+        case KEY_RIGHT:
+            break;
+        case KEY_ENTER:     if (option == Beenden) Spiellaueft = Beenden;
+            if (option == Highscore) {
+                this->AusgabeHighscore(playerNames, budget, 4, 0, 50);
+            }
+                if (option == Start) { /*Spielstart*/ }
+                break;
+        default:
+            break;
+            }
+            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObj, gebObj, 4, 0, 0);
+            //TestControl.AusgabeHighscore(playerNames, budget, 4, 30, 30);
+			TestControl.AusgabeSpielOptionen(option, 90, 30);
+            TestControl.AusgabeStartBildschirm(TRUE, 0, 10);
+            TestControl.AusgabeStartMenu(option, 90, 20);
+
+            DWORD elapsed_time = GetTickCount64() - start_time;
+            if (elapsed_time < FRAME_DURATION) {
+                Sleep(FRAME_DURATION - elapsed_time);
+            }
+            ClearScreenCounter++;
+            if (ClearScreenCounter == 12 * 6)//*t in Sekunden
+            {
+                ClearScreenCounter = 0;
+                system("cls");
+            }
+            TestControl.ResetConsole();
+        }
+    }
