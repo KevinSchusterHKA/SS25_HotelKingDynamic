@@ -2,18 +2,17 @@
 #include <iostream>;
 #include <string>;
 #include <vector>;
-#include "space.h";
 #include <random>;
 using namespace std;
 
 class player
 {
 private:
-	float Budget=1000.0;
-	int Position=0;
+	float Budget = 1000.0;
+	int Position = 0;
 	int Augenzahl;
-	vector<space> gekaufteStrasse; 
-	vector<space> gebauteHaueser; 
+	vector<string> gekaufteStrasse; 
+	vector<string> gebauteHaeuser; 
 
 public:
 	player();
@@ -27,9 +26,7 @@ public:
 	int getAugenzahl();
 	void setAugenzahl(int a);
 	int wurfel();
-	space handel(space request);
-	//Handeln
-
+	float handel(string request, int preowner);
 };
 
 player::player()

@@ -1,5 +1,43 @@
 #include "Player.h"
 
+
+float player::getBudget() {
+	return this->Budget;
+}
+void player::setBudget(float f) {
+	this->Budget = f;
+}
+
+int player::getPosition() {
+	return this->Position;
+}
+void player::setPosition(int p) {
+	this->Position = p;
+}
+
+int player::getAugenzahl() {
+	return this->Augenzahl;
+}
+void player::setAugenzahl(int a) {
+	this->Augenzahl = a;
+}
+
+float player::handel(string r, int preowner) {
+	string Strasse = r;
+	float angebot = -1.0;
+	if (preowner != -1) {
+		cout << "Sie koennen diese Strasse nicht kaufen, Sie gehoert niemandem.\n";
+	}
+	else {
+		cout << "Wie viel Geld moechten Sie fuer diese Strasse anbieten?\n";
+		while (angebot <= 0) {
+			cin >> angebot;
+			if (angebot <= 0) { cout << "Geben Sie bitte ein gueltiges Angebot an.\n"; }
+		}
+	}
+	return angebot;
+}																											
+
 mt19937 Zufall(time(nullptr));
 int player::wurfel() {
 	int Zufallszahl;
