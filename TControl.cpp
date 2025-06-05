@@ -3,9 +3,12 @@
 
 TControl::TControl(){
     this->hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
+    HWND consoleWindow = GetConsoleWindow(); 
+    ShowWindow(consoleWindow, SW_MAXIMIZE);
     this->HideCursor(hConsole);
 	//this->SetConsoleFontSize(1); // funktioniert nicht
+    //HWND hConsole = GetConsoleWindow();
+
 }
 TControl::~TControl(){
     
@@ -93,7 +96,7 @@ void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
 
         
 }
-void TControl::AusgabeFeld(std::string FeldBlock[]){
+void TControl::AusgabeFeld(std::string FeldBlock[], int sizeFeld){
     //std::string out = _fgcolortable[4];
     //for (int i = 0; i < _dimY; i++)
     //{
@@ -122,7 +125,10 @@ void TControl::AusgabeFeld(std::string FeldBlock[]){
     //    out += "\n";
     //}
     //out += "\033[0m";
-    std::cout<< FeldBlock;
+    for (size_t i = 0; i < sizeFeld; i++)
+    {
+        std::cout << FeldBlock[i];
+    }
 }
 void TControl::AusgabeSpielerInformationen( std::string Namen[4], 
                                             int Budget[4], 
@@ -238,23 +244,7 @@ void TControl::AusgabeSpielerInventarAnzeige(   std::string Namen,
     }
     this->SetFarbe(Farbe::Zuruecksetzen);
 }
-void TControl::AusgabeStartMenu(int &option,int x,int y){
-    this->SetFarbe(Farbe::Weiss);
-    std::string temp[7];
 
-    this->coord.X = x;
-    this->coord.Y = y;
-
-    for (int i = 0; i < 7; ++i) {
-		this->coord.Y = y + i;
-		SetConsoleCursorPosition(this->hConsole, this->coord);
-        temp[i] = MenueStartText[i];
-        if (i == option) {
-            temp[option].replace(temp[option].find("["+GetDigitsInt(option - 2)) - 1, 1, 1, '>');
-        }
-		std::cout << temp[i];
-    }
-}
 void TControl::AusgabeHighscore(std::string Namen[], int HighscoreWert[],int size,int x,int y) {
     int maxSizeNames = 0;
     this->SetFarbe(Farbe::BG_Weiss);
@@ -309,6 +299,23 @@ void TControl::AusgabeHighscore(std::string Namen[], int HighscoreWert[],int siz
         std::cout << "#";
     }
     this->SetFarbe(Farbe::Zuruecksetzen);
+}
+void TControl::AusgabeStartMenu(int& option, int x, int y) {
+    this->SetFarbe(Farbe::Weiss);
+    std::string temp[7];
+
+    this->coord.X = x;
+    this->coord.Y = y;
+
+    for (int i = 0; i < 7; ++i) {
+        this->coord.Y = y + i;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        temp[i] = MenueStartText[i];
+        if (i == option) {
+            temp[option].replace(temp[option].find("[" + GetDigitsInt(option - 2)) - 1, 1, 1, '>');
+        }
+        std::cout << temp[i];
+    }
 }
 void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
     int maxSizeOption = 0;
@@ -371,6 +378,78 @@ void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
     std::cout << setw(1) << ">";
 
     coord.Y = y+ this->MenueSpielOptionen.size();
+    for (size_t i = 0; i < maxSizeOption; i++)
+    {
+        coord.X = x + i;
+
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+
+
+    this->SetFarbe(Farbe::Zuruecksetzen);
+}
+void TControl::AusgabeHandelsOptionen(int& option, int x, int y) {
+    int maxSizeOption = 0;
+    enum HandelsOptionen
+    {
+        kaufen = 3,
+        bauen,
+        handeln
+    };
+    this->SetFarbe(Farbe::BG_Rot);
+    this->SetFarbe(Farbe::Schwarz);
+    for (size_t i = 0; i < this->MenueHandelsOptionen.size(); i++)
+    {
+        if (maxSizeOption < this->MenueHandelsOptionen[i].size()) {
+            maxSizeOption = this->MenueHandelsOptionen[i].size();
+        }
+    }
+    for (size_t i = 0; i < maxSizeOption; i++)
+    {
+        coord.X = x + i;
+        coord.Y = y;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+    coord.X = x;
+    coord.Y = y + 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "#"
+        << setw(maxSizeOption / 2 - this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1].size() / 2) << ""
+        << std::left << this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1]
+        << setw(maxSizeOption / 2 - this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1].size() / 2 - 2) << ""
+        << "#";
+
+    for (size_t i = 0; i < maxSizeOption; i++)
+    {
+        coord.X = x + i;
+        coord.Y = y + 2;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+
+
+    for (size_t i = 0; i < this->MenueHandelsOptionen.size() - 3; i++)
+    {
+        coord.X = x;
+        coord.Y = y + 3 + i;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        //std::cout << "#" << setw(10) << std::right << ("[" + to_string(i + 1) + "]") << setw(39) << std::left << this->MenueSpielOptionen[i] << "#";
+        std::cout << "#"
+            << setw(15) << ""
+            << setw(4) << "[" + to_string(i + 1) + "]"
+            << setw(30) << this->MenueHandelsOptionen[i]
+            << "#";
+    }
+
+
+    coord.X = x + 15;
+    coord.Y = y + option;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << setw(1) << ">";
+
+    coord.Y = y + this->MenueHandelsOptionen.size();
     for (size_t i = 0; i < maxSizeOption; i++)
     {
         coord.X = x + i;
@@ -510,25 +589,25 @@ void TControl::UnitTest() {
                 break;
         default:
             break;
-            }
-            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 2, 0, 0, GekObjNamen, GebObjNamen);
-            //TestControl.AusgabeHighscore(playerNames, budget, 4, 30, 30);
-			TestControl.AusgabeSpielOptionen(option, 90, 30);
-            TestControl.AusgabeStartBildschirm(TRUE, 0, 30);
-            TestControl.AusgabeStartMenu(option, 90, 20);
-			TestControl.AusgabeWuerfel(3, 50, 60, Farbe::Gruen);
-            DWORD elapsed_time = GetTickCount64() - start_time;
-            if (elapsed_time < FRAME_DURATION) {
-                Sleep(FRAME_DURATION - elapsed_time);
-            }
-            ClearScreenCounter++;
-            if (ClearScreenCounter == 12 * 6)//*t in Sekunden
-            {
-                ClearScreenCounter = 0;
-                //system("cls");
-            }
-            TestControl.ResetConsole();
-
+        }
+        TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, 0, 0, GekObjNamen, GebObjNamen);
+        //TestControl.AusgabeHighscore(playerNames, budget, 4, 30, 30);
+        TestControl.AusgabeStartMenu(option, 90, 20);
+        TestControl.AusgabeSpielOptionen(option, 90, 30);
+        TestControl.AusgabeHandelsOptionen(option, 90, 40);
+        TestControl.AusgabeStartBildschirm(TRUE, 0, 30);
+		TestControl.AusgabeWuerfel(3, 50, 60, Farbe::Gruen);
+        DWORD elapsed_time = GetTickCount64() - start_time;
+        if (elapsed_time < FRAME_DURATION) {
+            Sleep(FRAME_DURATION - elapsed_time);
+        }
+        ClearScreenCounter++;
+        if (ClearScreenCounter == 12 * 6)//*t in Sekunden
+        {
+            ClearScreenCounter = 0;
+            //system("cls");
+        }
+        TestControl.ResetConsole();
         }
     }
 void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {

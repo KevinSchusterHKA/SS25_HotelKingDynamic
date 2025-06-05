@@ -67,7 +67,8 @@ private:
     int ZeitKorrekturKonstante = 12;
     //Vielleicht mit Arrays verbessern
     std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Beenden","###################################################","#                                                 #","Was willst du machen?"};
-    std::vector<std::string> MenueSpielOptionen = { "Kaufen","Bauen","Handeln","###################################################","#                                                 #","Was willst du machen?" };
+    std::vector<std::string> MenueHandelsOptionen = { "Kaufen","Bauen","Handeln","###################################################","#                                                 #","Was willst du machen?" };
+    std::vector<std::string> MenueSpielOptionen = { "Spiel Speichern","Spiel Laden","###################################################","#                                                 #","Was willst du machen?" };
     std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","###################################################","#                                                 #","Was willst du machen?" };
 
     std::string SpielerAusgabeTextMuster[7] = {
@@ -99,7 +100,11 @@ public:
     TControl();
     ~TControl();
     void AusgabeStartMenu(int& option, int x, int y);
-    void AusgabeFeld(std::string Feld[]);
+    void AusgabeSpielOptionen(int& option, int x, int y);
+    void AusgabeHandelsOptionen(int& option, int x, int y);
+
+    void AusgabeStartBildschirm(bool flip, int x, int y);
+    void AusgabeFeld(std::string Feld[],int sizeFeld);
     void AusgabeSpielerInformationen(   std::string Namen[4],
                                         int Budget[4],
                                         int AnzahlGekaufterObjekte[4],
@@ -116,9 +121,8 @@ public:
                                         int x,
                                         int y,
                                         Farbe f);
-    void AusgabeSpielOptionen(int& option, int x, int y);
+    
     void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
-    void AusgabeStartBildschirm(bool flip, int x, int y);
     void ResetConsole();
 	void AusgabeWuerfel(int wuerfel, int x, int y, Farbe f);
     void UnitTest();
