@@ -1,6 +1,5 @@
 #include <string>
 #include <iostream>
-//#include <ncurses.h>
 #include <conio.h>
 #include <algorithm>
 #include <vector>
@@ -8,6 +7,9 @@
 #include <sstream>
 #include <iomanip>
 #include "LookUp.h"
+#include <random>
+
+//#include <ncurses.h> //für Linux, falls benötigt
 
 #define KEY_UP 72     
 #define KEY_DOWN 80   
@@ -38,62 +40,21 @@ private:
     BG_Cyan,
     BG_Weiss
     };
+    enum class MenueOptionen {
+        Start=0,
+        Highscore,
+        Beenden,
+		Kaufen,
+        Bauen,
+        Handeln,
+		Zurueck
+	};
     //Menüs
     std::string arr[2][3] = {
     { "A", "B", "C" },
     { "D", "E", "F" }
     };
-    std::string Hotelking[2][22] = {
-          {
-"$$\\   $$\\            $$\\               $$\\       $$\\   $$\\ $$\\                     ",
-"$$ |  $$ |           $$ |              $$ |      $$ | $$  |\\__|                    ",
-"$$ |  $$ | $$$$$$\\ $$$$$$\\    $$$$$$\\  $$ |      $$ |$$  / $$\\ $$$$$$$\\   $$$$$$\\  ",
-"$$$$$$$$ |$$  __$$\\\\_$$  _|  $$  __$$\\ $$ |      $$$$$  /  $$ |$$  __$$\\ $$  __$$\\ ",
-"$$  __$$ |$$ /  $$ | $$ |    $$$$$$$$ |$$ |      $$  $$<   $$ |$$ |  $$ |$$ /  $$ |",
-"$$ |  $$ |$$ |  $$ | $$ |$$\\ $$   ____|$$ |      $$ |\\$$\\  $$ |$$ |  $$ |$$ |  $$ |",
-"$$ |  $$ |\\$$$$$$  | \\$$$$  |\\$$$$$$$\\ $$ |      $$ | \\$$\\ $$ |$$ |  $$ |\\$$$$$$$ |",
-"\\__|  \\__| \\______/   \\____/  \\_______|\\__|      \\__|  \\__|\\__|\\__|  \\__| \\____$$ |",
-"                                                                         $$\\   $$ |",
-"                                                                         \\$$$$$$  |",
-"                                                                          \\______/ ",
-"$$$$$$$\\                                              $$\\                          ",
-"$$  __$$\\                                             \\__|                         ",
-"$$ |  $$ |$$\\   $$\\ $$$$$$$\\   $$$$$$\\  $$$$$$\\$$$$\\  $$\\  $$$$$$$\\                ",
-"$$ |  $$ |$$ |  $$ |$$  __$$\\  \\____$$\\ $$  _$$  _$$\\ $$ |$$  _____|               ",
-"$$ |  $$ |$$ |  $$ |$$ |  $$ | $$$$$$$ |$$ / $$ / $$ |$$ |$$ /                     ",
-"$$ |  $$ |$$ |  $$ |$$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$ |$$ |                     ",
-"$$$$$$$  |\\$$$$$$$ |$$ |  $$ |\\$$$$$$$ |$$ | $$ | $$ |$$ |\\$$$$$$$\\                ",
-"\\_______/  \\____$$ |\\__|  \\__| \\_______|\\__| \\__| \\__|\\__| \\_______|               ",
-"          $$\\   $$ |                                                               ",
-"          \\$$$$$$  |                                                               ",
-"           \\______/                                                                "},
- {
- "  /$$   /$$             /$$               /$$       /$$   /$$ /$$                    ",
- " | $$  | $$            | $$              | $$      | $$  /$$/|__/                    ",
- " | $$  | $$  /$$$$$$  /$$$$$$    /$$$$$$ | $$      | $$ /$$/  /$$ /$$$$$$$   /$$$$$$ ",
- " | $$$$$$$$ /$$__  $$|_  $$_/   /$$__  $$| $$      | $$$$$/  | $$| $$__  $$ /$$__  $$",
- " | $$__  $$| $$  \\ $$  | $$    | $$$$$$$$| $$      | $$  $$  | $$| $$  \\ $$| $$  \\ $$",
- " | $$  | $$| $$  | $$  | $$ /$$| $$_____/| $$      | $$\\  $$ | $$| $$  | $$| $$  | $$",
- " | $$  | $$|  $$$$$$/  |  $$$$/|  $$$$$$$| $$      | $$ \\  $$| $$| $$  | $$|  $$$$$$$",
- " |__/  |__/ \\______/    \\___/   \\_______/|__/      |__/  \\__/|__/|__/  |__/ \\____  $$",
- "                                                                            /$$  \\ $$",
- "                                                                           |  $$$$$$/",
- "                                                                            \\______/ ",
- "  /$$$$$$$                                              /$$                          ",
- " | $$__  $$                                            |__/                          ",
- " | $$  \\ $$ /$$   /$$ /$$$$$$$   /$$$$$$  /$$$$$$/$$$$  /$$  /$$$$$$$                ",
- " | $$  | $$| $$  | $$| $$__  $$ |____  $$| $$_  $$_  $$| $$ /$$_____/                ",
- " | $$  | $$| $$  | $$| $$  \\ $$  /$$$$$$$| $$ \\ $$ \\ $$| $$| $$                      ",
- " | $$  | $$| $$  | $$| $$  | $$ /$$__  $$| $$ | $$ | $$| $$| $$                      ",
- " | $$$$$$$/|  $$$$$$$| $$  | $$|  $$$$$$$| $$ | $$ | $$| $$|  $$$$$$$                ",
- " |_______/  \\____  $$|__/  |__/ \\_______/|__/ |__/ |__/|__/ \\_______/                ",
- "            /$$  | $$                                                                ",
- "           |  $$$$$$/                                                                ",
- "            \\______/                                                                 "}
 
-
-
-        };
     std::string MenueStartText[7] = {
         "###################################################",
         "#              Hotel King Dynamic                 #",
@@ -103,7 +64,7 @@ private:
         "#               [3] Beenden                       #",
         "###################################################"
     };
-
+    int ZeitKorrekturKonstante = 12;
     //Vielleicht mit Arrays verbessern
     std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Beenden","###################################################","#                                                 #","Was willst du machen?"};
     std::vector<std::string> MenueSpielOptionen = { "Kaufen","Bauen","Handeln","###################################################","#                                                 #","Was willst du machen?" };
@@ -118,7 +79,7 @@ private:
         "#Anzahl gebauter Objekte:        XX  #",
         "######################################"
     }; 
-
+    
     std::string GetDigitsInt(int Zahl);
     std::string GetFarbe(Farbe farbe);
     void SetFarbe(Farbe farbe);
@@ -139,17 +100,27 @@ public:
     ~TControl();
     void AusgabeStartMenu(int& option, int x, int y);
     void AusgabeFeld(std::string Feld[]);
-    void AusgabeSpielerInformationen(  std::string Namen[4],
-                                                int Budget[4],
-                                                int AnzahlGekaufterObjekte[4],
-                                                int AnzahlGebauterObjekte[4],
-                                                int AnzSpieler, 
-                                                int x,
-                                                int y);
+    void AusgabeSpielerInformationen(   std::string Namen[4],
+                                        int Budget[4],
+                                        int AnzahlGekaufterObjekte[4],
+                                        int AnzahlGebauterObjekte[4],
+                                        int AnzSpieler,
+                                        int x,
+                                        int y,
+                                        std::vector<std::vector<std::string>> GekaufteObjekte,
+                                        std::vector<std::vector<std::string>> GebauteObjekte);
+
+	void AusgabeSpielerInventarAnzeige( std::string Namen,
+                                        std::vector<std::string> GekaufteObjekte,
+                                        std::vector<std::string> GebauteObjekte,
+                                        int x,
+                                        int y,
+                                        Farbe f);
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
     void AusgabeStartBildschirm(bool flip, int x, int y);
     void ResetConsole();
+	void AusgabeWuerfel(int wuerfel, int x, int y, Farbe f);
     void UnitTest();
 };
 

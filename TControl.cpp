@@ -10,58 +10,72 @@ TControl::TControl(){
 TControl::~TControl(){
     
 }
-void TControl::AusgabeSpielerBox(   std::string Namen ,
-                                    int Budget ,
-                                    int AnzahlGekaufterObjekte ,
-                                    int AnzahlGebauterObjekte ,
-                                    int x,
-                                    int y,
-                                    Farbe f) {
-    this->SetFarbe(f);
-    coord.X = x;
-    coord.Y = y;
-    SetConsoleCursorPosition(this->hConsole, this->coord);
-    std::cout << "###################################################";
-    coord.Y += 1;
-    SetConsoleCursorPosition(this->hConsole, this->coord);
-    std::cout << "#" << setw(49) << std::left<<Namen.substr(0,49) << "#";
-    coord.Y += 1;
-    SetConsoleCursorPosition(this->hConsole, this->coord);
-    std::cout << "###################################################";
-    coord.Y += 1;
-    SetConsoleCursorPosition(this->hConsole, this->coord);
-    std::cout << "#" << setw(25) << std::left << "Budget:" << setw(22) << std::right << Budget << "$ " << "#";
-    coord.Y += 1;
-    SetConsoleCursorPosition(this->hConsole, this->coord); 
-    std::cout << "#" << setw(25) << std::left << "Anzahl gekaufter Objekte:" << setw(23) << std::right << AnzahlGekaufterObjekte << " #";
-    coord.Y += 1;
-    SetConsoleCursorPosition(this->hConsole, this->coord); 
-    std::cout << "#" << setw(25) << std::left << "Anzahl gebauter Objekte:" << setw(23) << std::right << AnzahlGebauterObjekte << " #";
-    coord.Y += 1;
-    SetConsoleCursorPosition(this->hConsole, this->coord);
-    std::cout << "###################################################";
-    this->SetFarbe(Farbe::Zuruecksetzen);
-    
-}
+
 void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
-    static bool flipper = false;
+    std::string Hotelking[2][22] = {
+      {
+"$$\\   $$\\            $$\\               $$\\       $$\\   $$\\ $$\\                     ",
+"$$ |  $$ |           $$ |              $$ |      $$ | $$  |\\__|                    ",
+"$$ |  $$ | $$$$$$\\ $$$$$$\\    $$$$$$\\  $$ |      $$ |$$  / $$\\ $$$$$$$\\   $$$$$$\\  ",
+"$$$$$$$$ |$$  __$$\\\\_$$  _|  $$  __$$\\ $$ |      $$$$$  /  $$ |$$  __$$\\ $$  __$$\\ ",
+"$$  __$$ |$$ /  $$ | $$ |    $$$$$$$$ |$$ |      $$  $$<   $$ |$$ |  $$ |$$ /  $$ |",
+"$$ |  $$ |$$ |  $$ | $$ |$$\\ $$   ____|$$ |      $$ |\\$$\\  $$ |$$ |  $$ |$$ |  $$ |",
+"$$ |  $$ |\\$$$$$$  | \\$$$$  |\\$$$$$$$\\ $$ |      $$ | \\$$\\ $$ |$$ |  $$ |\\$$$$$$$ |",
+"\\__|  \\__| \\______/   \\____/  \\_______|\\__|      \\__|  \\__|\\__|\\__|  \\__| \\____$$ |",
+"                                                                         $$\\   $$ |",
+"                                                                         \\$$$$$$  |",
+"                                                                          \\______/ ",
+"$$$$$$$\\                                              $$\\                          ",
+"$$  __$$\\                                             \\__|                         ",
+"$$ |  $$ |$$\\   $$\\ $$$$$$$\\   $$$$$$\\  $$$$$$\\$$$$\\  $$\\  $$$$$$$\\                ",
+"$$ |  $$ |$$ |  $$ |$$  __$$\\  \\____$$\\ $$  _$$  _$$\\ $$ |$$  _____|               ",
+"$$ |  $$ |$$ |  $$ |$$ |  $$ | $$$$$$$ |$$ / $$ / $$ |$$ |$$ /                     ",
+"$$ |  $$ |$$ |  $$ |$$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$ |$$ |                     ",
+"$$$$$$$  |\\$$$$$$$ |$$ |  $$ |\\$$$$$$$ |$$ | $$ | $$ |$$ |\\$$$$$$$\\                ",
+"\\_______/  \\____$$ |\\__|  \\__| \\_______|\\__| \\__| \\__|\\__| \\_______|               ",
+"          $$\\   $$ |                                                               ",
+"          \\$$$$$$  |                                                               ",
+"           \\______/                                                                "},
+ {
+ "  /$$   /$$             /$$               /$$       /$$   /$$ /$$                    ",
+ " | $$  | $$            | $$              | $$      | $$  /$$/|__/                    ",
+ " | $$  | $$  /$$$$$$  /$$$$$$    /$$$$$$ | $$      | $$ /$$/  /$$ /$$$$$$$   /$$$$$$ ",
+ " | $$$$$$$$ /$$__  $$|_  $$_/   /$$__  $$| $$      | $$$$$/  | $$| $$__  $$ /$$__  $$",
+ " | $$__  $$| $$  \\ $$  | $$    | $$$$$$$$| $$      | $$  $$  | $$| $$  \\ $$| $$  \\ $$",
+ " | $$  | $$| $$  | $$  | $$ /$$| $$_____/| $$      | $$\\  $$ | $$| $$  | $$| $$  | $$",
+ " | $$  | $$|  $$$$$$/  |  $$$$/|  $$$$$$$| $$      | $$ \\  $$| $$| $$  | $$|  $$$$$$$",
+ " |__/  |__/ \\______/    \\___/   \\_______/|__/      |__/  \\__/|__/|__/  |__/ \\____  $$",
+ "                                                                            /$$  \\ $$",
+ "                                                                           |  $$$$$$/",
+ "                                                                            \\______/ ",
+ "  /$$$$$$$                                              /$$                          ",
+ " | $$__  $$                                            |__/                          ",
+ " | $$  \\ $$ /$$   /$$ /$$$$$$$   /$$$$$$  /$$$$$$/$$$$  /$$  /$$$$$$$                ",
+ " | $$  | $$| $$  | $$| $$__  $$ |____  $$| $$_  $$_  $$| $$ /$$_____/                ",
+ " | $$  | $$| $$  | $$| $$  \\ $$  /$$$$$$$| $$ \\ $$ \\ $$| $$| $$                      ",
+ " | $$  | $$| $$  | $$| $$  | $$ /$$__  $$| $$ | $$ | $$| $$| $$                      ",
+ " | $$$$$$$/|  $$$$$$$| $$  | $$|  $$$$$$$| $$ | $$ | $$| $$|  $$$$$$$                ",
+ " |_______/  \\____  $$|__/  |__/ \\_______/|__/ |__/ |__/|__/ \\_______/                ",
+ "            /$$  | $$                                                                ",
+ "           |  $$$$$$/                                                                ",
+ "            \\______/                                                                 "}
+    };
     static int counter = 0;
-	int FlipZeit = 3; // Zeit in Sekunden, nach der der Text wechselt
-	flipper = !flipper; // Toggle the flipper state
+	int FlipZeit = 1; // Zeit in Sekunden, nach der der Text wechselt
     this->coord.X = x;
     this->coord.Y = y;
     counter++;
 
 
 
-    if (counter >= 12 * FlipZeit)
+    if (counter >= this->ZeitKorrekturKonstante * FlipZeit)
     {
         for (int i = 0; i < 22; i++) {
             this->coord.Y = y + i;
             SetConsoleCursorPosition(this->hConsole, this->coord);
-            std::cout << setw(86) << std::left << this->Hotelking[1][i];
+            std::cout << setw(86) << std::left << Hotelking[1][i];
         }
-        if (counter >= 12 * FlipZeit*2) 
+        if (counter >= this->ZeitKorrekturKonstante * FlipZeit*2)
         {
             counter = 0; 
 		}
@@ -72,7 +86,7 @@ void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
         for (int i = 0; i < 22; i++) {
             this->coord.Y = y + i;
             SetConsoleCursorPosition(this->hConsole, this->coord);
-            std::cout<<setw(86)<<std::left << this->Hotelking[0][i];
+            std::cout<<setw(86)<<std::left << Hotelking[0][i];
         }
     }
     
@@ -110,12 +124,119 @@ void TControl::AusgabeFeld(std::string FeldBlock[]){
     //out += "\033[0m";
     std::cout<< FeldBlock;
 }
-void TControl::AusgabeSpielerInformationen(std::string Namen[4], int Budget[4], int AnzahlGekaufterObjekte[4], int AnzahlGebauterObjekte[4], int AnzSpieler,int x,int y) {
+void TControl::AusgabeSpielerInformationen( std::string Namen[4], 
+                                            int Budget[4], 
+                                            int AnzahlGekaufterObjekte[4], 
+                                            int AnzahlGebauterObjekte[4], 
+                                            int AnzSpieler,
+                                            int x,
+                                            int y,
+                                            std::vector<std::vector<std::string>> GekaufteObjekte,
+                                            std::vector<std::vector<std::string>> GebauteObjekte) {
 
     Farbe start = Farbe::Rot;
     for (int i = 0; i < AnzSpieler; i++) {
         this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * 51+x, y, static_cast<Farbe>(static_cast<int>(start) + i));
+		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * 51 + x, y + 7, static_cast<Farbe>(static_cast<int>(start) + i));
     }
+}
+void TControl::AusgabeSpielerBox(   std::string Namen,
+                                    int Budget,
+                                    int AnzahlGekaufterObjekte,
+                                    int AnzahlGebauterObjekte,
+                                    int x,
+                                    int y,
+                                    Farbe f) {
+    this->SetFarbe(f);
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "###################################################";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "#" << setw(49) << std::left << Namen.substr(0, 49) << "#";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "###################################################";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "#" << setw(25) << std::left << "Budget:" << setw(22) << std::right << Budget << "$ " << "#";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "#" << setw(25) << std::left << "Anzahl gekaufter Objekte:" << setw(23) << std::right << AnzahlGekaufterObjekte << " #";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "#" << setw(25) << std::left << "Anzahl gebauter Objekte:" << setw(23) << std::right << AnzahlGebauterObjekte << " #";
+    coord.Y += 1;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "###################################################";
+    this->SetFarbe(Farbe::Zuruecksetzen);
+
+}
+void TControl::AusgabeSpielerInventarAnzeige(   std::string Namen,
+                                                std::vector<std::string> GekaufteObjekte,
+                                                std::vector<std::string> GebauteObjekte,
+                                                int x,
+                                                int y,
+                                                Farbe f){
+    int maxSizeOption = 49;
+    this->coord.X = x;
+    this->coord.Y = y;
+
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+	std::cout   << "|" << this->GetFarbe(f)
+                << setw(maxSizeOption / 2 - static_cast<std::string>("Gekaufte Objekte").size()/2) << ""
+                << std::left << "Gekaufte Objekte"
+                << setw(maxSizeOption / 2 - static_cast<std::string>("Gekaufte Objekte").size()/2) << ""
+                << this->GetFarbe(Farbe::Zuruecksetzen) << "|";
+	this->coord.Y++;
+    for (size_t i = 0; i < maxSizeOption+1; i++)
+    {
+		SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "-";
+        this->coord.X++;
+    }
+	this->coord.X = x;
+
+    for (size_t i = 0; i < GekaufteObjekte.size(); i++)
+    {
+        this->coord.Y++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+
+		std::cout << setw(1) <<"|" << this->GetFarbe(f) << std::setw(maxSizeOption) << std::left << GekaufteObjekte[i].substr(0,maxSizeOption) << this->GetFarbe(Farbe::Zuruecksetzen) <<setw(1)<<std::right<< " |";
+    }
+
+    this->coord.Y++;
+    for (size_t i = 0; i < maxSizeOption + 1; i++)
+    {
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "-";
+        this->coord.X++;
+    }
+    this->coord.X = x;
+	this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    std::cout << "|" << this->GetFarbe(f)
+        << setw(maxSizeOption / 2 - static_cast<std::string>("Gebaute Objekte").size() / 2) << " "
+        << std::left << "Gebaute Objekte"
+        << setw(maxSizeOption / 2 - static_cast<std::string>("Gebaute Objekte").size() / 2 - 2) << ""
+        << this->GetFarbe(Farbe::Zuruecksetzen) << "|";
+    this->coord.Y++;
+    for (size_t i = 0; i < maxSizeOption + 1; i++)
+    {
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "-";
+        this->coord.X++;
+    }
+    this->coord.X = x;
+    for (size_t i = 0; i < GekaufteObjekte.size(); i++)
+    {
+        this->coord.Y ++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "|" << this->GetFarbe(f) << std::setw(maxSizeOption) << std::left << GebauteObjekte[i].substr(0, maxSizeOption)<< this->GetFarbe(Farbe::Zuruecksetzen) << "|";
+    }
+    this->SetFarbe(Farbe::Zuruecksetzen);
 }
 void TControl::AusgabeStartMenu(int &option,int x,int y){
     this->SetFarbe(Farbe::Weiss);
@@ -261,9 +382,6 @@ void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
 
     this->SetFarbe(Farbe::Zuruecksetzen);
 }
-
-
-
 void TControl::ResetConsole() {
     std::cout << "\033[1;1H"; //  move cursor to top-left
     std::cout.flush();
@@ -274,8 +392,6 @@ void TControl::HideCursor(HANDLE hConsole) {
     cursorInfo.bVisible = FALSE;
     SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
-#include <windows.h>
-
 void TControl::SetConsoleFontSize(int size) {
     CONSOLE_FONT_INFOEX cfi = { 0 };
     cfi.cbSize = sizeof(cfi);
@@ -287,7 +403,6 @@ void TControl::SetConsoleFontSize(int size) {
         std::cerr << "Error changing font size!\n";
     }
 }
-
 std::string TControl::GetDigitsInt(int Zahl){
     std::string digits;
 
@@ -300,7 +415,6 @@ std::string TControl::GetDigitsInt(int Zahl){
     //std::reverse(digits.begin(), digits.end());
     return digits;
 }
-
 std::string TControl::GetFarbe(Farbe farbe) {
         switch (farbe) {
             case Farbe::Schwarz:   return "\033[30m";
@@ -323,7 +437,6 @@ std::string TControl::GetFarbe(Farbe farbe) {
             default:               return "\033[0m";     // Standardfarbe
         }
     }
-
 void TControl::SetFarbe(Farbe farbe) {
     switch (farbe) {
     case Farbe::Schwarz:   std::cout << "\033[30m"; break;
@@ -351,24 +464,30 @@ void TControl::UnitTest() {
 
     TControl TestControl;
     std::string playerNames[4] = { "a","bbbb","ccccc","ddddddddddddddddddddddddddddddddddddddddddddddddddd" };
+    std::vector<std::vector<std::string>> GekObjNamen = { { "Straße1","Gebäude xyz1","Autobahn nach Karlsruhe1","1TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"},
+                                                          { "Straße2","Gebäude xyz2","Autobahn nach Karlsruhe2","2TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"},
+                                                          { "Straße3","Gebäude xyz3","Autobahn nach Karlsruhe3","3TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"},
+                                                          { "Straße4","Gebäude xyz4","Autobahn nach Karlsruhe4","4TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"}};
+    std::vector<std::vector<std::string>> GebObjNamen = { { "Haus 1","Gebäude zyx1","Hotel 1","1TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"},
+                                                          { "Haus 2","Gebäude zyx2","Hotel 2","2TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"},
+                                                          { "Haus 3","Gebäude zyx3","Hotel 3","3TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"},
+                                                          { "Haus 4","Gebäude zyx4","Hotel 4","4TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"}};
     int budget[4] = { 100,10000,100000,99999999 };
-    int gekObj[4] = { 5,15,2,3 };
-    int gebObj[4] = { 0,2,3,99 };
+    int gekObjAnz[4] = { 5,15,2,3 };
+    int gebObjAnz[4] = { 0,2,3,99 };
     int option = 3;
     int Spiellaueft = 1;
     int ClearScreenCounter = 0;
-    char inputCh = 0;
-
+    char EingabeCh = 0;
     while (Spiellaueft != 5) //5 ist Beenden Code
     {
         DWORD start_time = GetTickCount64();
-
-        inputCh = Reset;
+        EingabeCh = Reset;
         if (_kbhit()) { // Check if a key is pressed
-            inputCh = _getch();
+            EingabeCh = _getch();
         }
 
-        switch (inputCh) {
+        switch (EingabeCh) {
         case KEY_UP:
             if (option > 3) {
                 option--;
@@ -392,12 +511,12 @@ void TControl::UnitTest() {
         default:
             break;
             }
-            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObj, gebObj, 4, 0, 0);
+            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 2, 0, 0, GekObjNamen, GebObjNamen);
             //TestControl.AusgabeHighscore(playerNames, budget, 4, 30, 30);
 			TestControl.AusgabeSpielOptionen(option, 90, 30);
-            TestControl.AusgabeStartBildschirm(TRUE, 0, 10);
+            TestControl.AusgabeStartBildschirm(TRUE, 0, 30);
             TestControl.AusgabeStartMenu(option, 90, 20);
-
+			TestControl.AusgabeWuerfel(3, 50, 60, Farbe::Gruen);
             DWORD elapsed_time = GetTickCount64() - start_time;
             if (elapsed_time < FRAME_DURATION) {
                 Sleep(FRAME_DURATION - elapsed_time);
@@ -406,8 +525,100 @@ void TControl::UnitTest() {
             if (ClearScreenCounter == 12 * 6)//*t in Sekunden
             {
                 ClearScreenCounter = 0;
-                system("cls");
+                //system("cls");
             }
             TestControl.ResetConsole();
+
         }
     }
+void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
+	this->SetFarbe(f);
+    std::string WuerfelFlaeche[6][5] = {
+    {
+        "---------",
+        "|       |",
+        "|   *   |",
+        "|       |",
+        "---------"
+    },
+    {
+        "---------",
+        "| *     |",
+        "|       |",
+        "|     * |",
+        "---------"
+    },
+    {
+        "---------",
+        "| *     |",
+        "|   *   |",
+        "|     * |",
+        "---------"
+    },
+    {
+        "---------",
+        "| *   * |",
+        "|       |",
+        "| *   * |",
+        "---------"
+    },
+    {
+        "---------",
+        "| *   * |",
+        "|   *   |",
+        "| *   * |",
+        "---------"
+    },
+    {
+        "---------",
+        "| *   * |",
+        "| *   * |",
+        "| *   * |",
+        "---------"
+    }
+    };
+    this->coord.X = x;
+    this->coord.Y = y;
+	static int counter = 0;
+	static bool AusgabeWurf= false;
+    int RandZeitSimulation1 = 5; // Zeit in Sekunden, nach der der Text wechselt
+    int RandZeitSimulation2 = RandZeitSimulation1+3; // Zeit in Sekunden, nach der der Text wechselt
+    counter++;
+	std::mt19937 rng(time(nullptr)); // Zufallszahlengenerator initialisieren
+    std::uniform_int_distribution<int> dist(0,5);
+	int rand = dist(rng); 
+
+    if (counter >= this->ZeitKorrekturKonstante * RandZeitSimulation1)
+    {
+        this->SetFarbe(Farbe::BG_Rot);
+        this->SetFarbe(Farbe::Weiss);
+        for (int i = 0; i < 5; i++) {
+            this->coord.Y = y + i;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            std::cout << setw(10) << WuerfelFlaeche[wuerfel-1][i];
+        }
+        if (counter >= this->ZeitKorrekturKonstante * RandZeitSimulation2)
+        {
+            counter = 0;
+            for (int i = 0; i < 5; i++) {
+                this->coord.Y = y + i;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+                std::cout << setw(10) << " " ;
+            }
+            this->SetFarbe(Farbe::Zuruecksetzen);
+
+        }
+		this->SetFarbe(f);
+
+    }
+    else
+    {
+        for (int i = 0; i < 5; i++) {
+            this->coord.Y = y + i;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            std::cout << setw(10) << WuerfelFlaeche[rand][i];
+        }
+    }
+
+	this->SetFarbe(Farbe::Zuruecksetzen);
+}
