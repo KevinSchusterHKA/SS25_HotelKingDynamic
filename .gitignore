@@ -8,3 +8,11 @@
 /PlayerEngine/.vs/PlayerEngine
 /PlayerEngine/PlayerEngine/x64/Debug
 /PlayerEngine/x64/Debug
+
+/PlayerEngine/Debug
+/PlayerEngine/PlayerEngine/Debug/PlayerEngine.tlog
+*.obj
+/PlayerEngine/PlayerEngine/Debug/PlayerEngine.exe.recipe
+/PlayerEngine/PlayerEngine/Debug/PlayerEngine.ilk
+/PlayerEngine/PlayerEngine/Debug/vc143.idb
+/PlayerEngine/PlayerEngine/Debug/vc143.pdb
