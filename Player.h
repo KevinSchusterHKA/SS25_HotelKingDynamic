@@ -1,8 +1,8 @@
 #pragma once
-#include <iostream>;
-#include <string>;
-#include <vector>;
-#include <random>;
+#include <iostream>
+#include <string>
+#include <vector>
+#include <random>
 using namespace std;
 
 class player

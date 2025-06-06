@@ -57,7 +57,7 @@ int main() {
 		cin >> k;
 		switch (k) {
 
-		case '1':
+		case '1':{
 			int temp = 0;
 			for (int i = 0; i < 2; i++) {
 				cout << "Wuerfel " << i+1 << ":\t " << p[0]->wurfel() << endl;
@@ -66,7 +66,7 @@ int main() {
 			p[0]->setAugenzahl(temp);
 			cout << "Gesamtaugenzahl:\t" << p[0]->getAugenzahl() << endl;
 			break;
-
+		}
 		case '2':
 			break;
 
