@@ -126,6 +126,9 @@
     <ClInclude Include="LookUp.h" />
     <ClInclude Include="TControl.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Pictures\Spielfeld.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

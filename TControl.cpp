@@ -96,6 +96,7 @@ void TControl::AusgabeFeld(std::string FeldBlock[], int sizeFeld){
         std::cout << FeldBlock[i];
     }
 }
+
 void TControl::AusgabeSpielerInformationen( std::string Namen[4], 
                                             int Budget[4], 
                                             int AnzahlGekaufterObjekte[4], 
