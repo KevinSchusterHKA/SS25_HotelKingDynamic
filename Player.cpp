@@ -2,31 +2,64 @@
 #include "CPU_opponent.h"
 
 player::player() {};
+player::player(int budget, int position) { this->Budget = budget; this->Position = position; };
 player::~player() {};
-float player::getBudget() {
-	return this->Budget;
+
+void player::setID(int id) { this->ID = id; }
+int player::getID() { return this->ID; }
+
+void player::setHuman(bool h) { this->Human = h; }
+bool player::getHuman() { return this->Human; }
+
+int player::getBudget()			{return this->Budget;}
+void player::setBudget(int b)	{this->Budget = b;}
+
+int player::getPosition()		{return this->Position;}
+void player::setPosition(int p) {this->Position = p;}
+
+int player::getWurfel(int index)			{return this->Wurfelzahl[index];}
+void player::setWurfel(int w, int index)	{this->Wurfelzahl[index] = w;}
+void player::Wurfelmechn() {
+	for (int i = 0; i < 2; i++) {
+		this->setWurfel(this->wurfeln(), i);
+	}
+	this->setAugenzahl(this->getWurfel(0) + this->getWurfel(1));
 }
-void player::setBudget(float f) {
-	this->Budget = f;
+void player::Paschwurf() {
+	for (int i = 0; i < 2; i++) {
+		this->setWurfel(1, i);
+	}
+	this->setAugenzahl(this->getWurfel(0)+this->getWurfel(1));
 }
 
-int player::getPosition() {
-	return this->Position;
-}
-void player::setPosition(int p) {
-	this->Position = p;
+int player::getAugenzahl()			{return this->Augenzahl;}
+void player::setAugenzahl(int a)	{this->Augenzahl = a;}
+
+int player::getPaschCounter()		{return this->PaschCounter;}
+void player::setPaschCounter(int p) {this->PaschCounter = p;}
+void player::incPaschCounter()		{this->PaschCounter++;}
+
+void player::insGefaengnis() {
+	this->ImGefaengnis = true;
+	this->GefaengnisRunden = 3;
+	this->Position = 10; // Gefängnisfeld
 }
 
-int player::getAugenzahl() {
-	return this->Augenzahl;
-}
-void player::setAugenzahl(int a) {
-	this->Augenzahl = a;
+mt19937 Zufall(time(nullptr));
+int player::wurfeln() {
+	int Zufallszahl;
+	Zufallszahl = (Zufall() % 6) + 1;
+	return Zufallszahl;
 }
 
-float player::handel(string r, int preowner) {
+bool player::paschcheck() {
+	if (this->Wurfelzahl[0] == this->Wurfelzahl[1]) {return true;}
+	return false;
+}
+
+int player::handel(string r, int preowner) {
 	string Strasse = r;
-	float angebot = -1.0;
+	int angebot = -1;
 	if (preowner != -1) {
 		cout << "Sie koennen diese Strasse nicht kaufen, Sie gehoert niemandem.\n";
 	}
@@ -38,47 +71,70 @@ float player::handel(string r, int preowner) {
 		}
 	}
 	return angebot;
-}																											
-
-mt19937 Zufall(time(nullptr));
-int player::wurfel() {
-	int Zufallszahl;
-	Zufallszahl = (Zufall() % 6) + 1;
-	return Zufallszahl;
 }
 
-
-
-int main() {
-	int number_cpu_level_1 = 1, number_human_players = 1;
-	int current_player = 0;//how is playing right now 
-	vector<player*> p;
-	for (int i = 0; i < number_human_players; ++i) {
-		p.push_back(new player());//Human players
-	}
-	for (int i = 0; i < number_cpu_level_1; ++i) {
-		p.push_back(new cpu_player1());  //level 1 cpu players
-	}
-	
-
+void UNITTEST(int numCPU, int numHUM, vector<player*> p) {
+	int current_player = 0;
 	while (true) {
 		char k;
-		cout << "Menue" << endl;
-		cout << "1:\t Wuerfeln" << endl;
+		cout << "\n\nMenue" << endl;
+		cout << "1:\t zufaelliges Wuerfeln\n";
+		cout << "2:\t pasch Wuerfeln\n";
 		cin >> k;
 		switch (k) {
 
-		case '1':{
-			int temp = 0;
-			for (int i = 0; i < 2; i++) {
-				cout << "Wuerfel " << i+1 << ":\t " << p[current_player]->wurfel() << endl;
-				temp += p[current_player]->wurfel();
-			}
-			p[current_player]->setAugenzahl(temp);
-			cout << "Gesamtaugenzahl:\t" << p[current_player]->getAugenzahl() << endl;
+		case '1': {
+			do {
+				p[current_player]->Wurfelmechn();
+				for (int i = 0; i < 2; i++) {
+					cout << "Wuerfel " << i + 1 << ":\t " << p[current_player]->getWurfel(i) << endl;
+				}
+				cout << "Gesamtaugenzahl:\t" << p[current_player]->getAugenzahl() << endl;
+				if (p[current_player]->paschcheck()) {
+					cout << "PASCH!\n";
+					p[current_player]->incPaschCounter();
+					if (p[current_player]->getPaschCounter() >= 2) {
+						p[current_player]->insGefaengnis();
+						cout << "Sie sind im Gefaengnis!\n";
+						p[current_player]->setPaschCounter(0);
+						break;  // keine weiteren Würfe
+					}
+					else {
+						cout << "Sie duerfen nochmal wuerfeln!\n";
+					}
+				}
+				else {
+					p[current_player]->setPaschCounter(0);
+					break;
+				}
+			} while (true);
 			break;
 		}
 		case '2':
+			do {
+				p[current_player]->Paschwurf();
+				for (int i = 0; i < 2; i++) {
+					cout << "Wuerfel " << i + 1 << ":\t " << p[current_player]->getWurfel(i) << endl;
+				}
+				cout << "Gesamtaugenzahl:\t" << p[current_player]->getAugenzahl() << endl;
+				if (p[current_player]->paschcheck()) {
+					cout << "PASCH!\n";
+					p[current_player]->incPaschCounter();
+					if (p[current_player]->getPaschCounter() >= 2) {
+						p[current_player]->insGefaengnis();
+						cout << "Sie sind im Gefaengnis!\n";
+						p[current_player]->setPaschCounter(0);
+						break;  // keine weiteren Würfe
+					}
+					else {
+						cout << "Sie duerfen nochmal wuerfeln!\n";
+					}
+				}
+				else {
+					p[current_player]->setPaschCounter(0);
+					break;
+				}
+			} while (true);
 			break;
 
 		case '3':
@@ -92,7 +148,19 @@ int main() {
 			break;
 		}
 		current_player = (current_player + 1) % p.size();//change player after turn
+	}
 }
-	return 0;
 
+int main() {
+	int number_cpu_level_1 = 1, number_human_players = 1;
+	int current_player = 0;				// who is playing right now 
+	vector<player*> p;
+	for (int i = 0; i < number_human_players; ++i) {
+		p.push_back(new player());		// human players
+	}
+	for (int i = 0; i < number_cpu_level_1; ++i) {
+		p.push_back(new cpu_player1()); // level 1 cpu players
+	}
+	UNITTEST(number_cpu_level_1, number_human_players, p);
+	return 0;
 }
