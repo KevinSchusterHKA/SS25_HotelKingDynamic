@@ -151,16 +151,22 @@ void UNITTEST(int numCPU, int numHUM, vector<player*> p) {
 	}
 }
 
-int main() {
-	int number_cpu_level_1 = 1, number_human_players = 1;
-	int current_player = 0;				// who is playing right now 
-	vector<player*> p;
-	for (int i = 0; i < number_human_players; ++i) {
-		p.push_back(new player());		// human players
-	}
-	for (int i = 0; i < number_cpu_level_1; ++i) {
-		p.push_back(new cpu_player1()); // level 1 cpu players
-	}
-	UNITTEST(number_cpu_level_1, number_human_players, p);
-	return 0;
-}
+//int main() {
+//	int number_cpu_level_1 = 2, number_human_players = 2;
+//	int current_player = 0;				// who is playing right now 
+//	vector<player*> p;
+//	for (int i = 0; i < number_human_players; ++i) {
+//		p.push_back(new player());		// human players
+//		p[i]->setID(i);
+//		p[i]->setHuman(1);
+//	}
+//	for (int i = 0; i < number_cpu_level_1; ++i) {
+//		p.push_back(new cpu_player1()); // level 1 cpu players
+//		p[number_human_players+i]->setID(i);
+//		p[number_human_players + i]->setHuman(0);
+//	}
+//	UNITTEST(number_cpu_level_1, number_human_players, p);
+//	return 0;
+//}
+
+ 
