@@ -73,7 +73,7 @@ const char _symbolchars[] = {   (char)127, // ⌂
 								(char)180, // ┤
 								(char)197, // ┼
 								(char)1,   // ☺
-                                (char)21, 
+                                (char)21,  // §
                                 '=', 
                                 ' '};
 
