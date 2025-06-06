@@ -4,7 +4,7 @@
 TControl::TControl(){
     this->hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     HWND consoleWindow = GetConsoleWindow(); 
-    ShowWindow(consoleWindow, SW_MAXIMIZE);
+    ShowWindow(consoleWindow, SW_MAXIMIZE);  //Vollbildschirm Konsole
     this->HideCursor(hConsole);
 	//this->SetConsoleFontSize(1); // funktioniert nicht
     //HWND hConsole = GetConsoleWindow();
@@ -15,54 +15,8 @@ TControl::~TControl(){
 }
 
 void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
-    std::string Hotelking[2][22] = {
-      {
-"$$\\   $$\\            $$\\               $$\\       $$\\   $$\\ $$\\                     ",
-"$$ |  $$ |           $$ |              $$ |      $$ | $$  |\\__|                    ",
-"$$ |  $$ | $$$$$$\\ $$$$$$\\    $$$$$$\\  $$ |      $$ |$$  / $$\\ $$$$$$$\\   $$$$$$\\  ",
-"$$$$$$$$ |$$  __$$\\\\_$$  _|  $$  __$$\\ $$ |      $$$$$  /  $$ |$$  __$$\\ $$  __$$\\ ",
-"$$  __$$ |$$ /  $$ | $$ |    $$$$$$$$ |$$ |      $$  $$<   $$ |$$ |  $$ |$$ /  $$ |",
-"$$ |  $$ |$$ |  $$ | $$ |$$\\ $$   ____|$$ |      $$ |\\$$\\  $$ |$$ |  $$ |$$ |  $$ |",
-"$$ |  $$ |\\$$$$$$  | \\$$$$  |\\$$$$$$$\\ $$ |      $$ | \\$$\\ $$ |$$ |  $$ |\\$$$$$$$ |",
-"\\__|  \\__| \\______/   \\____/  \\_______|\\__|      \\__|  \\__|\\__|\\__|  \\__| \\____$$ |",
-"                                                                         $$\\   $$ |",
-"                                                                         \\$$$$$$  |",
-"                                                                          \\______/ ",
-"$$$$$$$\\                                              $$\\                          ",
-"$$  __$$\\                                             \\__|                         ",
-"$$ |  $$ |$$\\   $$\\ $$$$$$$\\   $$$$$$\\  $$$$$$\\$$$$\\  $$\\  $$$$$$$\\                ",
-"$$ |  $$ |$$ |  $$ |$$  __$$\\  \\____$$\\ $$  _$$  _$$\\ $$ |$$  _____|               ",
-"$$ |  $$ |$$ |  $$ |$$ |  $$ | $$$$$$$ |$$ / $$ / $$ |$$ |$$ /                     ",
-"$$ |  $$ |$$ |  $$ |$$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$ |$$ |                     ",
-"$$$$$$$  |\\$$$$$$$ |$$ |  $$ |\\$$$$$$$ |$$ | $$ | $$ |$$ |\\$$$$$$$\\                ",
-"\\_______/  \\____$$ |\\__|  \\__| \\_______|\\__| \\__| \\__|\\__| \\_______|               ",
-"          $$\\   $$ |                                                               ",
-"          \\$$$$$$  |                                                               ",
-"           \\______/                                                                "},
- {
- "  /$$   /$$             /$$               /$$       /$$   /$$ /$$                    ",
- " | $$  | $$            | $$              | $$      | $$  /$$/|__/                    ",
- " | $$  | $$  /$$$$$$  /$$$$$$    /$$$$$$ | $$      | $$ /$$/  /$$ /$$$$$$$   /$$$$$$ ",
- " | $$$$$$$$ /$$__  $$|_  $$_/   /$$__  $$| $$      | $$$$$/  | $$| $$__  $$ /$$__  $$",
- " | $$__  $$| $$  \\ $$  | $$    | $$$$$$$$| $$      | $$  $$  | $$| $$  \\ $$| $$  \\ $$",
- " | $$  | $$| $$  | $$  | $$ /$$| $$_____/| $$      | $$\\  $$ | $$| $$  | $$| $$  | $$",
- " | $$  | $$|  $$$$$$/  |  $$$$/|  $$$$$$$| $$      | $$ \\  $$| $$| $$  | $$|  $$$$$$$",
- " |__/  |__/ \\______/    \\___/   \\_______/|__/      |__/  \\__/|__/|__/  |__/ \\____  $$",
- "                                                                            /$$  \\ $$",
- "                                                                           |  $$$$$$/",
- "                                                                            \\______/ ",
- "  /$$$$$$$                                              /$$                          ",
- " | $$__  $$                                            |__/                          ",
- " | $$  \\ $$ /$$   /$$ /$$$$$$$   /$$$$$$  /$$$$$$/$$$$  /$$  /$$$$$$$                ",
- " | $$  | $$| $$  | $$| $$__  $$ |____  $$| $$_  $$_  $$| $$ /$$_____/                ",
- " | $$  | $$| $$  | $$| $$  \\ $$  /$$$$$$$| $$ \\ $$ \\ $$| $$| $$                      ",
- " | $$  | $$| $$  | $$| $$  | $$ /$$__  $$| $$ | $$ | $$| $$| $$                      ",
- " | $$$$$$$/|  $$$$$$$| $$  | $$|  $$$$$$$| $$ | $$ | $$| $$|  $$$$$$$                ",
- " |_______/  \\____  $$|__/  |__/ \\_______/|__/ |__/ |__/|__/ \\_______/                ",
- "            /$$  | $$                                                                ",
- "           |  $$$$$$/                                                                ",
- "            \\______/                                                                 "}
-    };
+    
+    int SizeString = sizeof(this->Hotelking[0]) / sizeof(this->Hotelking[0][0]);
     static int counter = 0;
 	int FlipZeit = 1; // Zeit in Sekunden, nach der der Text wechselt
     this->coord.X = x;
@@ -70,14 +24,20 @@ void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
     counter++;
 
 
-
     if (counter >= this->ZeitKorrekturKonstante * FlipZeit)
     {
-        for (int i = 0; i < 22; i++) {
+        for (int i = 0,j=0; i < SizeString; i++,j++) {
+            if (j==7)
+            {
+                j = 0;
+            }
+            this->SetFarbe(static_cast<Farbe>(static_cast<int>(Farbe::Rot) + j));
             this->coord.Y = y + i;
             SetConsoleCursorPosition(this->hConsole, this->coord);
-            std::cout << setw(86) << std::left << Hotelking[1][i];
+            std::cout << setw(86) << std::left << this->Hotelking[1][i];
         }
+        this->SetFarbe(Farbe::Zuruecksetzen);
+
         if (counter >= this->ZeitKorrekturKonstante * FlipZeit*2)
         {
             counter = 0; 
@@ -86,10 +46,16 @@ void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
     }
     else
     {
-        for (int i = 0; i < 22; i++) {
+        for (int i = 0,j=0; i < SizeString; i++,j++) {
+            if (j == 7)
+            {
+                j = 0;
+            }
+            this->SetFarbe(static_cast<Farbe>(static_cast<int>(Farbe::Rot) + j));
             this->coord.Y = y + i;
             SetConsoleCursorPosition(this->hConsole, this->coord);
-            std::cout<<setw(86)<<std::left << Hotelking[0][i];
+            std::cout<<setw(86)<<std::left << this->Hotelking[0][i];
+            this->SetFarbe(Farbe::Zuruecksetzen);
         }
     }
     
@@ -554,17 +520,59 @@ void TControl::UnitTest() {
     int budget[4] = { 100,10000,100000,99999999 };
     int gekObjAnz[4] = { 5,15,2,3 };
     int gebObjAnz[4] = { 0,2,3,99 };
+
     int option = 3;
     int Spiellaueft = 1;
+
     int ClearScreenCounter = 0;
+
     char EingabeCh = 0;
+
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    int x=0,y=0;
+    GetMaximizedConsoleSize(x, y);
+    do
+    {
+        
+        DWORD start_time = GetTickCount64();
+
+        TestControl.AusgabeStartBildschirm(TRUE, x/2-43 , y/2-11);
+
+        DWORD elapsed_time = GetTickCount64() - start_time;
+        if (elapsed_time < FRAME_DURATION) {
+            Sleep(FRAME_DURATION - elapsed_time);
+        }
+        ClearScreenCounter++;
+        if (ClearScreenCounter == this->ZeitKorrekturKonstante * 6)//*t in Sekunden
+        {
+            ClearScreenCounter = 0;
+            //system("cls");
+        }
+        TestControl.ResetConsole();
+    } while (!_kbhit());
+    system("cls");
+    Menues MenueAuswahl = Menues::Start;
     while (Spiellaueft != 5) //5 ist Beenden Code
     {
-        DWORD start_time = GetTickCount64();
         EingabeCh = Reset;
         if (_kbhit()) { // Check if a key is pressed
             EingabeCh = _getch();
         }
+
+        DWORD start_time = GetTickCount64();
+        switch (MenueAuswahl)
+        {
+        case TControl::Menues::Start:
+            this->AusgabeStartMenu(option,0,0);
+            break;
+        case TControl::Menues::Handel:
+            break;
+        case TControl::Menues::Optionen:
+            break;
+        default:
+            break;
+        }
+        
 
         switch (EingabeCh) {
         case KEY_UP:
@@ -582,27 +590,34 @@ void TControl::UnitTest() {
         case KEY_RIGHT:
             break;
         case KEY_ENTER:     if (option == Beenden) Spiellaueft = Beenden;
-            if (option == Highscore) {
-                this->AusgabeHighscore(playerNames, budget, 4, 0, 50);
-            }
-                if (option == Start) { /*Spielstart*/ }
+                            if (option == Highscore) {
+                                this->AusgabeHighscore(playerNames, budget, 4, 0, 50);
+                            }
+                            if (option == Start) { 
+                                //TestControl.AusgabeStartMenu(option, 90, 20);
+                            }
                 break;
         default:
             break;
         }
-        TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, 0, 0, GekObjNamen, GebObjNamen);
+
+        //TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, 0, 0, GekObjNamen, GebObjNamen);
         //TestControl.AusgabeHighscore(playerNames, budget, 4, 30, 30);
-        TestControl.AusgabeStartMenu(option, 90, 20);
-        TestControl.AusgabeSpielOptionen(option, 90, 30);
-        TestControl.AusgabeHandelsOptionen(option, 90, 40);
-        TestControl.AusgabeStartBildschirm(TRUE, 0, 30);
-		TestControl.AusgabeWuerfel(3, 50, 60, Farbe::Gruen);
+        //TestControl.AusgabeSpielOptionen(option, 90, 30);
+        //TestControl.AusgabeHandelsOptionen(option, 90, 40);
+		//TestControl.AusgabeWuerfel(3, 50, 60, Farbe::Gruen);
+
+
+
+
         DWORD elapsed_time = GetTickCount64() - start_time;
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
+
+
         ClearScreenCounter++;
-        if (ClearScreenCounter == 12 * 6)//*t in Sekunden
+        if (ClearScreenCounter == this->ZeitKorrekturKonstante * 6)//*t in Sekunden
         {
             ClearScreenCounter = 0;
             //system("cls");
@@ -700,4 +715,51 @@ void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
     }
 
 	this->SetFarbe(Farbe::Zuruecksetzen);
+}
+void TControl::GetMaximizedConsoleSize(int& width, int& height) {
+    HWND consoleWindow = GetConsoleWindow();
+    if (!consoleWindow) {
+        std::cerr << "Error: Could not get console window handle\n";
+        return;
+    }
+
+    // Maximize the console window
+    if (!ShowWindow(consoleWindow, SW_MAXIMIZE)) {
+        std::cerr << "Warning: ShowWindow failed\n";
+        // Continue anyway
+    }
+
+    // Small delay to allow window to maximize
+
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hConsole == INVALID_HANDLE_VALUE) {
+        std::cerr << "Error: Could not get console handle\n";
+        return;
+    }
+
+    // Method 1: Using GetLargestConsoleWindowSize
+    COORD largest = GetLargestConsoleWindowSize(hConsole);
+    if (largest.X == 0 && largest.Y == 0) {
+        std::cerr << "Error: GetLargestConsoleWindowSize failed\n";
+    }
+    else {
+        width = largest.X;
+        height = largest.Y;
+    }
+
+    // Method 2: Using GetClientRect and current font size
+    RECT rect;
+    if (!GetClientRect(consoleWindow, &rect)) {
+        std::cerr << "Error: GetClientRect failed\n";
+        return;
+    }
+
+    CONSOLE_FONT_INFO fontInfo;
+    if (!GetCurrentConsoleFont(hConsole, FALSE, &fontInfo)) {
+        std::cerr << "Error: GetCurrentConsoleFont failed\n";
+        return;
+    }
+
+    width = rect.right / fontInfo.dwFontSize.X;
+    height = rect.bottom / fontInfo.dwFontSize.Y;
 }
