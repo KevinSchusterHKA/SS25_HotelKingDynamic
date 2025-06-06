@@ -1,6 +1,8 @@
 #include "Player.h"
+#include "CPU_opponent.h"
 
-
+player::player() {};
+player::~player() {};
 float player::getBudget() {
 	return this->Budget;
 }
@@ -46,9 +48,18 @@ int player::wurfel() {
 }
 
 
+
 int main() {
+	int number_cpu_level_1 = 1, number_human_players = 1;
+	int current_player = 0;//how is playing right now 
 	vector<player*> p;
-	p.push_back(new player());
+	for (int i = 0; i < number_human_players; ++i) {
+		p.push_back(new player());//Human players
+	}
+	for (int i = 0; i < number_cpu_level_1; ++i) {
+		p.push_back(new cpu_player1());  //level 1 cpu players
+	}
+	
 
 	while (true) {
 		char k;
@@ -60,11 +71,11 @@ int main() {
 		case '1':{
 			int temp = 0;
 			for (int i = 0; i < 2; i++) {
-				cout << "Wuerfel " << i+1 << ":\t " << p[0]->wurfel() << endl;
-				temp += p[0]->wurfel();
+				cout << "Wuerfel " << i+1 << ":\t " << p[current_player]->wurfel() << endl;
+				temp += p[current_player]->wurfel();
 			}
-			p[0]->setAugenzahl(temp);
-			cout << "Gesamtaugenzahl:\t" << p[0]->getAugenzahl() << endl;
+			p[current_player]->setAugenzahl(temp);
+			cout << "Gesamtaugenzahl:\t" << p[current_player]->getAugenzahl() << endl;
 			break;
 		}
 		case '2':
@@ -80,6 +91,8 @@ int main() {
 			cout << "Wollen Sie keine Aufgabe durchfueren?" << endl << endl;
 			break;
 		}
-	}
+		current_player = (current_player + 1) % p.size();//change player after turn
+}
 	return 0;
+
 }

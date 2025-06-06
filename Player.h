@@ -29,11 +29,3 @@ public:
 	float handel(string request, int preowner);
 };
 
-player::player()
-{
-}
-
-player::~player()
-{
-}
-
