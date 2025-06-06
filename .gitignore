@@ -5,3 +5,6 @@
 /.vs
 /MapAUD/x64/Debug
 /x64/Debug
+/PlayerEngine/.vs/PlayerEngine
+/PlayerEngine/PlayerEngine/x64/Debug
+/PlayerEngine/x64/Debug
