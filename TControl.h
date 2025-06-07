@@ -19,6 +19,8 @@
 #define TARGET_FPS 60
 #define FRAME_DURATION 1000 / TARGET_FPS
 
+
+
 class TControl{
 private:
     enum class Farbe {
@@ -41,9 +43,11 @@ private:
     BG_Weiss
     };
 
-    enum class MenueOptionen {
+    enum MenueOptionen {
+        Reset=-1,
         Start=0,
         Highscore,
+        Optionen,
         Beenden,
 		Kaufen,
         Bauen,
@@ -57,8 +61,11 @@ private:
         Handel,
         Optionen
     };
+    int ZeitKorrekturKonstante = 30;
+
+	//ASCII Art
     std::string Hotelking[2][22] = {
-      {
+        {
 "$$\\   $$\\            $$\\               $$\\       $$\\   $$\\ $$\\                     ",
 "$$ |  $$ |           $$ |              $$ |      $$ | $$  |\\__|                    ",
 "$$ |  $$ | $$$$$$\\ $$$$$$\\    $$$$$$\\  $$ |      $$ |$$  / $$\\ $$$$$$$\\   $$$$$$\\  ",
@@ -81,7 +88,7 @@ private:
 "          $$\\   $$ |                                                               ",
 "          \\$$$$$$  |                                                               ",
 "           \\______/            Press any key to start                              "},
- {
+        {
  "  /$$   /$$             /$$               /$$       /$$   /$$ /$$                    ",
  " | $$  | $$            | $$              | $$      | $$  /$$/|__/                    ",
  " | $$  | $$  /$$$$$$  /$$$$$$    /$$$$$$ | $$      | $$ /$$/  /$$ /$$$$$$$   /$$$$$$ ",
@@ -105,37 +112,13 @@ private:
  "           |  $$$$$$/                                                                ",
  "            \\______/           Press any key to start                                "}
     };
-    //Menüs
-    std::string arr[2][3] = {
-    { "A", "B", "C" },
-    { "D", "E", "F" }
-    };
 
-    std::string MenueStartText[7] = {
-        "###################################################",
-        "#              Hotel King Dynamic                 #",
-        "###################################################",
-        "#               [1] Spiel Starten                 #",
-        "#               [2] Highscore                     #",
-        "#               [3] Beenden                       #",
-        "###################################################"
-    };
-    int ZeitKorrekturKonstante = 30;
-    //Vielleicht mit Arrays verbessern
-    std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Beenden","###################################################","#                                                 #","Was willst du machen?"};
-    std::vector<std::string> MenueHandelsOptionen = { "Kaufen","Bauen","Handeln","###################################################","#                                                 #","Was willst du machen?" };
-    std::vector<std::string> MenueSpielOptionen = { "Spiel Speichern","Spiel Laden","###################################################","#                                                 #","Was willst du machen?" };
+    //Menüs
+    std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","###################################################","#                                                 #","Startmenü"};
+    std::vector<std::string> MenueHandelsOptionen = { "Kaufen","Bauen","Handeln","###################################################","#                                                 #","Handelsmenü" };
+    std::vector<std::string> MenueSpielOptionen = { "Spiel Speichern","Spiel Laden","Zurück","###################################################","#                                                 #","Spielmenü"};
     std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","###################################################","#                                                 #","Was willst du machen?" };
 
-    std::string SpielerAusgabeTextMuster[7] = {
-        "######################################",
-        "#Spielername                         #",
-        "######################################",
-        "#Budget:                   XXXXXXXX  #",
-        "#Anzahl gekaufter Objekte:       XX  #",
-        "#Anzahl gebauter Objekte:        XX  #",
-        "######################################"
-    }; 
     
     std::string GetDigitsInt(int Zahl);
     std::string GetFarbe(Farbe farbe);
@@ -143,7 +126,6 @@ private:
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord;
     void HideCursor(HANDLE hConsole);
-    void SetConsoleFontSize(int size);
     //BOOL WINAPI SetConsoleCursorPosition(_In_ HANDLE hConsoleOutput,_In_ COORD  dwCursorPosition);
     void AusgabeSpielerBox( std::string Namen,
                             int Budget,
@@ -153,6 +135,7 @@ private:
                             int y,
                             Farbe f);
     void GetMaximizedConsoleSize(int& width, int& height);
+    void AusgabeTestMap(int x, int y);
 public:
     TControl();
     ~TControl();

@@ -1,8 +1,8 @@
 #include "TControl.h"
 
 int main(){
-    std::locale::global(std::locale("de_DE.utf-8"));
-
+    std::locale::global(std::locale("German"));
+    
     TControl ControlEngine;
     ControlEngine.UnitTest();
 

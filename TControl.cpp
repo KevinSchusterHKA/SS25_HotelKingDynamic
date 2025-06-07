@@ -270,22 +270,61 @@ void TControl::AusgabeHighscore(std::string Namen[], int HighscoreWert[],int siz
 void TControl::AusgabeStartMenu(int& option, int x, int y) {
     this->SetFarbe(Farbe::Weiss);
     std::string temp[7];
+    int BreiteMenue = this->MenueStartOptionen[this->MenueStartOptionen.size() - 2].size();
+    int linkerRandText = (BreiteMenue - 2) / 2 - this->MenueStartOptionen.back().size() / 2;
+    this->coord.X = x;
+	this->coord.Y = y;
+
+    for (size_t i = 0; i < BreiteMenue; i++)
+    {
+		this->coord.X = x + i;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+		std::cout << "#";
+    }
 
     this->coord.X = x;
-    this->coord.Y = y;
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
 
-    for (int i = 0; i < 7; ++i) {
-        this->coord.Y = y + i;
+	std::cout << "#" << setw(linkerRandText) <<" " <<std::left << this->MenueStartOptionen[this->MenueStartOptionen.size() - 1] << setw(linkerRandText +1) <<std::right<< "#";
+
+    this->coord.Y++;
+    for (size_t i = 0; i < BreiteMenue; i++)
+    {
+        this->coord.X = x + i;
         SetConsoleCursorPosition(this->hConsole, this->coord);
-        temp[i] = MenueStartText[i];
-        if (i == option) {
-            temp[option].replace(temp[option].find("[" + GetDigitsInt(option - 2)) - 1, 1, 1, '>');
-        }
-        std::cout << temp[i];
+        std::cout << "#";
     }
+	this->coord.X = x;
+    for (size_t i = 0; i < this->MenueStartOptionen.size()-3; i++)
+    {
+		this->coord.Y++;
+		linkerRandText = (BreiteMenue - 2) / 2 - 13 / 2;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        if (option==i)
+        {
+            std::cout << "#" << setw(linkerRandText-3) << ">" <<"["+ to_string(i+1) +"]" << setw(13) << std::left << this->MenueStartOptionen[i] << setw(linkerRandText + 1) << std::right << "#";
+
+        }
+        else
+        {
+            std::cout << "#" << setw(linkerRandText - 3) << " " << "[" + to_string(i+1) + "]" << setw(13) << std::left << this->MenueStartOptionen[i] << setw(linkerRandText + 1) << std::right << "#";
+        }
+
+    }
+    this->coord.Y++;
+    for (size_t i = 0; i < BreiteMenue; i++)
+    {
+        this->coord.X = x + i;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+    }
+
 }
 void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
     int maxSizeOption = 0;
+    this->coord.Y = y;
+    this->coord.X = x;
     enum Optionen
     {
         SpielStarten=3,
@@ -302,55 +341,67 @@ void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
     }
     for (size_t i = 0; i < maxSizeOption; i++)
     {
-        coord.X = x + i;
-        coord.Y = y;
         SetConsoleCursorPosition(this->hConsole, this->coord);
         std::cout << "#";
+        this->coord.X++;
+
     }
-    coord.X = x;
-    coord.Y = y + 1;
+    this->coord.X = x;
+    this->coord.Y++;
     SetConsoleCursorPosition(this->hConsole, this->coord);
     std::cout           << "#" 
                         << setw(maxSizeOption / 2 - this->MenueSpielOptionen[this->MenueSpielOptionen.size() - 1].size() / 2) <<"" 
                         << std::left << this->MenueSpielOptionen[this->MenueSpielOptionen.size() - 1] 
                         << setw(maxSizeOption / 2 - this->MenueSpielOptionen[this->MenueSpielOptionen.size() - 1].size() / 2-2) << ""
                         <<"#";
-    
+    this->coord.Y++;
+
     for (size_t i = 0; i < maxSizeOption; i++) 
     {
-        coord.X = x + i;
-        coord.Y = y+2;
         SetConsoleCursorPosition(this->hConsole, this->coord);
         std::cout << "#";
+        coord.X++;
     }
 
+	int MaxLaenge = 16;
+    int AbstandTextMitte = maxSizeOption / 2 - MaxLaenge / 2;
+    coord.X = x;
 
     for (size_t i = 0; i < this->MenueSpielOptionen.size() - 3; i++)
     {
-        coord.X = x;
         coord.Y = y + 3 + i;
         SetConsoleCursorPosition(this->hConsole, this->coord);
-        //std::cout << "#" << setw(10) << std::right << ("[" + to_string(i + 1) + "]") << setw(39) << std::left << this->MenueSpielOptionen[i] << "#";
-        std::cout   << "#"
-                    << setw(15) << ""
-                    << setw(4) << "["+to_string(i+1)+"]"
-                    << setw(30) << this->MenueSpielOptionen[i]
-                    << "#";
+        if (i == option)
+        {
+            
+            std::cout << "#"
+                << setw(AbstandTextMitte - 3) << std::right << ">"
+                << setw(3) << "[" + to_string(i + 1) + "]"
+                << setw(16) << std::left 
+                << std::left << this->MenueSpielOptionen[i]
+                << setw(AbstandTextMitte - 1) << ""
+                << "#";
+        }
+        else
+        {
+            std::cout << "#"
+                << setw(AbstandTextMitte-3) << ""
+                << setw(3) << "[" + to_string(i + 1) + "]"
+                << setw(16) << std::left
+                << std::left << this->MenueSpielOptionen[i]
+                << setw(AbstandTextMitte - 1) << ""
+                << "#";
+        }
+
+
     }
 
-
-    coord.X = x+15;
-    coord.Y = y + option;
-    SetConsoleCursorPosition(this->hConsole, this->coord);
-    std::cout << setw(1) << ">";
-
-    coord.Y = y+ this->MenueSpielOptionen.size();
+    coord.Y++;
     for (size_t i = 0; i < maxSizeOption; i++)
     {
-        coord.X = x + i;
-
         SetConsoleCursorPosition(this->hConsole, this->coord);
         std::cout << "#";
+        coord.X++;
     }
 
 
@@ -438,17 +489,7 @@ void TControl::HideCursor(HANDLE hConsole) {
     cursorInfo.bVisible = FALSE;
     SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
-void TControl::SetConsoleFontSize(int size) {
-    CONSOLE_FONT_INFOEX cfi = { 0 };
-    cfi.cbSize = sizeof(cfi);
-    cfi.dwFontSize.Y = size;
-    wcscpy_s(cfi.FaceName, L"Lucida Console");
 
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (!SetCurrentConsoleFontEx(hConsole, FALSE, &cfi)) {
-        std::cerr << "Error changing font size!\n";
-    }
-}
 std::string TControl::GetDigitsInt(int Zahl){
     std::string digits;
 
@@ -522,23 +563,19 @@ void TControl::UnitTest() {
     int gekObjAnz[4] = { 5,15,2,3 };
     int gebObjAnz[4] = { 0,2,3,99 };
 
-    int option = 3;
+    int option = 0;
     int Spiellaueft = 1;
-
     int ClearScreenCounter = 0;
+    char EingabeCh = MenueOptionen::Reset;
+    
 
-    char EingabeCh = 0;
-
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
     int x=0,y=0;
     GetMaximizedConsoleSize(x, y);
+
     do
     {
-        
         DWORD start_time = GetTickCount64();
-
         TestControl.AusgabeStartBildschirm(TRUE, x/2-43 , y/2-11);
-
         DWORD elapsed_time = GetTickCount64() - start_time;
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
@@ -551,38 +588,51 @@ void TControl::UnitTest() {
         }
         TestControl.ResetConsole();
     } while (!_kbhit());
+
     system("cls");
+    
     Menues MenueAuswahl = Menues::Start;
+    Menues MenueLetztes = MenueAuswahl;
     while (Spiellaueft != 5) //5 ist Beenden Code
     {
-        EingabeCh = Reset;
-        if (_kbhit()) { // Check if a key is pressed
-            EingabeCh = _getch();
-        }
-
         DWORD start_time = GetTickCount64();
+
+		//Ausgabe des ausgewählten Menüs
         switch (MenueAuswahl)
         {
         case TControl::Menues::Start:
             this->AusgabeStartMenu(option,0,0);
             break;
         case TControl::Menues::Handel:
+			this->AusgabeHandelsOptionen(option, 0, 0);
             break;
         case TControl::Menues::Optionen:
+			this->AusgabeSpielOptionen(option, 0, 0);
             break;
         default:
             break;
         }
-        
 
+        EingabeCh = MenueOptionen::Reset;
+        if (_kbhit()) {
+            EingabeCh = _getch();
+        }
+
+		//Verarbeitung der Eingaben
         switch (EingabeCh) {
         case KEY_UP:
-            if (option > 3) {
+            if (option > 0) {
                 option--;
             }
             break;
         case KEY_DOWN:
-            if (option < 5) {
+            if (option < this->MenueStartOptionen.size() - 4 && MenueAuswahl==Menues::Start) {
+                option++;
+            }
+            else if (option < this->MenueSpielOptionen.size() - 4 && MenueAuswahl == Menues::Optionen) {
+                option++;
+            }
+            else if (option < this->MenueHandelsOptionen.size() - 4 && MenueAuswahl == Menues::Handel) {
                 option++;
             }
             break;
@@ -590,25 +640,44 @@ void TControl::UnitTest() {
             break;
         case KEY_RIGHT:
             break;
-        case KEY_ENTER:     if (option == Beenden) Spiellaueft = Beenden;
-                            if (option == Highscore) {
-                                this->AusgabeHighscore(playerNames, budget, 4, 0, 50);
-                            }
-                            if (option == Start) { 
-                                //TestControl.AusgabeStartMenu(option, 90, 20);
-                            }
+        case KEY_ENTER:
+            switch (MenueAuswahl)
+            {
+            case TControl::Menues::Start:
+                if (option == MenueOptionen::Start) { 
+					TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
+                    TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, 0, 0, GekObjNamen, GebObjNamen);
+                    TestControl.AusgabeSpielOptionen(option, 90, 30);
+                    TestControl.AusgabeHandelsOptionen(option, 90, 40);
+                    TestControl.AusgabeWuerfel(3, 50, 60, Farbe::Gruen);
+                }
+                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, 30, 30); }
+                if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
+                if (option == MenueOptionen::Beenden) { Spiellaueft = 5; }
                 break;
+            case TControl::Menues::Handel:
+
+                break;
+            case TControl::Menues::Optionen:
+                system("cls");
+                this->coord = { 10, 10 };
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+                if (option + 7 == MenueOptionen::SpielSpeichern) { 
+                    
+                    std::cout << "Spiel wird gespeichert!"; }
+                if (option + 7 == MenueOptionen::SpielLaden) { std::cout << "Spiel wird geladen!"; }
+                if (option + 7 == MenueOptionen::Zurueck) { MenueAuswahl = MenueLetztes; }
+
+                break;
+            default:
+                break;
+            }
+            //TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, x / 2 - 110 + 21, y / 2 - 44 + 9, GekObjNamen, GebObjNamen);
+            //TestControl.AusgabeStartMenu(option, 90, 20);
+            break;
         default:
             break;
         }
-
-        //TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, 0, 0, GekObjNamen, GebObjNamen);
-        //TestControl.AusgabeHighscore(playerNames, budget, 4, 30, 30);
-        //TestControl.AusgabeSpielOptionen(option, 90, 30);
-        //TestControl.AusgabeHandelsOptionen(option, 90, 40);
-		//TestControl.AusgabeWuerfel(3, 50, 60, Farbe::Gruen);
-
-
 
 
         DWORD elapsed_time = GetTickCount64() - start_time;
@@ -626,6 +695,7 @@ void TControl::UnitTest() {
         TestControl.ResetConsole();
         }
     }
+
 void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
 	this->SetFarbe(f);
     std::string WuerfelFlaeche[6][5] = {
@@ -717,6 +787,7 @@ void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
 
 	this->SetFarbe(Farbe::Zuruecksetzen);
 }
+
 void TControl::GetMaximizedConsoleSize(int& width, int& height) {
     HWND consoleWindow = GetConsoleWindow();
     if (!consoleWindow) {
@@ -731,7 +802,7 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
     }
 
     // Small delay to allow window to maximize
-
+	Sleep(100); // Sleep for 100 milliseconds
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hConsole == INVALID_HANDLE_VALUE) {
         std::cerr << "Error: Could not get console handle\n";
@@ -754,7 +825,7 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
         std::cerr << "Error: GetClientRect failed\n";
         return;
     }
-
+    
     CONSOLE_FONT_INFO fontInfo;
     if (!GetCurrentConsoleFont(hConsole, FALSE, &fontInfo)) {
         std::cerr << "Error: GetCurrentConsoleFont failed\n";
@@ -763,4 +834,57 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
 
     width = rect.right / fontInfo.dwFontSize.X;
     height = rect.bottom / fontInfo.dwFontSize.Y;
+	std::cout << "Console size: " << width << "x" << height << std::endl;
 }
+
+void TControl::AusgabeTestMap(int x, int y) {
+    //Außen MAP :   Hoehe = 8*11 , Breite = 20*11 
+
+	int MapHoeheA = 88; // 8*11
+	int MapBreiteA = 220; // 20*11
+	int MapHoeheI = 74; // 8*9 +2 Korrektur
+	int MapBreiteI = 182; // 20*9 +2 Korrektur
+
+    for (size_t i = 0; i < MapHoeheA; i++)
+    {
+		this->coord.Y = y + i;
+        for (size_t j = 0; j < MapBreiteA; j++)
+        {
+			this->coord.X = x + j;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            if (i == 0 || i == MapHoeheA-1)
+            {
+                std::cout << "#";
+            }
+            else if (j == 0 || j == MapBreiteA-1)
+            {
+                std::cout << "#";
+            }
+
+        }
+        std::cout << std::endl;
+    }
+
+    //Innen MAP :   Hoehe = 8*9  , Breite = 20*9
+    for (size_t i = 0; i < MapHoeheI; i++)
+    {
+        this->coord.Y = y + 7 + i;
+        for (size_t j = 0; j < MapBreiteI; j++)
+        {
+            this->coord.X = x + 19 + j;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            if (i == 0 || i == MapHoeheI)
+            {
+                std::cout << "#";
+            }
+            else if (j == 0 || j == MapBreiteI)
+            {
+                std::cout << "#";
+            }
+
+        }
+        std::cout << std::endl;
+    }
+
+}
+
