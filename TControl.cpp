@@ -694,7 +694,7 @@ void TControl::UnitTest() {
     bool Spiellaueft = TRUE;
     int ClearScreenCounter = 0;
     char EingabeCh = MenueOptionen::Reset;
-	bool SpielAusgabe = false;
+	bool UpdateSpielfeld = false;
 	int AnzahlSpieler = 1;
     int x=0,y=0;
     GetMaximizedConsoleSize(x, y);
@@ -721,6 +721,7 @@ void TControl::UnitTest() {
         if (_kbhit()) {
             EingabeCh = _getch();
         }
+        UpdateSpielfeld = FALSE;
 
 		//Verarbeitung der Eingaben
         switch (EingabeCh) {
@@ -756,36 +757,40 @@ void TControl::UnitTest() {
             switch (MenueAuswahl)
             {
             case TControl::Menues::Start:
-				system("cls");
+                system("cls");
                 if (option == MenueOptionen::Start) { 
 					MenueAuswahl = Menues::Handel;
-					TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
-                    TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+
+                    UpdateSpielfeld = TRUE;
                 }
-                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - 160, y / 2 - 30); }
+                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size()/2-8, y / 2 + this->MenueStartOptionen.size() + 2); }
                 if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                 if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
                 break;
             case TControl::Menues::Handel:
-                if (MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln)
+                this->coord = { short(x / 2 - 160), short(y / 2 - 36) };
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln)
                 {
-                    this->coord = { short(x / 2 - 160), short(y / 2 - 36 )};
-                    SetConsoleCursorPosition(this->hConsole, this->coord);
-					std::cout<<"Spieler X:" << "wirft den Wuerfel!";
+                    
+					std::cout<< setw(this->MenueHandelsOptionen[4].size()) <<std::left<< "Spieler X: wirft den Wuerfel!";
 
 					TestControl.AusgabeWuerfel(3, x / 2 - 160, y / 2 - 30, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
                 }
-                if (MenueOptionen::Wuerfeln == MenueOptionen::Kaufen)
+                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen)
                 {
 					//Code zum Kaufen von Objekten
+					std::cout << setw(this->MenueHandelsOptionen[4].size()) << "Kaufen von Objekten ist noch nicht implementiert!" << std::endl;
                 }
-                if (MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
+                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
-					//Code zum Bauen von Objekten
+                    std::cout << setw(this->MenueHandelsOptionen[4].size()) << "Bauen von Objekten ist noch nicht implementiert!" << std::endl;
+                    //Code zum Bauen von Objekten
                 }
-                if (MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
+                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
                 {
-					//Code zum Handeln von Objekten
+                    std::cout << setw(this->MenueHandelsOptionen[4].size()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
+                    //Code zum Handeln von Objekten
                 }
 
                 TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
@@ -797,24 +802,23 @@ void TControl::UnitTest() {
                 SetConsoleCursorPosition(this->hConsole, this->coord);
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Fortfahren) {
 
-                    TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
-                    TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
-					//Spiel fortsetzen
+                    UpdateSpielfeld = TRUE;
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
-                    this->coord = { short(x / 2 - 160), short(y / 2 - 30) };
+                    this->coord = { short(x / 2 - this->MenueSpielOptionen[7].size() / 2), short(y / 2 + this->MenueStartOptionen.size()+1) };
                     SetConsoleCursorPosition(this->hConsole, this->coord);
-                    std::cout <<setw(25) << "Spiel wird gespeichert!";
+                    std::cout <<setw(this->MenueSpielOptionen[7].size()) << "Spiel wird gespeichert!";
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
-                    this->coord = { short(x / 2 - 160), short(y / 2 - 30) };
-                    SetConsoleCursorPosition(this->hConsole, this->coord); 
-                    std::cout << setw(25) << "Spiel wird geladen!";
+                    this->coord = { short(x / 2 - this->MenueSpielOptionen[7].size() / 2), short(y / 2 + this->MenueStartOptionen.size() + 1) };
+                    SetConsoleCursorPosition(this->hConsole, this->coord);
+                    std::cout << setw(this->MenueSpielOptionen[7].size()) << "Spiel wird geladen!";
                 }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, short(x / 2 - 180), short(y / 2 - 30)); }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + this->MenueStartOptionen.size() + 2);}
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 9) { Spiellaueft = FALSE; }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - 180, y / 2 - 30); }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) { MenueAuswahl = MenueLetztes; }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + this->MenueStartOptionen.size()+2); }
+                
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) { MenueAuswahl = MenueLetztes; UpdateSpielfeld = TRUE;}
 
 
                 break;
@@ -832,13 +836,13 @@ void TControl::UnitTest() {
         switch (MenueAuswahl)
         {
         case TControl::Menues::Start:
-            this->AusgabeStartMenu(option, x / 2 - this->MenueStartOptionen[4].size() / 2, y / 2 - this->MenueStartOptionen.size() / 2);
+            TestControl.AusgabeStartMenu(option, x / 2 - this->MenueStartOptionen[4].size() / 2, y / 2 - this->MenueStartOptionen.size() / 2);
             break;
         case TControl::Menues::Handel:
-			this->AusgabeHandelsOptionen(option, x / 2 - 160, y / 2 - 44, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
+            TestControl.AusgabeHandelsOptionen(option, x / 2 - 160, y / 2 - 44, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
             break;
         case TControl::Menues::Optionen:
-            this->AusgabeSpielOptionen(option, x / 2 - this->MenueSpielOptionen[7].size()/2, y / 2 - this->MenueSpielOptionen.size() / 2);
+            TestControl.AusgabeSpielOptionen(option, x / 2 - this->MenueSpielOptionen[7].size()/2, y / 2 - this->MenueSpielOptionen.size() / 2);
             break;
         default:
             break;
@@ -847,15 +851,18 @@ void TControl::UnitTest() {
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
-
+        if (UpdateSpielfeld)
+        {
+            TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
+            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+        }
 
         ClearScreenCounter++;
         if (ClearScreenCounter == this->ZeitKorrekturKonstante * 6)//*t in Sekunden
         {
             ClearScreenCounter = 0;
-            //system("cls");
         }
-        TestControl.ResetConsole();
+        //TestControl.ResetConsole();
         }
     }
 
