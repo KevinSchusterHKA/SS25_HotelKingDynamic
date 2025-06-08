@@ -419,7 +419,7 @@ void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
     std::cout           << "#" 
                         << setw(maxSizeOption / 2 - this->MenueSpielOptionen[this->MenueSpielOptionen.size() - 1].size() / 2) <<"" 
                         << std::left << this->MenueSpielOptionen[this->MenueSpielOptionen.size() - 1] 
-                        << setw(maxSizeOption / 2 - this->MenueSpielOptionen[this->MenueSpielOptionen.size() - 1].size() / 2-3) << ""
+                        << setw(maxSizeOption / 2 - this->MenueSpielOptionen[this->MenueSpielOptionen.size() - 1].size() / 2-2) << ""
                         <<"#";
     this->coord.Y++;
 
@@ -499,7 +499,7 @@ void TControl::AusgabeHandelsOptionen(int& option, int x, int y) {
     std::cout << "#"
         << setw(maxSizeOption / 2 - this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1].size() / 2) << ""
         << std::left << this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1]
-        << setw(maxSizeOption / 2 - this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1].size() / 2 - 3) << ""
+        << setw(maxSizeOption / 2 - this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1].size() / 2 - 2) << ""
         << "#";
     this->coord.Y++;
     this->coord.X = x;
@@ -555,7 +555,54 @@ void TControl::AusgabeHandelsOptionen(int& option, int x, int y) {
 
     this->SetFarbe(Farbe::Zuruecksetzen);
 }
+void TControl::AusgabeSpielRegeln(std::vector<std::string> s, int x, int y) {
 
+	this->SetFarbe(Farbe::BG_Weiss);
+	this->SetFarbe(Farbe::Schwarz);
+    this->coord.X = x;
+    this->coord.Y = y;
+    int BreiteMenue = 0;
+    for (size_t i = 0; i < s.size(); i++)
+    {
+        if (BreiteMenue < s[i].size()) {
+            BreiteMenue = s[i].size();
+        }
+    }
+    if (BreiteMenue < 21)
+    {
+        BreiteMenue = 21;
+    }
+    for (size_t i = 0; i < BreiteMenue + 2; i++)
+    {
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+        this->coord.X++;
+	}
+    this->coord.X = x;
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << "#" << setw((BreiteMenue - 2) / 2-4) << "" << std::left << "Spielregeln" << setw((BreiteMenue - 2) / 2 - 4) << "" << "#";
+    this->coord.Y++;
+    for (size_t i = 0; i < BreiteMenue + 2; i++)
+    {
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#";
+        this->coord.X++;
+	}
+    this->coord.X = x;
+    for (size_t i = 0; i < s.size(); i++)
+    {
+        this->coord.Y++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "|" << setw(1) << std::left << s[i].substr(0, BreiteMenue) << setw(BreiteMenue - s[i].size()) << "" << "|";
+    }
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    for (size_t i = 0; i < BreiteMenue + 2; i++)
+    {
+        std::cout << "#";
+	}
+}
 
 void TControl::ResetConsole() {
     std::cout << "\033[1;1H"; //  move cursor to top-left
@@ -638,6 +685,7 @@ void TControl::UnitTest() {
                                                           { "Haus 2","Gebaeude zyx2"},
                                                           { "Haus 3","Gebaeude zyx3","Hotel 3"},
                                                           { "Haus 4","Gebaeude zyx4","Hotel 4","4TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"}};
+	std::vector<std::string> Spielregeln = { "Regel 1", "Regel 2", "Regel 3", "Regel 4", "Regel 5555555555555555555555555555555555555555555555555555555555555" };
     int budget[4] = { 100,10000,100000,99999999 };
     int gekObjAnz[4] = { 5,15,2,3 };
     int gebObjAnz[4] = { 0,2,3,99 };
@@ -646,7 +694,7 @@ void TControl::UnitTest() {
     int Spiellaueft = 1;
     int ClearScreenCounter = 0;
     char EingabeCh = MenueOptionen::Reset;
-    
+	bool SpielAusgabe = false;
 
     int x=0,y=0;
     GetMaximizedConsoleSize(x, y);
@@ -663,33 +711,18 @@ void TControl::UnitTest() {
         if (ClearScreenCounter == this->ZeitKorrekturKonstante * 6) 
         {
             ClearScreenCounter = 0;
+            TestControl.ResetConsole();
             //system("cls");
         }
-        TestControl.ResetConsole();
     } while (!_kbhit());
 
     system("cls");
-    
     Menues MenueAuswahl = Menues::Start;
     Menues MenueLetztes = MenueAuswahl;
     while (Spiellaueft != 5) //5 ist Beenden Code
     {
         DWORD start_time = GetTickCount64();
-		//Ausgabe des ausgewählten Menüs
-        switch (MenueAuswahl)
-        {
-        case TControl::Menues::Start:
-            this->AusgabeStartMenu(option,0,0);
-            break;
-        case TControl::Menues::Handel:
-			this->AusgabeHandelsOptionen(option, 0, 0);
-            break;
-        case TControl::Menues::Optionen:
-			this->AusgabeSpielOptionen(option, 0, 0);
-            break;
-        default:
-            break;
-        }
+
 
         EingabeCh = MenueOptionen::Reset;
         if (_kbhit()) {
@@ -716,9 +749,13 @@ void TControl::UnitTest() {
                 option++;
             }
             break;
-        case KEY_LEFT:
-            break;
-        case KEY_RIGHT:
+        case KEY_ESCAPE:
+            if (MenueAuswahl != Menues::Optionen)
+            {
+                MenueLetztes = MenueAuswahl;
+            }
+            MenueAuswahl = Menues::Optionen;
+
             break;
         case KEY_ENTER:
         case KEY_SPACE:
@@ -726,6 +763,7 @@ void TControl::UnitTest() {
             {
             case TControl::Menues::Start:
                 if (option == MenueOptionen::Start) { 
+					MenueAuswahl = Menues::Handel;
 					TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
                     TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
                 }
@@ -734,30 +772,73 @@ void TControl::UnitTest() {
                 if (option == MenueOptionen::Beenden) { Spiellaueft = 5; }
                 break;
             case TControl::Menues::Handel:
+                if (MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln)
+                {
+                    this->coord = { short(x / 2 - 160), short(y / 2 - 36 )};
+                    SetConsoleCursorPosition(this->hConsole, this->coord);
+					std::cout << "Wuerfel wird geworfen!";
 
+					TestControl.AusgabeWuerfel(3, x / 2 - 160, y / 2 - 30, Farbe::Weiss);
+                }
+                if (MenueOptionen::Wuerfeln == MenueOptionen::Kaufen)
+                {
+					//Code zum Kaufen von Objekten
+                }
+                if (MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
+                {
+					//Code zum Bauen von Objekten
+                }
+                if (MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
+                {
+					//Code zum Handeln von Objekten
+                }
+
+                TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
+                TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
                 break;
             case TControl::Menues::Optionen:
                 system("cls");
                 this->coord = { 10, 10 };
                 SetConsoleCursorPosition(this->hConsole, this->coord);
-                if (option + 7 == MenueOptionen::SpielSpeichern) { 
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Fortfahren) {
+					//Spiel fortsetzen
+                }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
                     
-                    std::cout << "Spiel wird gespeichert!"; }
-                if (option + 7 == MenueOptionen::SpielLaden) { std::cout << "Spiel wird geladen!"; }
-                if (option + 7 == MenueOptionen::Zurueck) { MenueAuswahl = MenueLetztes; }
+                    std::cout << "Spiel wird gespeichert!"; 
+                }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
+                    std::cout << "Spiel wird geladen!"; 
+                }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck) { MenueAuswahl = MenueLetztes; }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, 0, 20); }
 
                 break;
             default:
                 break;
             }
-            //TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, x / 2 - 110 + 21, y / 2 - 44 + 9, GekObjNamen, GebObjNamen);
-            //TestControl.AusgabeStartMenu(option, 90, 20);
+
+            option = Reset;
             break;
         default:
             break;
         }
 
-
+        //Ausgabe des ausgewählten Menüs
+        switch (MenueAuswahl)
+        {
+        case TControl::Menues::Start:
+            this->AusgabeStartMenu(option, x / 2 - 160, y / 2 - 44);
+            break;
+        case TControl::Menues::Handel:
+            this->AusgabeHandelsOptionen(option, x / 2 - 160, y / 2 - 44);
+            break;
+        case TControl::Menues::Optionen:
+            this->AusgabeSpielOptionen(option, x / 2 - 160, y / 2 - 44);
+            break;
+        default:
+            break;
+        }
         DWORD elapsed_time = GetTickCount64() - start_time;
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
@@ -776,6 +857,7 @@ void TControl::UnitTest() {
 
 void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
 	this->SetFarbe(f);
+    static bool AusgabeWurf = false;
     std::string WuerfelFlaeche[6][5] = {
     {
         "---------",
@@ -822,46 +904,40 @@ void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
     };
     this->coord.X = x;
     this->coord.Y = y;
-	static int counter = 0;
-	static bool AusgabeWurf= false;
+	int counter = 0;
     int RandZeitSimulation1 = 5; // Zeit in Sekunden, nach der der Text wechselt
     int RandZeitSimulation2 = RandZeitSimulation1+3; // Zeit in Sekunden, nach der der Text wechselt
-    counter++;
 	std::mt19937 rng(time(nullptr)); // Zufallszahlengenerator initialisieren
     std::uniform_int_distribution<int> dist(0,5);
 	int rand = dist(rng); 
-
-    if (counter >= this->ZeitKorrekturKonstante * RandZeitSimulation1)
+    while (true)
     {
-        this->SetFarbe(Farbe::BG_Rot);
-        this->SetFarbe(Farbe::Weiss);
-        for (int i = 0; i < 5; i++) {
-            this->coord.Y = y + i;
-            SetConsoleCursorPosition(this->hConsole, this->coord);
-            std::cout << setw(10) << WuerfelFlaeche[wuerfel-1][i];
-        }
-        if (counter >= this->ZeitKorrekturKonstante * RandZeitSimulation2)
+		rand = dist(rng); 
+        if (counter >= 6)
         {
-            counter = 0;
+            this->SetFarbe(Farbe::BG_Rot);
+            this->SetFarbe(Farbe::Weiss);
             for (int i = 0; i < 5; i++) {
                 this->coord.Y = y + i;
                 SetConsoleCursorPosition(this->hConsole, this->coord);
-                std::cout << setw(10) << " " ;
+                std::cout << setw(10) << WuerfelFlaeche[wuerfel - 1][i];
             }
-            this->SetFarbe(Farbe::Zuruecksetzen);
-
+            this->SetFarbe(f);
+            break;
         }
-		this->SetFarbe(f);
-
-    }
-    else
-    {
-        for (int i = 0; i < 5; i++) {
-            this->coord.Y = y + i;
-            SetConsoleCursorPosition(this->hConsole, this->coord);
-            std::cout << setw(10) << WuerfelFlaeche[rand][i];
+        else
+        {
+            for (int i = 0; i < 5; i++) {
+                this->coord.Y = y + i;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+                std::cout << setw(10) << WuerfelFlaeche[rand][i];
+            }
+			Sleep(500); // Kurze Pause für die Animation
         }
+        counter++;
     }
+	counter = 0;
+    Sleep(1000);  
 
 	this->SetFarbe(Farbe::Zuruecksetzen);
 }
@@ -966,3 +1042,6 @@ void TControl::AusgabeTestMap(int x, int y) {
 
 }
 
+void TControl::UpdateConsole(std::string s[],int FieldSize,int x,int y) {
+	this->AusgabeFeld(s, FieldSize, x, y);
+}
