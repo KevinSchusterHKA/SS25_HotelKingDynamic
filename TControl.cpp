@@ -670,14 +670,14 @@ void TControl::UnitTest() {
                                                           { "Haus 3","Gebaeude zyx3","Hotel 3"},
                                                           { "Haus 4","Gebaeude zyx4","Hotel 4","4TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"}};
 	std::vector<std::string> Spielregeln = { "Regel 1", "Regel 2", "Regel 3", "Regel 4", "Regel 5555555555555555555555555555555555555555555555555555555555555" };
-    int budget[4] = { 100,10000,100000,99999999 };
-    int gekObjAnz[4] = { 5,15,2,3 };
-    int gebObjAnz[4] = { 0,2,3,99 };
+	int budget[4] = { 100,10000,100000,99999999 }; //Budget der Spieler
+	int gekObjAnz[4] = { 5,15,2,3 };//Anzahl gekaufter Objekte der Spieler
+	int gebObjAnz[4] = { 0,2,3,99 };//Anzahl gebaute Objekte der Spieler
 
     int option = 0;
     bool Spiellaueft = TRUE, RundeVorhanden=FALSE;
     char EingabeCh = MenueOptionen::Reset;
-	bool UpdateSpielfeld = false;
+	bool UpdateSpielfeld = FALSE;
 	int AnzahlSpieler = 4;
     int x=0,y=0;
     GetMaximizedConsoleSize(x, y);
