@@ -474,9 +474,9 @@ void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
 
     this->SetFarbe(Farbe::Zuruecksetzen);
 }
-void TControl::AusgabeHandelsOptionen(int& option, int x, int y) {
+void TControl::AusgabeHandelsOptionen(int& option, int x, int y,Farbe f) {
     int maxSizeOption = 0;
-    this->SetFarbe(Farbe::BG_Rot);
+    this->SetFarbe(f);
     this->SetFarbe(Farbe::Schwarz);
     this->coord.Y = y;
 	this->coord.X = x;
@@ -691,11 +691,11 @@ void TControl::UnitTest() {
     int gebObjAnz[4] = { 0,2,3,99 };
 
     int option = 0;
-    int Spiellaueft = 1;
+    bool Spiellaueft = TRUE;
     int ClearScreenCounter = 0;
     char EingabeCh = MenueOptionen::Reset;
 	bool SpielAusgabe = false;
-
+	int AnzahlSpieler = 1;
     int x=0,y=0;
     GetMaximizedConsoleSize(x, y);
 	//Ausgabe des Startbildschirms
@@ -707,19 +707,12 @@ void TControl::UnitTest() {
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
-        ClearScreenCounter++;
-        if (ClearScreenCounter == this->ZeitKorrekturKonstante * 6) 
-        {
-            ClearScreenCounter = 0;
-            TestControl.ResetConsole();
-            //system("cls");
-        }
     } while (!_kbhit());
-
+	std::cin.clear();
     system("cls");
     Menues MenueAuswahl = Menues::Start;
     Menues MenueLetztes = MenueAuswahl;
-    while (Spiellaueft != 5) //5 ist Beenden Code
+    while (Spiellaueft)  
     {
         DWORD start_time = GetTickCount64();
 
@@ -750,6 +743,7 @@ void TControl::UnitTest() {
             }
             break;
         case KEY_ESCAPE:
+            system("cls");
             if (MenueAuswahl != Menues::Optionen)
             {
                 MenueLetztes = MenueAuswahl;
@@ -762,23 +756,24 @@ void TControl::UnitTest() {
             switch (MenueAuswahl)
             {
             case TControl::Menues::Start:
+				system("cls");
                 if (option == MenueOptionen::Start) { 
 					MenueAuswahl = Menues::Handel;
 					TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
-                    TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+                    TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
                 }
-                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, 30, 30); }
+                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - 160, y / 2 - 30); }
                 if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
-                if (option == MenueOptionen::Beenden) { Spiellaueft = 5; }
+                if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
                 break;
             case TControl::Menues::Handel:
                 if (MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln)
                 {
                     this->coord = { short(x / 2 - 160), short(y / 2 - 36 )};
                     SetConsoleCursorPosition(this->hConsole, this->coord);
-					std::cout << "Wuerfel wird geworfen!";
+					std::cout<<"Spieler X:" << "wirft den Wuerfel!";
 
-					TestControl.AusgabeWuerfel(3, x / 2 - 160, y / 2 - 30, Farbe::Weiss);
+					TestControl.AusgabeWuerfel(3, x / 2 - 160, y / 2 - 30, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
                 }
                 if (MenueOptionen::Wuerfeln == MenueOptionen::Kaufen)
                 {
@@ -794,24 +789,33 @@ void TControl::UnitTest() {
                 }
 
                 TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
-                TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, 4, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+                TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
                 break;
             case TControl::Menues::Optionen:
                 system("cls");
                 this->coord = { 10, 10 };
                 SetConsoleCursorPosition(this->hConsole, this->coord);
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Fortfahren) {
+
+                    TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
+                    TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
 					//Spiel fortsetzen
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
-                    
-                    std::cout << "Spiel wird gespeichert!"; 
+                    this->coord = { short(x / 2 - 160), short(y / 2 - 30) };
+                    SetConsoleCursorPosition(this->hConsole, this->coord);
+                    std::cout <<setw(25) << "Spiel wird gespeichert!";
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
-                    std::cout << "Spiel wird geladen!"; 
+                    this->coord = { short(x / 2 - 160), short(y / 2 - 30) };
+                    SetConsoleCursorPosition(this->hConsole, this->coord); 
+                    std::cout << setw(25) << "Spiel wird geladen!";
                 }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck) { MenueAuswahl = MenueLetztes; }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, 0, 20); }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, short(x / 2 - 180), short(y / 2 - 30)); }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 9) { Spiellaueft = FALSE; }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - 180, y / 2 - 30); }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) { MenueAuswahl = MenueLetztes; }
+
 
                 break;
             default:
@@ -828,13 +832,13 @@ void TControl::UnitTest() {
         switch (MenueAuswahl)
         {
         case TControl::Menues::Start:
-            this->AusgabeStartMenu(option, x / 2 - 160, y / 2 - 44);
+            this->AusgabeStartMenu(option, x / 2 - this->MenueStartOptionen[4].size() / 2, y / 2 - this->MenueStartOptionen.size() / 2);
             break;
         case TControl::Menues::Handel:
-            this->AusgabeHandelsOptionen(option, x / 2 - 160, y / 2 - 44);
+			this->AusgabeHandelsOptionen(option, x / 2 - 160, y / 2 - 44, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
             break;
         case TControl::Menues::Optionen:
-            this->AusgabeSpielOptionen(option, x / 2 - 160, y / 2 - 44);
+            this->AusgabeSpielOptionen(option, x / 2 - this->MenueSpielOptionen[7].size()/2, y / 2 - this->MenueSpielOptionen.size() / 2);
             break;
         default:
             break;
@@ -932,13 +936,11 @@ void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
                 SetConsoleCursorPosition(this->hConsole, this->coord);
                 std::cout << setw(10) << WuerfelFlaeche[rand][i];
             }
-			Sleep(500); // Kurze Pause für die Animation
+			Sleep(250); // Kurze Pause für die Animation
         }
         counter++;
     }
 	counter = 0;
-    Sleep(1000);  
-
 	this->SetFarbe(Farbe::Zuruecksetzen);
 }
 
