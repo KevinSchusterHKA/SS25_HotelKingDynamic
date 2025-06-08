@@ -62,39 +62,22 @@ void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
 
         
 }
-void TControl::AusgabeFeld(std::string FeldBlock[], int sizeFeld,int x,int y){
-    //std::string out = _fgcolortable[4];
-    //for (int i = 0; i < _dimY; i++)
-    //{
-    //    for (int j = 20; j < 31; j++)
-    //    {
-    //        out += FeldBlock[j].toStr(i);
-    //    }
-    //    out += "\n";
-    //}
-    //for (int i = 19; i > 10; i--)
-    //{
-    //    for (int j = 0; j < _dimY; j++)
-    //    {
-    //        out += FeldBlock[i].toStr(j) + Buffer + FeldBlock[50 - i].toStr(j);
-    //        out += "\n";
-    //    }
+void TControl::AusgabeFeld(std::string FeldBlock[],int x,int y){
 
-    //}
-    //for (int i = 0; i < _dimY; i++)
-    //{
-    //    for (int j = 10; j >= 0; j--)
-    //    {
-    //        out += FeldBlock[j].toStr(i);
-
-    //    }
-    //    out += "\n";
-    //}
-    //out += "\033[0m";
-	this->coord.X = 0;
-    for (size_t i = 0; i < sizeFeld; i++)
+    int sizeFeldX = 220;
+	int sizeFeldY =  88;
+	this->coord.X = x;
+	this->coord.Y = y;
+    for (size_t i = 0; i < sizeFeldY; i++)
     {
-        std::cout << FeldBlock[i];
+        for (size_t j = 0; j < sizeFeldX; j++)
+        {
+			SetConsoleCursorPosition(this->hConsole, this->coord);
+            std::cout << FeldBlock[sizeFeldY*i+j];
+            this->coord.X++;
+        }
+		this->coord.X = x;
+		this->coord.Y++;
     }
 }
 
@@ -793,7 +776,7 @@ void TControl::UnitTest() {
                     //Code zum Handeln von Objekten
                 }
 
-                TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
+                TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
                 TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
                 break;
             case TControl::Menues::Optionen:
@@ -847,21 +830,23 @@ void TControl::UnitTest() {
         default:
             break;
         }
+        
+        if (UpdateSpielfeld)
+        {
+            TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
+            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+        }
+
+
         DWORD elapsed_time = GetTickCount64() - start_time;
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
-        if (UpdateSpielfeld)
-        {
-            TestControl.AusgabeTestMap(x / 2 - 110, y / 2 - 44);
-            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
-        }
-
-        ClearScreenCounter++;
-        if (ClearScreenCounter == this->ZeitKorrekturKonstante * 6)//*t in Sekunden
-        {
-            ClearScreenCounter = 0;
-        }
+        //ClearScreenCounter++;
+        //if (ClearScreenCounter == this->ZeitKorrekturKonstante * 6)//*t in Sekunden
+        //{
+        //    ClearScreenCounter = 0;
+        //}
         //TestControl.ResetConsole();
         }
     }
@@ -1000,7 +985,7 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
 	std::cout << "Console size: " << width << "x" << height << std::endl;
 }
 
-void TControl::AusgabeTestMap(int x, int y) {
+void TControl::AusgabeTestFeld(int x, int y) {
     //Außen MAP :   Hoehe = 8*11 , Breite = 20*11 
 
 	int MapHoeheA = 88; // 8*11
@@ -1049,8 +1034,4 @@ void TControl::AusgabeTestMap(int x, int y) {
         std::cout << std::endl;
     }
 
-}
-
-void TControl::UpdateConsole(std::string s[],int FieldSize,int x,int y) {
-	this->AusgabeFeld(s, FieldSize, x, y);
 }

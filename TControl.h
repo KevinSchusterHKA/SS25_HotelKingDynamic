@@ -147,7 +147,7 @@ private:
                             int y,
                             Farbe f);
     void GetMaximizedConsoleSize(int& width, int& height);
-    void AusgabeTestMap(int x, int y);
+    void AusgabeTestFeld(int x, int y);
 public:
     TControl();
     ~TControl();
@@ -157,7 +157,7 @@ public:
     void AusgabeSpielRegeln(std::vector<std::string> s, int x, int y);
 
     void AusgabeStartBildschirm(bool flip, int x, int y);
-    void AusgabeFeld(std::string Feld[],int sizeFeld, int x, int y);
+    void AusgabeFeld(std::string Feld[], int x, int y);
     void AusgabeSpielerInformationen(   std::string Namen[4],
                                         int Budget[4],
                                         int AnzahlGekaufterObjekte[4],
@@ -179,6 +179,5 @@ public:
     void ResetConsole();
 	void AusgabeWuerfel(int wuerfel, int x, int y, Farbe f);
     void UnitTest();
-    void UpdateConsole(std::string s[], int FieldSize, int x, int y);
 };
 
