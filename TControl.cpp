@@ -99,6 +99,7 @@ void TControl::AusgabeSpielerInformationen( std::string Namen[4],
 		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, static_cast<Farbe>(static_cast<int>(start) + i));
     }
 }
+
 void TControl::AusgabeSpielerBox(   std::string Namen,
                                     int Budget,
                                     int AnzahlGekaufterObjekte,
@@ -674,11 +675,10 @@ void TControl::UnitTest() {
     int gebObjAnz[4] = { 0,2,3,99 };
 
     int option = 0;
-    bool Spiellaueft = TRUE;
-    int ClearScreenCounter = 0;
+    bool Spiellaueft = TRUE, RundeVorhanden=FALSE;
     char EingabeCh = MenueOptionen::Reset;
 	bool UpdateSpielfeld = false;
-	int AnzahlSpieler = 1;
+	int AnzahlSpieler = 4;
     int x=0,y=0;
     GetMaximizedConsoleSize(x, y);
 	//Ausgabe des Startbildschirms
@@ -743,7 +743,7 @@ void TControl::UnitTest() {
                 system("cls");
                 if (option == MenueOptionen::Start) { 
 					MenueAuswahl = Menues::Handel;
-
+                    RundeVorhanden = TRUE;
                     UpdateSpielfeld = TRUE;
                 }
                 if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size()/2-8, y / 2 + this->MenueStartOptionen.size() + 2); }
@@ -781,21 +781,26 @@ void TControl::UnitTest() {
                 break;
             case TControl::Menues::Optionen:
                 system("cls");
-                this->coord = { 10, 10 };
-                SetConsoleCursorPosition(this->hConsole, this->coord);
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Fortfahren) {
 
-                    UpdateSpielfeld = TRUE;
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Fortfahren) {
+                    if (RundeVorhanden) {
+                        UpdateSpielfeld = TRUE;
+						MenueAuswahl = Menues::Handel;
+                    }
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
-                    this->coord = { short(x / 2 - this->MenueSpielOptionen[7].size() / 2), short(y / 2 + this->MenueStartOptionen.size()+1) };
-                    SetConsoleCursorPosition(this->hConsole, this->coord);
-                    std::cout <<setw(this->MenueSpielOptionen[7].size()) << "Spiel wird gespeichert!";
+                    
+                    if (RundeVorhanden) {
+                        this->coord = { short(x / 2 - this->MenueSpielOptionen[7].size() / 2), short(y / 2 + this->MenueStartOptionen.size() + 1) };
+                        SetConsoleCursorPosition(this->hConsole, this->coord);
+                        std::cout <<setw(this->MenueSpielOptionen[7].size()) << "Spiel wird gespeichert!";
+                    }
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
                     this->coord = { short(x / 2 - this->MenueSpielOptionen[7].size() / 2), short(y / 2 + this->MenueStartOptionen.size() + 1) };
                     SetConsoleCursorPosition(this->hConsole, this->coord);
                     std::cout << setw(this->MenueSpielOptionen[7].size()) << "Spiel wird geladen!";
+					RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + this->MenueStartOptionen.size() + 2);}
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 9) { Spiellaueft = FALSE; }
@@ -842,14 +847,8 @@ void TControl::UnitTest() {
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
-        //ClearScreenCounter++;
-        //if (ClearScreenCounter == this->ZeitKorrekturKonstante * 6)//*t in Sekunden
-        //{
-        //    ClearScreenCounter = 0;
-        //}
-        //TestControl.ResetConsole();
-        }
     }
+}
 
 void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
 	this->SetFarbe(f);
