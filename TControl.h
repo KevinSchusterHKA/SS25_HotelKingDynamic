@@ -16,6 +16,14 @@
 #define KEY_LEFT 75   
 #define KEY_RIGHT 77  
 #define KEY_ENTER 13
+#define KEY_ESCAPE 27
+#define KEY_SPACE 32  
+#define KEY_W 119  
+#define KEY_S 115 
+#define KEY_A 97   
+#define KEY_D 100  
+
+
 #define TARGET_FPS 60
 #define FRAME_DURATION 1000 / TARGET_FPS
 
@@ -114,10 +122,10 @@ private:
     };
 
     //Menüs
-    std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","###################################################","#                                                 #","Startmenü"};
-    std::vector<std::string> MenueHandelsOptionen = { "Kaufen","Bauen","Handeln","###################################################","#                                                 #","Handelsmenü" };
-    std::vector<std::string> MenueSpielOptionen = { "Spiel Speichern","Spiel Laden","Zurück","###################################################","#                                                 #","Spielmenü"};
-    std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","###################################################","#                                                 #","Was willst du machen?" };
+    std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","##################################################","Startmenue"};
+    std::vector<std::string> MenueHandelsOptionen = { "Kaufen","Bauen","Handeln","##################################################","Handelsmenü" };
+    std::vector<std::string> MenueSpielOptionen = { "Spiel Speichern","Spiel Laden","Zurück","##################################################","Spielmenü"};
+    std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","#############################################","Was willst du machen?" };
 
     
     std::string GetDigitsInt(int Zahl);
@@ -144,7 +152,7 @@ public:
     void AusgabeHandelsOptionen(int& option, int x, int y);
 
     void AusgabeStartBildschirm(bool flip, int x, int y);
-    void AusgabeFeld(std::string Feld[],int sizeFeld);
+    void AusgabeFeld(std::string Feld[],int sizeFeld, int x, int y);
     void AusgabeSpielerInformationen(   std::string Namen[4],
                                         int Budget[4],
                                         int AnzahlGekaufterObjekte[4],
