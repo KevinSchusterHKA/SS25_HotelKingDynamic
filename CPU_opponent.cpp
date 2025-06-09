@@ -67,7 +67,7 @@ cpu_player1::cpu_player1() : player() {}
 
 // cpu to player
 int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p) {
-    if ((rand() % 100) > 101) {
+    if ((rand() % 100) > 5) {
         std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
         return -1;
     }
@@ -105,7 +105,7 @@ int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p) {
 
 // player to cpu 
 bool cpu_player1::acceptTrade(Property& prop, int offer) {
-    int acceptThresholdPercent = 90 + (std::rand() % 11);
+    int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 
     if (offer <= prop.price * (acceptThresholdPercent / 100.0) && offer <= getBudget()) {
         std::cout << "CPU akzeptiert das Angebot von " << offer << " fur '" << prop.name
@@ -146,14 +146,15 @@ bool cpu_player1::tryBuyStreet(Map& gameMap, std::vector<player*>& p) {
     }
     return false;
 }
-int main() {
+
+void UNITTEST_cpu() {
     std::srand(std::time(nullptr));  // random seed 
     std::vector<player*> players;
 
     for (int i = 0; i < 2; ++i) {
         players.push_back(new player());
         players.back()->setID(i);
-        players.back()->setHuman(true);
+        players.back()->setHuman(HUMAN);
         players.back()->setBudget(1000);
         players.back()->setPosition(i);
     }
@@ -161,24 +162,27 @@ int main() {
     for (int i = 0; i < 5; ++i) {
         players.push_back(new cpu_player1());
         players.back()->setID(i + 2);
-        players.back()->setHuman(false);
+        players.back()->setHuman(CPU1);
         players.back()->setBudget(1000);
         players.back()->setPosition(i + 3);
     }
 
     Map gameMap;
-
     for (size_t i = 0; i < players.size(); ++i) {
-        if (!players[i]->getHuman()) {
+        if (players[i]->getHuman() == CPU1) {
             cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
             cpu->tryBuyStreet(gameMap, players);
             cpu->handel(cpu->getID(), players.size(), players);
             Property exampleProp = { "Teststrabe", 400 };
-            int offer = 390;   
+            int offer = 390;
             cpu->acceptTrade(exampleProp, offer);
             cout << "##############" << endl;
         }
     }
+}
+int main() {
+    UNITTEST_cpu();
+  
 
     return 0;
 }

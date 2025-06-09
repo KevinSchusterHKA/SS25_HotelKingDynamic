@@ -4,12 +4,12 @@
 #include <vector>
 #include <random>
 using namespace std;
-
+enum PlayerType {HUMAN,  CPU1,  CPU2,  }; // human player ,level 1,level 2
 class player
 {
 private:
 	int ID;
-	bool Human; // "CPU" or "HUMAN"	
+	int Human; //"HUMAN" or "CPU1" or "CPU2"....
 	int Budget	 = 1500;
 	int Position = 0;
 	vector<int> Wurfelzahl	= { 0, 0 };
@@ -29,8 +29,8 @@ public:
 
 	void setID(int id);
 	int getID();
-	bool getHuman();
-	void setHuman(bool h);
+	int getHuman();
+	void setHuman(int h);
 
 	int getBudget();
 	void setBudget(int b);

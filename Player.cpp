@@ -8,8 +8,8 @@ player::~player() {};
 void player::setID(int id) { this->ID = id; }
 int player::getID() { return this->ID; }
 
-void player::setHuman(bool h) { this->Human = h; }
-bool player::getHuman() { return this->Human; }
+void player::setHuman(int h) { this->Human = h; }
+int player::getHuman() { return this->Human; }
 
 int player::getBudget()			{return this->Budget;}
 void player::setBudget(int b)	{this->Budget = b;}
@@ -158,12 +158,12 @@ void UNITTEST(int numCPU, int numHUM, vector<player*> p) {
 //	for (int i = 0; i < number_human_players; ++i) {
 //		p.push_back(new player());		// human players
 //		p[i]->setID(i);
-//		p[i]->setHuman(1);
+//		p[i]->setHuman(HUMAN);
 //	}
 //	for (int i = 0; i < number_cpu_level_1; ++i) {
 //		p.push_back(new cpu_player1()); // level 1 cpu players
 //		p[number_human_players+i]->setID(i);
-//		p[number_human_players + i]->setHuman(0);
+//		p[number_human_players + i]->setHuman(CPU1);
 //	}
 //	UNITTEST(number_cpu_level_1, number_human_players, p);
 //	return 0;
