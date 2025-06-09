@@ -458,7 +458,7 @@ void TControl::AusgabeSpielOptionen(int& option, int x, int y) {
 
     this->SetFarbe(Farbe::Zuruecksetzen);
 }
-void TControl::AusgabeHandelsOptionen(int& option, int x, int y,Farbe f) {
+void TControl::AusgabeSpielerOptionen(int& option, int x, int y,Farbe f) {
     int maxSizeOption = 0;
     this->SetFarbe(f);
     this->SetFarbe(Farbe::Schwarz);
@@ -587,10 +587,10 @@ void TControl::AusgabeSpielRegeln(std::vector<std::string> s, int x, int y) {
         std::cout << "#";
 	}
 }
-
-void TControl::ResetConsole() {
-    std::cout << "\033[1;1H"; //  move cursor to top-left
-    std::cout.flush();
+void TControl::AusgabeHandelsMenu(int& option, int x, int y, Farbe f) {//TODO: Handelsmenü implementieren
+    this->SetFarbe(f);
+    this->SetFarbe(Farbe::Schwarz);
+    int maxSizeOption = 0;
 }
 void TControl::HideCursor(HANDLE hConsole) {
     CONSOLE_CURSOR_INFO cursorInfo;
@@ -673,7 +673,7 @@ void TControl::UnitTest() {
 	int budget[4] = { 100,10000,100000,99999999 }; //Budget der Spieler
 	int gekObjAnz[4] = { 5,15,2,3 };//Anzahl gekaufter Objekte der Spieler
 	int gebObjAnz[4] = { 0,2,3,99 };//Anzahl gebaute Objekte der Spieler
-
+	COORD CursorPos = { 0,0 };
     int option = 0;
     bool Spiellaueft = TRUE, RundeVorhanden=FALSE;
     char EingabeCh = MenueOptionen::Reset;
@@ -684,11 +684,11 @@ void TControl::UnitTest() {
 	//Ausgabe des Startbildschirms
     do
     {
-        DWORD start_time = GetTickCount64();
+        DWORD StartZeit = GetTickCount64();
         TestControl.AusgabeStartBildschirm(TRUE, x/2-43 , y/2-11);
-        DWORD elapsed_time = GetTickCount64() - start_time;
-        if (elapsed_time < FRAME_DURATION) {
-            Sleep(FRAME_DURATION - elapsed_time);
+        DWORD ZeitDifferenz = GetTickCount64() - StartZeit;
+        if (ZeitDifferenz < FRAME_DURATION) {
+            Sleep(FRAME_DURATION - ZeitDifferenz);
         }
     } while (!_kbhit());
 	std::cin.clear();
@@ -716,13 +716,13 @@ void TControl::UnitTest() {
             break;
         case KEY_DOWN:
 		case KEY_S:
-            if (option < this->MenueStartOptionen.size() - 3 && MenueAuswahl==Menues::Start) {
+            if (option < GetAnzMenuepunkteStartOptionen() - 1 && MenueAuswahl==Menues::Start) {
                 option++;
             }
-            else if (option < this->MenueSpielOptionen.size() - 3 && MenueAuswahl == Menues::Optionen) {
+            else if (option < GetAnzMenuepunkteSpielOptionen() - 1 && MenueAuswahl == Menues::Optionen) {
                 option++;
             }
-            else if (option < this->MenueHandelsOptionen.size() - 3 && MenueAuswahl == Menues::Handel) {
+            else if (option < GetAnzMenuepunkteHandelsOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
                 option++;
             }
             break;
@@ -739,20 +739,20 @@ void TControl::UnitTest() {
         case KEY_SPACE:
             switch (MenueAuswahl)
             {
-            case TControl::Menues::Start:
+            case Menues::Start:
                 system("cls");
                 if (option == MenueOptionen::Start) { 
-					MenueAuswahl = Menues::Handel;
+					MenueAuswahl = Menues::Spieler;
                     RundeVorhanden = TRUE;
                     UpdateSpielfeld = TRUE;
                 }
-                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size()/2-8, y / 2 + this->MenueStartOptionen.size() + 2); }
+                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size()/2-8, y / 2 + GetAnzMenuepunkteStartOptionen() + 2); }
                 if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                 if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
                 break;
-            case TControl::Menues::Handel:
-                this->coord = { short(x / 2 - 160), short(y / 2 - 36) };
-                SetConsoleCursorPosition(this->hConsole, this->coord);
+            case Menues::Spieler:
+                CursorPos = { short(x / 2 - 160), short(y / 2 - 36) };
+                TestControl.UpdateCursorPosition(CursorPos);
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln)
                 {
                     
@@ -779,36 +779,45 @@ void TControl::UnitTest() {
                 TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
                 TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
                 break;
-            case TControl::Menues::Optionen:
+            case Menues::Optionen:
                 system("cls");
 
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Fortfahren) {
                     if (RundeVorhanden) {
                         UpdateSpielfeld = TRUE;
-						MenueAuswahl = Menues::Handel;
+						MenueAuswahl = Menues::Spieler;
                     }
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
                     
                     if (RundeVorhanden) {
-                        this->coord = { short(x / 2 - this->MenueSpielOptionen[7].size() / 2), short(y / 2 + this->MenueStartOptionen.size() + 1) };
-                        SetConsoleCursorPosition(this->hConsole, this->coord);
-                        std::cout <<setw(this->MenueSpielOptionen[7].size()) << "Spiel wird gespeichert!";
+                        CursorPos = { short(x / 2 - GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + GetAnzMenuepunkteSpielOptionen() + 1) };
+                        TestControl.UpdateCursorPosition(CursorPos);
+                        std::cout <<setw(GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
                     }
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
-                    this->coord = { short(x / 2 - this->MenueSpielOptionen[7].size() / 2), short(y / 2 + this->MenueStartOptionen.size() + 1) };
-                    SetConsoleCursorPosition(this->hConsole, this->coord);
-                    std::cout << setw(this->MenueSpielOptionen[7].size()) << "Spiel wird geladen!";
+                    CursorPos = { short(x / 2 - GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + GetAnzMenuepunkteSpielOptionen() + 1) };
+                    TestControl.UpdateCursorPosition(CursorPos);
+                    std::cout << setw(GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
 					RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                 }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + this->MenueStartOptionen.size() + 2);}
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + GetAnzMenuepunkteSpielOptionen() + 2);}
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 9) { Spiellaueft = FALSE; }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + this->MenueStartOptionen.size()+2); }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + GetAnzMenuepunkteSpielOptionen()+2); }
                 
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) { MenueAuswahl = MenueLetztes; UpdateSpielfeld = TRUE;}
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) { 
+                    MenueAuswahl = MenueLetztes;
+                    if (MenueAuswahl==Menues::Start)
+                    {
 
+                    }
+                    else if (MenueAuswahl==Menues::Spieler)
+                    {
+                        UpdateSpielfeld = TRUE;
+                    }
 
+                }
                 break;
             default:
                 break;
@@ -823,14 +832,14 @@ void TControl::UnitTest() {
         //Ausgabe des ausgewählten Menüs
         switch (MenueAuswahl)
         {
-        case TControl::Menues::Start:
-            TestControl.AusgabeStartMenu(option, x / 2 - this->MenueStartOptionen[4].size() / 2, y / 2 - this->MenueStartOptionen.size() / 2);
+        case Menues::Start:
+            TestControl.AusgabeStartMenu(option, x / 2 - GetLaengstenStringMenueStartOptionen() / 2, y / 2 - GetAnzMenuepunkteStartOptionen() / 2);
             break;
-        case TControl::Menues::Handel:
-            TestControl.AusgabeHandelsOptionen(option, x / 2 - 160, y / 2 - 44, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
+        case Menues::Spieler:
+            TestControl.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
             break;
-        case TControl::Menues::Optionen:
-            TestControl.AusgabeSpielOptionen(option, x / 2 - this->MenueSpielOptionen[7].size()/2, y / 2 - this->MenueSpielOptionen.size() / 2);
+        case Menues::Optionen:
+            TestControl.AusgabeSpielOptionen(option, x / 2 - GetLaengstenStringMenueSpielOptionen() /2, y / 2 - GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         default:
             break;
@@ -1033,4 +1042,44 @@ void TControl::AusgabeTestFeld(int x, int y) {
         std::cout << std::endl;
     }
 
+}
+
+int TControl::GetLaengstenStringMenueStartOptionen(void){
+    int tempMax = 0;
+    for (std::string option : this->MenueStartOptionen) {
+        if (option.size() > tempMax) {
+            tempMax = option.size();
+        }
+    }
+	return tempMax;
+}
+int TControl::GetLaengstenStringMenueSpielOptionen(void) {
+    int tempMax = 0;
+    for (std::string option : this->MenueSpielOptionen) {
+        if (option.size() > tempMax) {
+            tempMax = option.size();
+        }
+    }
+    return tempMax;
+}
+int TControl::GetLaengstenStringMenueHandelsOptionen(void) {
+    int tempMax = 0;
+    for (std::string option : this->MenueHandelsOptionen) {
+        if (option.size() > tempMax) {
+            tempMax = option.size();
+        }
+    }
+    return tempMax;
+}
+int TControl::GetAnzMenuepunkteStartOptionen(void) {
+    return MenueStartOptionen.size() - 2;
+}
+int TControl::GetAnzMenuepunkteSpielOptionen(void){
+    return MenueSpielOptionen.size() - 2;
+}
+int TControl::GetAnzMenuepunkteHandelsOptionen(void) {
+	return MenueHandelsOptionen.size() - 2;  
+}
+void TControl::UpdateCursorPosition(COORD Pos) {
+    SetConsoleCursorPosition(this->hConsole, Pos);
 }

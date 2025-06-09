@@ -70,7 +70,7 @@ private:
 
     enum class Menues {
         Start=100,
-        Handel,
+        Spieler,
         Optionen
     };
     int ZeitKorrekturKonstante = 30;
@@ -127,7 +127,7 @@ private:
 
     //Menüs
     std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","##################################################","Startmenue"};
-    std::vector<std::string> MenueHandelsOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","##################################################","Handelsmenue" };
+    std::vector<std::string> MenueHandelsOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","##################################################","Spielermenue" };
     std::vector<std::string> MenueSpielOptionen = { "Fortfahren","Spiel Speichern","Spiel Laden","Spielregeln","Beenden","Highscore","Zurueck","##################################################","Spielmenue"};
     std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","#############################################","Was willst du machen?" };
 
@@ -153,9 +153,9 @@ public:
     ~TControl();
     void AusgabeStartMenu(int& option, int x, int y);
     void AusgabeSpielOptionen(int& option, int x, int y);
-    void AusgabeHandelsOptionen(int& option, int x, int y, Farbe f);
+    void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
     void AusgabeSpielRegeln(std::vector<std::string> s, int x, int y);
-
+	void AusgabeHandelsMenu(int& option, int x, int y, Farbe f);
     void AusgabeStartBildschirm(bool flip, int x, int y);
     void AusgabeFeld(std::string Feld[], int x, int y);
     void AusgabeSpielerInformationen(   std::string Namen[4],
@@ -176,8 +176,14 @@ public:
                                         Farbe f);
     
     void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
-    void ResetConsole();
 	void AusgabeWuerfel(int wuerfel, int x, int y, Farbe f);
     void UnitTest();
+    int GetLaengstenStringMenueStartOptionen(void);
+    int GetLaengstenStringMenueSpielOptionen(void);
+    int GetLaengstenStringMenueHandelsOptionen(void);
+	int GetAnzMenuepunkteStartOptionen(void);
+    int GetAnzMenuepunkteSpielOptionen(void);
+    int GetAnzMenuepunkteHandelsOptionen(void);
+    void UpdateCursorPosition(COORD Pos);
 };
 
