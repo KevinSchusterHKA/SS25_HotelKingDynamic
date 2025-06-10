@@ -37,23 +37,37 @@ public:
 
 	int getPosition();
 	void setPosition(int p);
+	void incPosition(int p);
 
+	// Würfeln und Pasch
 	int getWurfel(int index);
 	void setWurfel(int w, int index);
+	int wurfeln();
+	bool paschcheck();
 	void Wurfelmechn();
 	void Paschwurf();
-
 	int getAugenzahl();
 	void setAugenzahl(int a);
-
 	int getPaschCounter();
 	void setPaschCounter(int p);
 	void incPaschCounter();
 
+	// Gefängnis
 	void insGefaengnis();
+	void decGefaengnisRunden();
 
-	int wurfeln();
-	bool paschcheck();
 	int handel(string request, int preowner);
+	void bezahle(int betrag);
+	void erhalte(int betrag);
+	bool istPleite();
+	void geheZu(int feld);
+
+	void addStrasse(string strasse);
+	void deleteStrasse(string strasse);
+	bool besitztStrasse(string strasse);
+
+	void baueHaus(string strasse);
+	void verkaufeHaus(string strasse);
+	int anzahlHaeuser(string strasse);
 };
 

@@ -16,6 +16,12 @@ void player::setBudget(int b)	{this->Budget = b;}
 
 int player::getPosition()		{return this->Position;}
 void player::setPosition(int p) {this->Position = p;}
+void player::incPosition(int p) {
+	this->Position += p;
+	if (this->Position >= 40) { // Eine Runde Übergangen
+		this->Position -= 40;
+	}
+}
 
 int player::getWurfel(int index)			{return this->Wurfelzahl[index];}
 void player::setWurfel(int w, int index)	{this->Wurfelzahl[index] = w;}
@@ -24,12 +30,14 @@ void player::Wurfelmechn() {
 		this->setWurfel(this->wurfeln(), i);
 	}
 	this->setAugenzahl(this->getWurfel(0) + this->getWurfel(1));
+	this->incPosition(this->getAugenzahl());
 }
 void player::Paschwurf() {
 	for (int i = 0; i < 2; i++) {
 		this->setWurfel(1, i);
 	}
 	this->setAugenzahl(this->getWurfel(0)+this->getWurfel(1));
+	this->incPosition(this->getAugenzahl());
 }
 
 int player::getAugenzahl()			{return this->Augenzahl;}
@@ -43,6 +51,14 @@ void player::insGefaengnis() {
 	this->ImGefaengnis = true;
 	this->GefaengnisRunden = 3;
 	this->Position = 10; // Gefängnisfeld
+}
+void player::decGefaengnisRunden() {
+	if (this->GefaengnisRunden > 0) {
+		this->GefaengnisRunden--;
+	}
+	if (this->GefaengnisRunden == 0) {
+		this->ImGefaengnis = false;
+	}
 }
 
 mt19937 Zufall(time(nullptr));
@@ -71,6 +87,77 @@ int player::handel(string r, int preowner) {
 		}
 	}
 	return angebot;
+}
+
+void player::bezahle(int betrag) {
+	if(this->Budget - betrag >= 0) {
+		this->Budget -= betrag;
+	} else {
+		cout << "Sie koennen nicht bezahlen" << endl;
+	}
+}
+void player::erhalte(int betrag)	{ this->Budget += betrag; }
+bool player::istPleite()			{ if(this->Budget <= 0){return true;} }
+void player::geheZu(int feld){
+	if (feld < 0 || feld >= 40) {
+		return;					// Ungültiges Feld, nichts tun	
+	}
+	this->Position = feld;
+	if (this->Position == 10) { // Gefängnisfeld
+		this->insGefaengnis();
+	}
+}
+
+void player::addStrasse(string strasse) {
+	GekaufteStrassen.push_back(strasse);
+	//cout << "Strasse " << strasse << " wurde gekauft.\n";
+}
+void player::deleteStrasse(string strasse) {
+	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
+		if (this->GekaufteStrassen[i] == strasse) {
+			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
+			cout << "Strasse " << strasse << " wurde an den Staat verkauft.\n";
+			return;
+		}
+	}
+	cout << "Diese Strasse besitzen Sie nicht.\n";
+}
+bool player::besitztStrasse(string strasse) {
+	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
+		if (this->GekaufteStrassen[i] == strasse) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void player::baueHaus(string strasse) {
+	if (this->besitztStrasse(strasse)) {
+		this->GebauteHaeuser.push_back(strasse);
+		cout << "Ein Haus wurde auf " << strasse << " gebaut.\n";
+	}
+	else {
+		cout << "Sie besitzen die Strasse " << strasse << " nicht.\n";
+	}
+}
+void player::verkaufeHaus(string strasse) {
+	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
+		if (this->GebauteHaeuser[i] == strasse) {
+			this->GebauteHaeuser.erase(this->GebauteHaeuser.begin() + i);
+			cout << "Ein Haus auf " << strasse << " wurde verkauft.\n";
+			return;
+		}
+	}
+	cout << "Sie besitzen kein Haus auf " << strasse << ".\n";
+}
+int player::anzahlHaeuser(string strasse) {
+	int count = 0;
+	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
+		if (this->GebauteHaeuser[i] == strasse) {
+			count++;
+		}
+	}
+	return count;
 }
 
 void UNITTEST(int numCPU, int numHUM, vector<player*> p) {
