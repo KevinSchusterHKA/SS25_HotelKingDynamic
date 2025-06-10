@@ -2,7 +2,7 @@
 #include "CPU_opponent.h"
 
 player::player() {};
-player::player(int budget, int position) { this->Budget = budget; this->Position = position; };
+player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
 player::~player() {};
 
 void player::setID(int id) { this->ID = id; }
@@ -73,22 +73,6 @@ bool player::paschcheck() {
 	return false;
 }
 
-int player::handel(string r, int preowner) {
-	string Strasse = r;
-	int angebot = -1;
-	if (preowner != -1) {
-		cout << "Sie koennen diese Strasse nicht kaufen, Sie gehoert niemandem.\n";
-	}
-	else {
-		cout << "Wie viel Geld moechten Sie fuer diese Strasse anbieten?\n";
-		while (angebot <= 0) {
-			cin >> angebot;
-			if (angebot <= 0) { cout << "Geben Sie bitte ein gueltiges Angebot an.\n"; }
-		}
-	}
-	return angebot;
-}
-
 void player::bezahle(int betrag) {
 	if(this->Budget - betrag >= 0) {
 		this->Budget -= betrag;
@@ -128,6 +112,43 @@ bool player::besitztStrasse(string strasse) {
 			return true;
 		}
 	}
+	return false;
+}
+int player::handel(string r, int preowner) {
+	string Strasse = r;
+	int angebot = -1;
+	if (preowner != -1) {
+		cout << "Sie koennen diese Strasse nicht kaufen, Sie gehoert niemandem.\n";
+	}
+	else {
+		cout << "Wie viel Geld moechten Sie fuer diese Strasse anbieten?\n";
+		while (angebot <= 0) {
+			cin >> angebot;
+			if (angebot <= 0) { cout << "Geben Sie bitte ein gueltiges Angebot an.\n"; }
+		}
+	}
+	return angebot;
+}
+bool player::verkaufeStrasseAn(player* zielspieler, string strasse, int betrag) {
+	if (!this->besitztStrasse(strasse)) {
+		cout << "Du besitzt diese Straße nicht.\n";
+		return false;
+	}
+	cout << "Spieler " << zielspieler->getID() << ", akzeptierst du das Angebot von "
+		<< betrag << " für die Straße " << strasse << "? (j/n)\n";
+	char antwort;
+	cin >> antwort;
+	if (antwort == 'j' || antwort == 'J') {
+		this->deleteStrasse(strasse);
+		this->setBudget(this->getBudget() + betrag);
+
+		zielspieler->addStrasse(strasse);
+		zielspieler->setBudget(zielspieler->getBudget() - betrag);
+
+		cout << "Handel abgeschlossen.\n";
+		return true;
+	}
+	cout << "Handel abgelehnt.\n";
 	return false;
 }
 

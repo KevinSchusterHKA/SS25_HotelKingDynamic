@@ -24,7 +24,7 @@ private:
 
 public:
 	player();
-	player(int budget, int position);
+	player(int id, int budget, int position);
 	~player();
 
 	void setID(int id);
@@ -56,7 +56,6 @@ public:
 	void insGefaengnis();
 	void decGefaengnisRunden();
 
-	int handel(string request, int preowner);
 	void bezahle(int betrag);
 	void erhalte(int betrag);
 	bool istPleite();
@@ -65,6 +64,8 @@ public:
 	void addStrasse(string strasse);
 	void deleteStrasse(string strasse);
 	bool besitztStrasse(string strasse);
+	int handel(string request, int preowner);
+	bool verkaufeStrasseAn(player* zielspieler, string strasse, int betrag);
 
 	void baueHaus(string strasse);
 	void verkaufeHaus(string strasse);
