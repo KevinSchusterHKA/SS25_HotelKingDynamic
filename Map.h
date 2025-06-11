@@ -49,7 +49,7 @@ public:
 				out += Spaces[i].toStr(j) + Buffer + Spaces[50-i].toStr(j);
 				out += "\n";
 			}
-			
+
 		}
 		for (int i = 0; i < _dimY; i++)
 		{

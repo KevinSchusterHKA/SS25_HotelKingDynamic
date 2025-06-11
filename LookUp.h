@@ -3,6 +3,7 @@
 #include "SpaceConfig.h"
 #include "MapReturnObj.h"
 
+
 using namespace std;
 
 const int _dimX = 20;
