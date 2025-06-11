@@ -123,7 +123,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ServerEngine.cpp" />
+    <ClCompile Include="TServerEngine.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TServerEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

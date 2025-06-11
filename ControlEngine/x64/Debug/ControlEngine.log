@@ -1,0 +1,46 @@
+﻿  TControl.cpp
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\LookUp.h(9,23): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'TControl.cpp')
+  
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(95,31): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(113,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(114,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(169,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(273,41): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(283,21): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(292,20): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(302,23): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(309,29): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(315,21): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(323,21): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(324,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(330,21): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(344,27): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(368,27): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(389,61): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(469,63): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(551,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(709,25): warning C4244: 'initializing': conversion from 'ULONGLONG' to 'DWORD', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(711,29): warning C4244: 'initializing': conversion from 'ULONGLONG' to 'DWORD', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(722,26): warning C4244: 'initializing': conversion from 'ULONGLONG' to 'DWORD', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(771,143): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(831,169): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(833,181): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(883,28): warning C4244: 'initializing': conversion from 'ULONGLONG' to 'DWORD', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(943,23): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1032,21): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1035,22): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1053,31): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1056,36): warning C4267: '=': conversion from 'size_t' to 'SHORT', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1076,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1085,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1094,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1100,38): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1103,38): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\TControl.cpp(1106,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  main.cpp
+C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\LookUp.h(9,23): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+  Generating Code...
+  ControlEngine.vcxproj -> C:\Users\SG\source\repos\KevinSchusterHKA\SS25_HotelKingDynamic\x64\Debug\ControlEngine.exe
