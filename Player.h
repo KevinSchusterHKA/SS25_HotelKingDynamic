@@ -10,6 +10,7 @@ class player
 private:
 	int ID;
 	int Human; //"HUMAN" or "CPU1" or "CPU2"....
+	string Name;
 	int Budget	 = 1500;
 	int Position = 0;
 	vector<int> Wurfelzahl	= { 0, 0 };
@@ -25,6 +26,7 @@ private:
 public:
 	player();
 	player(int id, int budget, int position);
+	player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<string> gekauftestrassen, vector<string> gebautehaeser);
 	~player();
 
 	void getData();
@@ -32,6 +34,8 @@ public:
 	int getID();
 	int getHuman();
 	void setHuman(int h);
+	string getName();
+	void setName(string name);
 
 	int getBudget();
 	void setBudget(int b);

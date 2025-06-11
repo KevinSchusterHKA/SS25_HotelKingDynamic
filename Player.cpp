@@ -3,6 +3,8 @@
 
 player::player() {};
 player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
+player::player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<string> gekauftestrassen, vector<string> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
+
 player::~player() {};
 
 void player::getData() {
@@ -19,8 +21,10 @@ void player::getData() {
 	}
 	cout << endl << endl;
 }
-void player::setID(int id) { this->ID = id; }
-int player::getID() { return this->ID; }
+void player::setID(int id)	{ this->ID = id; }
+int player::getID()			{ return this->ID; }
+string player::getName()			{ return this->Name; }
+void player::setName(string name)	{ this->Name = name; }
 
 void player::setHuman(int h) { this->Human = h; }
 int player::getHuman() { return this->Human; }
