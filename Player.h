@@ -27,6 +27,7 @@ public:
 	player(int id, int budget, int position);
 	~player();
 
+	void getData();
 	void setID(int id);
 	int getID();
 	int getHuman();
@@ -55,6 +56,7 @@ public:
 	// Gefängnis
 	void insGefaengnis();
 	void decGefaengnisRunden();
+	bool imGefaengnis();
 
 	void bezahle(int betrag);
 	void erhalte(int betrag);
