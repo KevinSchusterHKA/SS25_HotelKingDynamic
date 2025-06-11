@@ -6,31 +6,34 @@
 #include <fstream>
 
 Logger::Logger() {
-    std::time_t now = std::time(nullptr);
-    std::tm localTimeStruct; 
-
     
-    if (localtime_s(&localTimeStruct, &now) == 0) { 
-        std::ostringstream oss;
-        oss << std::put_time(&localTimeStruct, "%Y-%m-%d_%H-%M-%S");
-        path = oss.str();
-        
-    }
-    else {
-        std::cerr << "LoggerFehler: Zeit konnte nicht ermittelt werden" << std::endl;
-    }
-    
+    path = "log";
     
     round = 0;
     
 }
 
-Logger::Logger(int round, std::string actualPlayer, std::string path) {
+Logger::Logger(int round, std::string actualPlayer) {
     this->round = round;
     this->actualPlayer = actualPlayer;
-    this->path = path;
+    path= "log";
 
-    writeToFile("\nSpielstand wurde geladen!\n\n");
+
+
+    std::time_t now = std::time(nullptr);
+    std::tm localTimeStruct;
+
+
+    if (localtime_s(&localTimeStruct, &now) == 0) {
+        std::ostringstream oss;
+        oss << std::put_time(&localTimeStruct, "%Y-%m-%d_%H-%M-%S");
+        writeToFile("\n-----------------------Spielstand wurde geladen! " + oss.str() + "--------------------------\n");
+
+    }
+    else {
+        std::cerr << "LoggerFehler: Zeit konnte nicht ermittelt werden" << std::endl;
+    }
+   
     writeToFile("Runde " + std::to_string(round) + ":\n\t");
     writeToFile("\n\t" + actualPlayer + ":\n\t\t");
 
@@ -48,9 +51,25 @@ void Logger::writeToFile(std::string text) {
     file.close();
 }
 
+
+void Logger::newGame() {
+    std::time_t now = std::time(nullptr);
+    std::tm localTimeStruct;
+
+
+    if (localtime_s(&localTimeStruct, &now) == 0) {
+        std::ostringstream oss;
+        oss << std::put_time(&localTimeStruct, "%Y-%m-%d_%H-%M-%S");
+        writeToFile("\n-----------------------Neues Spiel " +oss.str()+"--------------------------\n");
+
+    }
+    else {
+        std::cerr << "LoggerFehler: Zeit konnte nicht ermittelt werden" << std::endl;
+    }
+}
 void Logger::newRound() {
     round++;
-
+    writeToFile("\n");
     writeToFile("Runde " + std::to_string(round)+":\n\t");
 }
 
@@ -90,4 +109,9 @@ void Logger::playerBuysObject(std::string object) {
 
 void Logger::playerBuildsBuilding(std::string building) {
     writeToFile("Spieler hat ein " + building + " gebaut \n\t\t");
+}
+
+void Logger::playerMoney(std::string player, int money) {
+    writeToFile("Der Spieler " + player + " besitzt "+ std::to_string(money) +"€ \n\t\t");
+
 }

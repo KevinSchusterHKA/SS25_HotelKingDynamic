@@ -1,0 +1,112 @@
+-----------------------Neues Spiel 2025-06-11_03-00-28--------------------------
+
+Runde 1:
+	
+	Spieler1:
+		Spieler hat eine 4 und eine 4 gewürfelt. Somit hat er ein pasch.
+		Spieler ist nun auf straße
+		Spieler hat eine 3 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße2
+		Spieler hat Das Objekt straße2 gekauft 
+		
+	Spieler2:
+		Spieler hat eine 5 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße6
+		
+Runde 2:
+	-----------------------Neues Spiel 2025-06-11_03-00-49--------------------------
+
+Runde 1:
+	
+	Spieler1:
+		Spieler hat eine 4 und eine 4 gewürfelt. Somit hat er ein pasch.
+		Spieler ist nun auf straße
+		Spieler hat eine 3 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße2
+		Spieler hat Das Objekt straße2 gekauft 
+		
+	Spieler2:
+		Spieler hat eine 5 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße6
+		
+Runde 2:
+	
+-----------------------Neues Spiel 2025-06-11_03-01-05--------------------------
+
+Runde 1:
+	
+	Spieler1:
+		Spieler hat eine 4 und eine 4 gewürfelt. Somit hat er ein pasch.
+		Spieler ist nun auf straße
+		Spieler hat eine 3 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße2
+		Spieler hat Das Objekt straße2 gekauft 
+		
+	Spieler2:
+		Spieler hat eine 5 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße6
+		
+Runde 2:
+	
+-----------------------Neues Spiel 2025-06-11_03-02-36--------------------------
+
+Runde 1:
+	
+	Spieler1:
+		Spieler hat eine 4 und eine 4 gewürfelt. Somit hat er ein pasch.
+		Spieler ist nun auf straße
+		Spieler hat eine 3 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße2
+		Spieler hat Das Objekt straße2 gekauft 
+		
+	Spieler2:
+		Spieler hat eine 5 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße6
+		
+Runde 2:
+	
+-----------------------Neues Spiel 2025-06-11_03-03-08--------------------------
+
+Runde 1:
+	
+	Spieler1:
+		Spieler hat eine 4 und eine 4 gewürfelt. Somit hat er ein pasch.
+		Spieler ist nun auf straße
+		Spieler hat eine 3 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße2
+		Spieler hat Das Objekt straße2 gekauft 
+		
+	Spieler2:
+		Spieler hat eine 5 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße6
+		
+Runde 2:
+	
+Spielstand wurde geladen!
+
+Runde 1:
+	
+	Spieler2:
+		
+-----------------------Neues Spiel 2025-06-11_03-04-12--------------------------
+
+Runde 1:
+	
+	Spieler1:
+		Spieler hat eine 4 und eine 4 gewürfelt. Somit hat er ein pasch.
+		Spieler ist nun auf straße
+		Spieler hat eine 3 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße2
+		Spieler hat Das Objekt straße2 gekauft 
+		
+	Spieler2:
+		Spieler hat eine 5 und eine 4 gewürfelt. 
+		Spieler ist nun auf straße6
+		
+Runde 2:
+	
+-----------------------Spielstand wurde geladen! 2025-06-11_03-04-12--------------------------
+Runde 1:
+	
+	Spieler2:
+		
