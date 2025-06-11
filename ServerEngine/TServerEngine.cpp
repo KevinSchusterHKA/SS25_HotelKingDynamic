@@ -8,7 +8,7 @@ TServer::TServer(){
 TServer::~TServer(){
 }
 
-int TServer::main() {
+void TServer::UnitTest() {
 
     enum MenueOptionen {
         Reset = -1,
@@ -55,7 +55,10 @@ int TServer::main() {
     char EingabeCh = MenueOptionen::Reset;
     bool UpdateSpielfeld = FALSE;
     int AnzahlSpieler = 4;
+    int MomentanerSpieler = 0;
     int x = 0, y = 0;
+
+	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
     TestControl.GetMaximizedConsoleSize(x, y);
     //Ausgabe des Startbildschirms
     do
@@ -75,6 +78,32 @@ int TServer::main() {
     {
         DWORD start_time = GetTickCount64();
 
+        if (player[MomentanerSpieler].imGefaengnis())
+        {
+            player[MomentanerSpieler].decGefaengnisRunden();
+            MomentanerSpieler++;
+        }
+        if (MomentanerSpieler >= AnzahlSpieler) {
+            MomentanerSpieler = 0;
+		}
+
+        switch (MomentanerSpieler)
+        {
+        case 0:
+            MomentanerSpielerFarbe = Farbe::BG_Rot;
+            break;
+        case 1:
+            MomentanerSpielerFarbe = Farbe::BG_Gruen;
+            break;
+        case 2:
+            MomentanerSpielerFarbe = Farbe::BG_Gelb;
+            break;
+        case 3:
+            MomentanerSpielerFarbe = Farbe::BG_Blau;
+            break;
+        default:
+            break;
+        }
 
         EingabeCh = MenueOptionen::Reset;
         if (_kbhit()) {
@@ -122,7 +151,19 @@ int TServer::main() {
                     RundeVorhanden = TRUE;
                     UpdateSpielfeld = TRUE;
                 }
-                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteStartOptionen() + 2); }
+				if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
+					std::vector<HighscoreEntry> player;
+					load_highscores("highscores.txt", player);
+                    std::vector<std::string> playerNames;
+                    std::vector<int> playerScore;
+                    for (size_t i = 0; i < player.size(); i++)
+                    {
+                        playerNames.push_back(player[i].playerName);
+                        playerScore.push_back(player[i].score);
+                    }
+
+                    TestControl.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - TestControl.GetLaengstenStringMenueStartOptionen() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteStartOptionen() + 2);
+                }
                 if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                 if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
                 break;
@@ -134,7 +175,11 @@ int TServer::main() {
 
                     std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler X: wirft den Wuerfel!";
 
-                    TestControl.AusgabeWuerfel(3, x / 2 - 160, y / 2 - 30, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
+                    int wuerfel1 = player[MomentanerSpieler].wurfeln();
+                    int wuerfel2 = player[MomentanerSpieler].wurfeln();
+                    
+                    TestControl.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
+                    TestControl.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen)
                 {
@@ -184,7 +229,9 @@ int TServer::main() {
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen() + 2); }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 9) { Spiellaueft = FALSE; }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen() + 2); }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { 
+                    TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen() + 2); 
+                }
 
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) {
                     MenueAuswahl = MenueLetztes;
@@ -216,7 +263,7 @@ int TServer::main() {
             TestControl.AusgabeStartMenu(option, x / 2 - TestControl.GetLaengstenStringMenueStartOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteStartOptionen() / 2);
             break;
         case Menues::Spieler:
-            TestControl.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
+            TestControl.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
             break;
         case Menues::Optionen:
             TestControl.AusgabeSpielOptionen(option, x / 2 - TestControl.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteSpielOptionen() / 2);
@@ -239,6 +286,10 @@ int TServer::main() {
             Sleep(FRAME_DURATION - elapsed_time);
         }
     }
-	return 0;
+}
+int main() {
+    TServer server;
+    server.UnitTest();
+    return 0;
 }
 

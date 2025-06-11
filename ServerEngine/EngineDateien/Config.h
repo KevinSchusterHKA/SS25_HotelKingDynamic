@@ -54,8 +54,6 @@ bool load_highscores(const std::string& filename, std::vector<HighscoreEntry>& h
 bool save_highscores(const std::string& filename, const std::vector<HighscoreEntry>& highscores);
 void sort_highscores(std::vector<HighscoreEntry>& highscores);
 
-bool log_action(const std::string& filename, const std::string& action);
-bool load_log(const std::string& filename, std::vector<std::string>& logLines);
 
 bool save_game(const std::string& filename, const GameState& state);
 bool load_game(const std::string& filename, GameState& state);

@@ -80,27 +80,6 @@ void sort_highscores(std::vector<HighscoreEntry>& highscores) {
         });
 }
 
-// Aktion ins Log schreiben
-bool log_action(const std::string& filename, const std::string& action) {
-    std::ofstream file(filename, std::ios::app);      // An Datei anhängen
-    if (!file.is_open()) return false;
-    file << action << "\n";                           // Neue Aktion schreiben
-    return true;
-}
-
-// Liest alle Logeinträge in einen Vektor
-bool load_log(const std::string& filename, std::vector<std::string>& logLines) {
-    std::ifstream file(filename);
-    if (!file.is_open()) return false;
-
-    logLines.clear();       // Vektor leeren
-    std::string line;
-    while (std::getline(file, line)) {
-        logLines.push_back(line);       // Zeile hinzufügen
-    }
-    return true;
-}
-
 // Spielstand speichern in eine Datei
 bool save_game(const std::string& filename, const GameState& state) {
     std::ofstream file(filename);

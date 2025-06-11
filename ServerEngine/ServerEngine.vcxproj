@@ -147,6 +147,9 @@
     <ClInclude Include="EngineDateien\TControl.h" />
     <ClInclude Include="TServerEngine.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="highscore.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -13,7 +13,7 @@ class TServer
 public:
 	TServer();
 	~TServer();
-	int main();
+	void UnitTest();
 private:
 	TControl control;
 	cpu_player1 cpu[2];
