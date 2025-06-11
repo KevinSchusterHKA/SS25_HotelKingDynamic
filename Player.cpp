@@ -147,11 +147,11 @@ int player::handel(string r, int preowner) {
 }
 bool player::verkaufeStrasseAn(player* zielspieler, string strasse, int betrag) {
 	if (!this->besitztStrasse(strasse)) {
-		cout << "Du besitzt diese Straße nicht.\n";
+		cout << "Du besitzt diese Strasse nicht.\n";
 		return false;
 	}
 	cout << "Spieler " << zielspieler->getID() << ", akzeptierst du das Angebot von "
-		<< betrag << " für die Straße " << strasse << "? (j/n)\n";
+		<< betrag << " für die Strasse " << strasse << "? (j/n)\n";
 	char antwort;
 	cin >> antwort;
 	if (antwort == 'j' || antwort == 'J') {
