@@ -301,13 +301,25 @@ void TServer::UnitTest() {
 
         if (UpdateSpielfeld)
         {
-            //TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
             TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
-            std::vector<std::string> tempNamen;
+            /*std::vector<std::string> Namen;
+            std::vector<std::vector<std::string>> gekObjNamen;
+            std::vector<std::vector<std::string>> gebObjNamen;
             std::vector<int> tempBudgets;
-
+            std::vector<int> gekObjAnz;
+            std::vector<int> gebObjAnz;*/
+    //        for (size_t i = 0; i < 4; i++)
+    //        {
+    //            Namen.push_back(player[i].getName());
+				//gekObjNamen[i].push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
+				//gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
+    //            tempBudgets.push_back(player[i].getBudget());
+				//gekObjAnz.push_back(player[i].getGekObjAnz);          // Hier wird angenommen, dass getGekObjAnz() eine int zurückgibt
+				//gebObjAnz.push_back(player[i].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurückgibt
+    //        }
             
-            TestControl.AusgabeSpielerInformationen(tempNamen.data(), player.get, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+            //TestControl.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
+            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz , AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
         }
 
 

@@ -1,85 +1,85 @@
 #include "Player.h"
-#include "CPU_opponent.h"
+//#include "CPU_opponent.h"
 //######################################################################################################################################Temp
-struct Property {//temp just for test
-	std::string name;
-	int price;
-};
-class Map {//temp just for test
-public:
-	int getPropertyPrice(int pos) {
-		switch (pos) {
-		case 1: return 200;
-		case 3: return 201;
-		case 5: return 202;
-		case 6: return 205;
-		default:
-			std::cout << "Keine kaufbare Strabe auf Position " << pos << ".\n";
-			return -1;
-		}
-	}
-	std::vector<int> getOwnedProperties(int playerID) {
-		if (playerID == 0) return { 1, 5 };
-		if (playerID == 1) return { 3 };
-		if (playerID == 2) return { 6 };
-		return {};
-	}
-	int getStreetPrice(int pos) {
-		switch (pos) {
-		case 1:
-			return 200;
-		case 3:
-			return 201;
-		case 5:
-			return 202;
-		case 6:
-			return 205;
-		default:
-			std::cout << "Keine kaufbare Strabe auf Position " << pos << ".\n";
-			return -1;
-		}
-	}
-	bool buyStreet(int pos, int playerID) {
-		switch (pos) {
-		case 1:
-			std::cout << "a " << playerID << " kann kaufen\n";
-			return true;
-		case 3:
-			std::cout << "b " << playerID << " kann nicht gekauft\n";
-			return false;
-		case 5:
-			std::cout << "c " << playerID << " kann kaufen\n";
-			return true;
-		case 6:
-			std::cout << "d " << playerID << " kann kaufen\n";
-			return true;
-		default:
-			std::cout << "Keine kaufbare Strabe auf Position " << pos << ".\n";
-			return false;
-		}
-	}
-};
-
-std::vector<Property> getTempPropertiesForPlayer(int playerID) {//temp just for test
-	std::vector<Property> props;
-	if (playerID == 0) {
-		props.push_back({ "a0", 350 });
-		props.push_back({ "b0", 400 });
-	}
-	else if (playerID == 1) {
-		props.push_back({ "c1", 60 });
-	}
-	else if (playerID == 2) {
-		props.push_back({ "d2", 150 });
-		props.push_back({ "e2", 200 });
-	}
-	return props;
-}
+//struct Property {//temp just for test
+//	std::string name;
+//	int price;
+//};
+//class Map {//temp just for test
+//public:
+//	int getPropertyPrice(int pos) {
+//		switch (pos) {
+//		case 1: return 200;
+//		case 3: return 201;
+//		case 5: return 202;
+//		case 6: return 205;
+//		default:
+//			std::cout << "Keine kaufbare Strabe auf Position " << pos << ".\n";
+//			return -1;
+//		}
+//	}
+//	std::vector<int> getOwnedProperties(int playerID) {
+//		if (playerID == 0) return { 1, 5 };
+//		if (playerID == 1) return { 3 };
+//		if (playerID == 2) return { 6 };
+//		return {};
+//	}
+//	int getStreetPrice(int pos) {
+//		switch (pos) {
+//		case 1:
+//			return 200;
+//		case 3:
+//			return 201;
+//		case 5:
+//			return 202;
+//		case 6:
+//			return 205;
+//		default:
+//			std::cout << "Keine kaufbare Strabe auf Position " << pos << ".\n";
+//			return -1;
+//		}
+//	}
+//	bool buyStreet(int pos, int playerID) {
+//		switch (pos) {
+//		case 1:
+//			std::cout << "a " << playerID << " kann kaufen\n";
+//			return true;
+//		case 3:
+//			std::cout << "b " << playerID << " kann nicht gekauft\n";
+//			return false;
+//		case 5:
+//			std::cout << "c " << playerID << " kann kaufen\n";
+//			return true;
+//		case 6:
+//			std::cout << "d " << playerID << " kann kaufen\n";
+//			return true;
+//		default:
+//			std::cout << "Keine kaufbare Strabe auf Position " << pos << ".\n";
+//			return false;
+//		}
+//	}
+//};
+//
+//std::vector<Property> getTempPropertiesForPlayer(int playerID) {//temp just for test
+//	std::vector<Property> props;
+//	if (playerID == 0) {
+//		props.push_back({ "a0", 350 });
+//		props.push_back({ "b0", 400 });
+//	}
+//	else if (playerID == 1) {
+//		props.push_back({ "c1", 60 });
+//	}
+//	else if (playerID == 2) {
+//		props.push_back({ "d2", 150 });
+//		props.push_back({ "e2", 200 });
+//	}
+//	return props;
+//}
 
 //######################################################################################################################################Temp
 player::player() {};
 player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
-player::player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
+player::player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<string> gekauftestrassen, vector<string> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
 
 player::~player() {};
 
@@ -112,7 +112,7 @@ int player::getPosition()		{return this->Position;}
 void player::setPosition(int p) {this->Position = p;}
 void player::incPosition(int p) {
 	this->Position += p;
-	if (this->Position >= 40) { // Eine Runde Ãœbergangen
+	if (this->Position >= 40) { // Eine Runde Übergangen
 		this->Position -= 40;
 	}
 }
@@ -144,7 +144,7 @@ void player::incPaschCounter()		{this->PaschCounter++;}
 void player::insGefaengnis() {
 	this->ImGefaengnis = true;
 	this->GefaengnisRunden = 3;
-	this->Position = 10; // GefÃ¤ngnisfeld
+	this->Position = 10; // Gefängnisfeld
 }
 void player::decGefaengnisRunden() {
 	if (this->GefaengnisRunden > 0) {
@@ -169,29 +169,26 @@ bool player::paschcheck() {
 }
 
 void player::bezahle(int betrag) {
-	if (betrag >= 0) {
-		if (this->Budget - betrag >= 0) {
-			this->Budget -= betrag;
-		}
-		else {
-			cout << "Sie koennen nicht bezahlen" << endl;
-		}
+	if(this->Budget - betrag >= 0) {
+		this->Budget -= betrag;
+	} else {
+		cout << "Sie koennen nicht bezahlen" << endl;
 	}
 }
 void player::erhalte(int betrag)	{ this->Budget += betrag; }
 bool player::istPleite() { if (this->Budget <= 0) { return true; } return false; }
 void player::geheZu(int feld){
 	if (feld < 0 || feld >= 40) {
-		return;					// UngÃ¼ltiges Feld, nichts tun	
+		return;					// Ungültiges Feld, nichts tun	
 	}
 	this->Position = feld;
 }
 
-void player::addStrasse(int strasse) {
+void player::addStrasse(string strasse) {
 	GekaufteStrassen.push_back(strasse);
 	cout << "Strasse " << strasse << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
-void player::deleteStrasse(int strasse) {
+void player::deleteStrasse(string strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
@@ -201,7 +198,7 @@ void player::deleteStrasse(int strasse) {
 	}
 	cout << "Diese Strasse besitzen Sie nicht.\n";
 }
-bool player::besitztStrasse(int strasse) {
+bool player::besitztStrasse(string strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			return true;
@@ -209,8 +206,8 @@ bool player::besitztStrasse(int strasse) {
 	}
 	return false;
 }
-int player::handel(int r, int preowner) {
-	int Strasse = r;
+int player::handel(string r, int preowner) {
+	string Strasse = r;
 	int angebot = -1;
 	if (preowner != -1) {
 		cout << "Sie koennen diese Strasse nicht kaufen, Sie gehoert niemandem.\n";
@@ -224,13 +221,13 @@ int player::handel(int r, int preowner) {
 	}
 	return angebot;
 }
-bool player::verkaufeStrasseAn(player* zielspieler, int strasse, int betrag) {
+bool player::verkaufeStrasseAn(player* zielspieler, string strasse, int betrag) {
 	if (!this->besitztStrasse(strasse)) {
 		cout << "Du besitzt diese Strasse nicht.\n";
 		return false;
 	}
 	cout << "Spieler " << zielspieler->getID() << ", akzeptierst du das Angebot von "
-		<< betrag << " fÃ¼r die Strasse " << strasse << "? (j/n)\n";
+		<< betrag << " für die Strasse " << strasse << "? (j/n)\n";
 	char antwort;
 	cin >> antwort;
 	if (antwort == 'j' || antwort == 'J') {
@@ -247,7 +244,7 @@ bool player::verkaufeStrasseAn(player* zielspieler, int strasse, int betrag) {
 	return false;
 }
 
-void player::baueHaus(int strasse) {
+void player::baueHaus(string strasse) {
 	if (this->besitztStrasse(strasse)) {
 		this->GebauteHaeuser.push_back(strasse);
 		cout << "Ein Haus wurde auf " << strasse << " gebaut.\n";
@@ -256,7 +253,7 @@ void player::baueHaus(int strasse) {
 		cout << "Sie besitzen die Strasse " << strasse << " nicht.\n";
 	}
 }
-void player::verkaufeHaus(int strasse) {
+void player::verkaufeHaus(string strasse) {
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		if (this->GebauteHaeuser[i] == strasse) {
 			this->GebauteHaeuser.erase(this->GebauteHaeuser.begin() + i);
@@ -266,7 +263,7 @@ void player::verkaufeHaus(int strasse) {
 	}
 	cout << "Sie besitzen kein Haus auf " << strasse << ".\n";
 }
-int player::anzahlHaeuser(int strasse) {
+int player::anzahlHaeuser(string strasse) {
 	int count = 0;
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		if (this->GebauteHaeuser[i] == strasse) {
@@ -377,17 +374,17 @@ void UNITTEST() {
 
 	// Testwerte zuweisen: Budget und Strassen
 	p[0]->setBudget(1500);
-	p[0]->addStrasse(9100);
-	p[0]->addStrasse(9200);
+	p[0]->addStrasse("Berliner Platz");
+	p[0]->addStrasse("Hauptstrasse");
 
 	p[1]->setBudget(1200);
-	p[1]->addStrasse(9300);
+	p[1]->addStrasse("Bahnhofstrasse");
 
 	p[2]->setBudget(1000);
-	p[2]->addStrasse(9400);
+	p[2]->addStrasse("Parkallee");
 
 	p[3]->setBudget(800);
-	p[3]->addStrasse(9500);
+	p[3]->addStrasse("Schlossallee");
 
 	// Spielstart
 	int current_player = 0;
@@ -462,8 +459,8 @@ void UNITTEST() {
 			cout << "Handels-Menue\n";
 			cout << "Welche Strasse moechten Sie anbieten?\n";
 			cin.ignore(); // Puffer leeren
-			int strasse;
-			cin >> strasse;
+			string strasse;
+			getline(cin, strasse);
 
 			if (!p[current_player]->besitztStrasse(strasse)) {
 				cout << "Diese Strasse besitzen Sie nicht!\n";
@@ -508,49 +505,49 @@ void UNITTEST() {
 		current_player = (current_player + 1) % p.size();
 	}
 }
-void UNITTEST_cpu() {
-	std::srand(std::time(nullptr));  // random seed 
-	std::vector<player*> players;
-
-	for (int i = 0; i < 2; ++i) {
-		players.push_back(new player());
-		players.back()->setID(i);
-		players.back()->setHuman(HUMAN);
-		players.back()->setBudget(1000);
-		players.back()->setPosition(i);
-	}
-
-	for (int i = 0; i < 5; ++i) {
-		players.push_back(new cpu_player1());
-		players.back()->setID(i + 2);
-		players.back()->setHuman(CPU1);
-		players.back()->setBudget(1000);
-		players.back()->setPosition(i + 3);
-	}
-
-	Map gameMap;
-	int testPositions[] = { 400, 10, 0 };   
-
-	for (size_t i = 0; i < players.size(); ++i) {
-		if (players[i]->getHuman() == CPU1) {
-			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
-			cpu->tryBuyStreet(gameMap, players);
-			cpu->handel(gameMap, cpu->getID(), players.size(), players);
-			int pos = testPositions[i % (sizeof(testPositions) / sizeof(testPositions[0]))];
-			int offer = 390;
-			cpu->acceptTrade(gameMap, pos, offer);
-			std::cout << "##############" << std::endl;
-		}
-	}
-}
-
-
+//void UNITTEST_cpu() {
+//	std::srand(std::time(nullptr));  // random seed 
+//	std::vector<player*> players;
+//
+//	for (int i = 0; i < 2; ++i) {
+//		players.push_back(new player());
+//		players.back()->setID(i);
+//		players.back()->setHuman(HUMAN);
+//		players.back()->setBudget(1000);
+//		players.back()->setPosition(i);
+//	}
+//
+//	for (int i = 0; i < 5; ++i) {
+//		players.push_back(new cpu_player1());
+//		players.back()->setID(i + 2);
+//		players.back()->setHuman(CPU1);
+//		players.back()->setBudget(1000);
+//		players.back()->setPosition(i + 3);
+//	}
+//
+//	Map gameMap;
+//	int testPositions[] = { 400, 10, 0 };   
+//
+//	for (size_t i = 0; i < players.size(); ++i) {
+//		if (players[i]->getHuman() == CPU1) {
+//			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
+//			cpu->tryBuyStreet(gameMap, players);
+//			cpu->handel(gameMap, cpu->getID(), players.size(), players);
+//			int pos = testPositions[i % (sizeof(testPositions) / sizeof(testPositions[0]))];
+//			int offer = 390;
+//			cpu->acceptTrade(gameMap, pos, offer);
+//			std::cout << "##############" << std::endl;
+//		}
+//	}
+//}
 
 
 
-int main() {
-	UNITTEST_cpu();
-	UNITTEST();
-	return 0;
-}
+
+
+//int main() {
+//	UNITTEST_cpu();
+//	UNITTEST();
+//	return 0;
+//}
 

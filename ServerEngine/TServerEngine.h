@@ -1,6 +1,5 @@
 #include "EngineDateien/TControl.h"
 #include "EngineDateien/Config.h"
-#include "EngineDateien/CPU_opponent.h"
 #include "EngineDateien/Logger.h"
 #include "EngineDateien/LookUp.h"
 #include "EngineDateien/Map.h"
