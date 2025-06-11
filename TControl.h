@@ -1,6 +1,5 @@
 #include <string>
 #include <iostream>
-//#include <ncurses.h>
 #include <conio.h>
 #include <algorithm>
 #include <vector>
@@ -8,20 +7,28 @@
 #include <sstream>
 #include <iomanip>
 #include "LookUp.h"
+#include <random>
+
+//#include <ncurses.h> //für Linux, falls benötigt
 
 #define KEY_UP 72     
 #define KEY_DOWN 80   
 #define KEY_LEFT 75   
 #define KEY_RIGHT 77  
 #define KEY_ENTER 13
+#define KEY_ESCAPE 27
+#define KEY_SPACE 32  
+#define KEY_W 119  
+#define KEY_S 115 
+#define KEY_A 97   
+#define KEY_D 100  
+
+
 #define TARGET_FPS 60
 #define FRAME_DURATION 1000 / TARGET_FPS
-
-class TControl{
-private:
-    enum class Farbe {
-    Zuruecksetzen=0,
-    Schwarz=30,
+enum class Farbe {
+    Zuruecksetzen = 0,
+    Schwarz = 30,
     Rot,
     Gruen,
     Gelb,
@@ -29,7 +36,7 @@ private:
     Magenta,
     Cyan,
     Weiss,
-    BG_Schwarz=40,
+    BG_Schwarz = 40,
     BG_Rot,
     BG_Gruen,
     BG_Gelb,
@@ -37,14 +44,21 @@ private:
     BG_Magenta,
     BG_Cyan,
     BG_Weiss
-    };
-    //Menüs
-    std::string arr[2][3] = {
-    { "A", "B", "C" },
-    { "D", "E", "F" }
-    };
+};
+
+
+class TControl{
+private:
+    
+
+    
+
+    
+    int ZeitKorrekturKonstante = 30;
+
+	//ASCII Art
     std::string Hotelking[2][22] = {
-          {
+        {
 "$$\\   $$\\            $$\\               $$\\       $$\\   $$\\ $$\\                     ",
 "$$ |  $$ |           $$ |              $$ |      $$ | $$  |\\__|                    ",
 "$$ |  $$ | $$$$$$\\ $$$$$$\\    $$$$$$\\  $$ |      $$ |$$  / $$\\ $$$$$$$\\   $$$$$$\\  ",
@@ -66,8 +80,8 @@ private:
 "\\_______/  \\____$$ |\\__|  \\__| \\_______|\\__| \\__| \\__|\\__| \\_______|               ",
 "          $$\\   $$ |                                                               ",
 "          \\$$$$$$  |                                                               ",
-"           \\______/                                                                "},
- {
+"           \\______/                 Press any key                                  "},
+        {
  "  /$$   /$$             /$$               /$$       /$$   /$$ /$$                    ",
  " | $$  | $$            | $$              | $$      | $$  /$$/|__/                    ",
  " | $$  | $$  /$$$$$$  /$$$$$$    /$$$$$$ | $$      | $$ /$$/  /$$ /$$$$$$$   /$$$$$$ ",
@@ -89,43 +103,22 @@ private:
  " |_______/  \\____  $$|__/  |__/ \\_______/|__/ |__/ |__/|__/ \\_______/                ",
  "            /$$  | $$                                                                ",
  "           |  $$$$$$/                                                                ",
- "            \\______/                                                                 "}
-
-
-
-        };
-    std::string MenueStartText[7] = {
-        "###################################################",
-        "#              Hotel King Dynamic                 #",
-        "###################################################",
-        "#               [1] Spiel Starten                 #",
-        "#               [2] Highscore                     #",
-        "#               [3] Beenden                       #",
-        "###################################################"
+ "            \\______/                Press any key                                    "}
     };
 
-    //Vielleicht mit Arrays verbessern
-    std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Beenden","###################################################","#                                                 #","Was willst du machen?"};
-    std::vector<std::string> MenueSpielOptionen = { "Kaufen","Bauen","Handeln","###################################################","#                                                 #","Was willst du machen?" };
-    std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","###################################################","#                                                 #","Was willst du machen?" };
+    //Menüs
+    std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","##################################################","Startmenue"};
+    std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","##################################################","Spielermenue" };
+    std::vector<std::string> MenueSpielOptionen = { "Fortfahren","Spiel Speichern","Spiel Laden","Spielregeln","Beenden","Highscore","Zurueck","##################################################","Spielmenue"};
+    std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","#############################################","Was willst du machen?" };
 
-    std::string SpielerAusgabeTextMuster[7] = {
-        "######################################",
-        "#Spielername                         #",
-        "######################################",
-        "#Budget:                   XXXXXXXX  #",
-        "#Anzahl gekaufter Objekte:       XX  #",
-        "#Anzahl gebauter Objekte:        XX  #",
-        "######################################"
-    }; 
-
+    
     std::string GetDigitsInt(int Zahl);
     std::string GetFarbe(Farbe farbe);
     void SetFarbe(Farbe farbe);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord;
     void HideCursor(HANDLE hConsole);
-    void SetConsoleFontSize(int size);
     //BOOL WINAPI SetConsoleCursorPosition(_In_ HANDLE hConsoleOutput,_In_ COORD  dwCursorPosition);
     void AusgabeSpielerBox( std::string Namen,
                             int Budget,
@@ -134,22 +127,44 @@ private:
                             int x,
                             int y,
                             Farbe f);
+    void GetMaximizedConsoleSize(int& width, int& height);
+    void AusgabeTestFeld(int x, int y);
 public:
     TControl();
     ~TControl();
     void AusgabeStartMenu(int& option, int x, int y);
-    void AusgabeFeld(std::string Feld[]);
-    void AusgabeSpielerInformationen(  std::string Namen[4],
-                                                int Budget[4],
-                                                int AnzahlGekaufterObjekte[4],
-                                                int AnzahlGebauterObjekte[4],
-                                                int AnzSpieler, 
-                                                int x,
-                                                int y);
     void AusgabeSpielOptionen(int& option, int x, int y);
-    void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
+    void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
+    void AusgabeSpielRegeln(std::vector<std::string> s, int x, int y);
+	void AusgabeHandelsMenu(int& option, int x, int y, Farbe f);
     void AusgabeStartBildschirm(bool flip, int x, int y);
-    void ResetConsole();
+    void AusgabeFeld(std::string Feld[], int x, int y);
+    void AusgabeSpielerInformationen(   std::string Namen[4],
+                                        int Budget[4],
+                                        int AnzahlGekaufterObjekte[4],
+                                        int AnzahlGebauterObjekte[4],
+                                        int AnzSpieler,
+                                        int x,
+                                        int y,
+                                        std::vector<std::vector<std::string>> GekaufteObjekte,
+                                        std::vector<std::vector<std::string>> GebauteObjekte);
+
+	void AusgabeSpielerInventarAnzeige( std::string Namen,
+                                        std::vector<std::string> GekaufteObjekte,
+                                        std::vector<std::string> GebauteObjekte,
+                                        int x,
+                                        int y,
+                                        Farbe f);
+    
+    void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
+	void AusgabeWuerfel(int wuerfel, int x, int y, Farbe f);
     void UnitTest();
+    int GetLaengstenStringMenueStartOptionen(void);
+    int GetLaengstenStringMenueSpielOptionen(void);
+    int GetLaengstenStringMenueHandelsOptionen(void);
+	int GetAnzMenuepunkteStartOptionen(void);
+    int GetAnzMenuepunkteSpielOptionen(void);
+    int GetAnzMenuepunkteHandelsOptionen(void);
+    void UpdateCursorPosition(COORD Pos);
 };
 
