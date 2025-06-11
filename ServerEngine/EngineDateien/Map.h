@@ -16,6 +16,26 @@ private:
 	int RemainingSpaces = 22;
 
 public:
+	int getStreetPrice(int player) {
+		return Spaces[Playerpos[player]].getPrice();
+	}
+	int getPropertyPrice(int spaceIndex){
+		if (spaceIndex < 0 || spaceIndex >= 40) {
+			return -1;
+		}
+		return Spaces[spaceIndex].getPrice();
+	}
+	std::vector<int> getOwnedProperties(int playerID) {
+		std::vector<int> owned;
+		for (int i = 0; i < 40; i++) {
+			if (Spaces[i].getOwner() == playerID) {  
+				owned.push_back(i);
+			}
+		}
+		return owned;
+	}
+
+
 	Map(int playernumber) {
 		for (int i = 0; i < 40; i++)
 		{
@@ -30,7 +50,7 @@ public:
 			Spaces[0].setPlayer(i);
 		}
 	};
-
+ 
 	string toStr()
 	{
 		string out = _fgcolortable[4];
@@ -170,4 +190,5 @@ public:
 		return "\x1B[2J\x1B[H";
 	}
 };
+
 
