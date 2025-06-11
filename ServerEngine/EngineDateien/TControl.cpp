@@ -62,22 +62,26 @@ void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
 
         
 }
-void TControl::AusgabeFeld(std::string FeldBlock[],int x,int y){
+void TControl::AusgabeFeld(std::string FeldBlock,int x,int y){
 
     int sizeFeldX = 220;
 	int sizeFeldY =  88;
-	this->coord.X = x;
-	this->coord.Y = y;
-    for (size_t i = 0; i < sizeFeldY; i++)
+	this->coord.X = x;               
+	this->coord.Y = y;      
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    for (char var : FeldBlock)
     {
-        for (size_t j = 0; j < sizeFeldX; j++)
+        if (var !='\n')
         {
-			SetConsoleCursorPosition(this->hConsole, this->coord);
-            std::cout << FeldBlock[sizeFeldY*i+j];
-            this->coord.X++;
+            std::cout << var;
         }
-		this->coord.X = x;
-		this->coord.Y++;
+        else
+        {
+            this->coord.Y++;
+            this->coord.X = x;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+        }
     }
 }
 

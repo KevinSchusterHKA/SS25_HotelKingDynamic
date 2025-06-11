@@ -138,7 +138,7 @@ public:
     void AusgabeSpielRegeln(std::vector<std::string> s, int x, int y);
 	void AusgabeHandelsMenu(int& option, int x, int y, Farbe f);
     void AusgabeStartBildschirm(bool flip, int x, int y);
-    void AusgabeFeld(std::string Feld[], int x, int y);
+    void AusgabeFeld(std::string Feld, int x, int y);
     void AusgabeSpielerInformationen(   std::string Namen[4],
                                         int Budget[4],
                                         int AnzahlGekaufterObjekte[4],

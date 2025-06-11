@@ -51,7 +51,7 @@ void TServer::UnitTest() {
     int gebObjAnz[4] = { 0,2,3,99 };//Anzahl gebaute Objekte der Spieler
     COORD CursorPos = { 0,0 };
     int option = 0;
-    bool Spiellaueft = TRUE, RundeVorhanden = FALSE;
+    bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE;
     char EingabeCh = MenueOptionen::Reset;
     bool UpdateSpielfeld = FALSE;
     int AnzahlSpieler = 4;
@@ -82,6 +82,7 @@ void TServer::UnitTest() {
         {
             player[MomentanerSpieler].decGefaengnisRunden();
             MomentanerSpieler++;
+            HatGewuerfelt = false;
         }
         if (MomentanerSpieler >= AnzahlSpieler) {
             MomentanerSpieler = 0;
@@ -170,24 +171,34 @@ void TServer::UnitTest() {
             case Menues::Spieler:
                 CursorPos = { short(x / 2 - 160), short(y / 2 - 36) };
                 TestControl.UpdateCursorPosition(CursorPos);
-                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln)
+                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln )
                 {
 
-                    std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler X: wirft den Wuerfel!";
+                    if (!HatGewuerfelt)
+                    {
+                        std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler "+to_string(MomentanerSpieler+1)+" : wirft den Wuerfel!";
 
-                    int wuerfel1 = player[MomentanerSpieler].wurfeln();
-                    int wuerfel2 = player[MomentanerSpieler].wurfeln();
+                        int wuerfel1 = player[MomentanerSpieler].wurfeln();
+                        int wuerfel2 = player[MomentanerSpieler].wurfeln();
+
+                        TestControl.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
+                        TestControl.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
+                        board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
+                        HatGewuerfelt = TRUE;
+                    }
+                    else {
+                        std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
+                    }
                     
-                    TestControl.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                    TestControl.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                 }
-                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen)
+                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                 {
-                    //Code zum Kaufen von Objekten
-                    std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Kaufen von Objekten ist noch nicht implementiert!" << std::endl;
+                    player[MomentanerSpieler].bezahle(board.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                    std::cout << player[MomentanerSpieler].getBudget();
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
+
                     std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Bauen von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Bauen von Objekten
                 }
@@ -196,9 +207,8 @@ void TServer::UnitTest() {
                     std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Handeln von Objekten
                 }
-
-                TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
-                TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+                UpdateSpielfeld = TRUE;
+                
                 break;
             case Menues::Optionen:
                 system("cls");
@@ -276,7 +286,8 @@ void TServer::UnitTest() {
 
         if (UpdateSpielfeld)
         {
-            TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
+            //TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
+            TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
             TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
         }
 

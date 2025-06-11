@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include "LookUp.h"
 #include "Space.h"
 #include "MapReturnObj.h"
