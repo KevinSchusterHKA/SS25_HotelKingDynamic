@@ -1,6 +1,82 @@
 #include "Player.h"
 #include "CPU_opponent.h"
+//######################################################################################################################################Temp
+struct Property {//temp just for test
+	std::string name;
+	int price;
+};
+class Map {//temp just for test
+public:
+	int getPropertyPrice(int pos) {
+		switch (pos) {
+		case 1: return 200;
+		case 3: return 201;
+		case 5: return 202;
+		case 6: return 205;
+		default:
+			std::cout << "Keine kaufbare Strabe auf Position " << pos << ".\n";
+			return -1;
+		}
+	}
+	std::vector<int> getOwnedProperties(int playerID) {
+		if (playerID == 0) return { 1, 5 };
+		if (playerID == 1) return { 3 };
+		if (playerID == 2) return { 6 };
+		return {};
+	}
+	int getStreetPrice(int pos) {
+		switch (pos) {
+		case 1:
+			return 200;
+		case 3:
+			return 201;
+		case 5:
+			return 202;
+		case 6:
+			return 205;
+		default:
+			std::cout << "Keine kaufbare Strabe auf Position " << pos << ".\n";
+			return -1;
+		}
+	}
+	bool buyStreet(int pos, int playerID) {
+		switch (pos) {
+		case 1:
+			std::cout << "a " << playerID << " kann kaufen\n";
+			return true;
+		case 3:
+			std::cout << "b " << playerID << " kann nicht gekauft\n";
+			return false;
+		case 5:
+			std::cout << "c " << playerID << " kann kaufen\n";
+			return true;
+		case 6:
+			std::cout << "d " << playerID << " kann kaufen\n";
+			return true;
+		default:
+			std::cout << "Keine kaufbare Strabe auf Position " << pos << ".\n";
+			return false;
+		}
+	}
+};
 
+std::vector<Property> getTempPropertiesForPlayer(int playerID) {//temp just for test
+	std::vector<Property> props;
+	if (playerID == 0) {
+		props.push_back({ "a0", 350 });
+		props.push_back({ "b0", 400 });
+	}
+	else if (playerID == 1) {
+		props.push_back({ "c1", 60 });
+	}
+	else if (playerID == 2) {
+		props.push_back({ "d2", 150 });
+		props.push_back({ "e2", 200 });
+	}
+	return props;
+}
+
+//######################################################################################################################################Temp
 player::player() {};
 player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
 player::player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<string> gekauftestrassen, vector<string> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
@@ -242,13 +318,11 @@ bool cpu_player1::acceptTrade(Map& gameMap, int spaceIndex, int offer) {
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 
 	if (offer <= propPrice * (acceptThresholdPercent / 100.0) && offer <= getBudget()) {
-		std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer << " fur '" << prop.name
-			<< '\n' /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
+		std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
 		return true;
 	}
 	else {
-		std::cout << "CPU" << id << "lehnt das Angebot von " << offer << " fur '" << prop.name << '\n';
-		/*<< "' ab (Schwelle: " << acceptThresholdPercent << "%).\n";*/
+		std::cout << "CPU" << id << "lehnt das Angebot von " << offer;/*<< "' ab (Schwelle: " << acceptThresholdPercent << "%).\n";*/
 		return false;
 	}
 }
@@ -452,15 +526,17 @@ void UNITTEST_cpu() {
 	}
 
 	Map gameMap;
+	int testPositions[] = { 400, 10, 0 };   
+
 	for (size_t i = 0; i < players.size(); ++i) {
 		if (players[i]->getHuman() == CPU1) {
 			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
 			cpu->tryBuyStreet(gameMap, players);
-			cpu->handel(cpu->getID(), players.size(), players);
-			Property exampleProp = { "Teststrabe", 400 };
+			cpu->handel(gameMap, cpu->getID(), players.size(), players);
+			int pos = testPositions[i % (sizeof(testPositions) / sizeof(testPositions[0]))];
 			int offer = 390;
-			cpu->acceptTrade(exampleProp, offer);
-			cout << "##############" << endl;
+			cpu->acceptTrade(gameMap, pos, offer);
+			std::cout << "##############" << std::endl;
 		}
 	}
 }
