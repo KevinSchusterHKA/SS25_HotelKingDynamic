@@ -124,7 +124,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="EngineDateien\Config.cpp" />
-    <ClCompile Include="EngineDateien\CPU_opponent.cpp" />
     <ClCompile Include="EngineDateien\Logger.cpp" />
     <ClCompile Include="EngineDateien\Map.cpp" />
     <ClCompile Include="EngineDateien\MapReturnObj.cpp" />
@@ -136,7 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineDateien\Config.h" />
-    <ClInclude Include="EngineDateien\CPU_opponent.h" />
     <ClInclude Include="EngineDateien\Logger.h" />
     <ClInclude Include="EngineDateien\LookUp.h" />
     <ClInclude Include="EngineDateien\Map.h" />

@@ -72,6 +72,7 @@ public:
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
 	bool besitztStrasse(int strasse);
+	cpu_player1 cpu[2];
 	int handel(int request, int preowner);
 	bool verkaufeStrasseAn(player* zielspieler, int strasse, int betrag);
 

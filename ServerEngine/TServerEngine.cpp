@@ -307,7 +307,7 @@ void TServer::UnitTest() {
             std::vector<int> tempBudgets;
 
             
-            TestControl.AusgabeSpielerInformationen(player., player.get, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+            TestControl.AusgabeSpielerInformationen(tempNamen.data(), player.get, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
         }
 
 

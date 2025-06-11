@@ -21,9 +21,6 @@
     <ClCompile Include="EngineDateien\Config.cpp">
       <Filter>Ressourcendateien</Filter>
     </ClCompile>
-    <ClCompile Include="EngineDateien\CPU_opponent.cpp">
-      <Filter>Ressourcendateien</Filter>
-    </ClCompile>
     <ClCompile Include="EngineDateien\Logger.cpp">
       <Filter>Ressourcendateien</Filter>
     </ClCompile>
@@ -51,9 +48,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="EngineDateien\Config.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineDateien\CPU_opponent.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="EngineDateien\Logger.h">
