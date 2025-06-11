@@ -27,6 +27,7 @@ public:
 	player(int id, int budget, int position);
 	~player();
 
+	void getData();
 	void setID(int id);
 	int getID();
 	int getHuman();
@@ -39,7 +40,7 @@ public:
 	void setPosition(int p);
 	void incPosition(int p);
 
-	// Würfeln und Pasch
+	// WÃ¼rfeln und Pasch
 	int getWurfel(int index);
 	void setWurfel(int w, int index);
 	int wurfeln();
@@ -52,9 +53,10 @@ public:
 	void setPaschCounter(int p);
 	void incPaschCounter();
 
-	// Gefängnis
+	// GefÃ¤ngnis
 	void insGefaengnis();
 	void decGefaengnisRunden();
+	bool imGefaengnis();
 
 	void bezahle(int betrag);
 	void erhalte(int betrag);
