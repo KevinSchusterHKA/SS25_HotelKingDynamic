@@ -10,7 +10,7 @@ class player
 private:
 	int ID;
 	int Human; //"HUMAN" or "CPU1" or "CPU2"....
-	int Budget	 = 0;
+	int Budget	 = 1000;
 	int Position = 0;
 	vector<int> Wurfelzahl	= { 0, 0 };
 	int Augenzahl			= 0;

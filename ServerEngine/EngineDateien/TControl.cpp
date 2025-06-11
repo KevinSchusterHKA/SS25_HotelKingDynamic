@@ -748,7 +748,7 @@ void TControl::UnitTest() {
             else if (option < TestControl.GetAnzMenuepunkteSpielOptionen() - 1 && MenueAuswahl == Menues::Optionen) {
                 option++;
             }
-            else if (option < TestControl.GetAnzMenuepunkteHandelsOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
+            else if (option < TestControl.GetAnzMenuepunkteSpielerOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
                 option++;
             }
             break;
@@ -872,7 +872,7 @@ void TControl::UnitTest() {
             TestControl.AusgabeSpielOptionen(option, x / 2 - TestControl.GetLaengstenStringMenueSpielOptionen() /2, y / 2 - TestControl.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
 		case Menues::Handel:
-			TestControl.AusgabeHandelsMenu(option, x / 2 - TestControl.GetLaengstenStringMenueHandelsOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteHandelsOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
+			TestControl.AusgabeHandelsMenu(option, x / 2 - TestControl.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
         default:
             break;
         }
@@ -1091,7 +1091,7 @@ int TControl::GetLaengstenStringMenueSpielOptionen(void) {
     }
     return tempMax;
 }
-int TControl::GetLaengstenStringMenueHandelsOptionen(void) {
+int TControl::GetLaengstenStringMenueSpielerOptionen(void) {
     int tempMax = 0;
     for (std::string option : this->MenueSpielerOptionen) {
         if (option.size() > tempMax) {
@@ -1106,7 +1106,7 @@ int TControl::GetAnzMenuepunkteStartOptionen(void) {
 int TControl::GetAnzMenuepunkteSpielOptionen(void){
     return MenueSpielOptionen.size() - 2;
 }
-int TControl::GetAnzMenuepunkteHandelsOptionen(void) {
+int TControl::GetAnzMenuepunkteSpielerOptionen(void) {
 	return MenueSpielerOptionen.size() - 2;  
 }
 void TControl::UpdateCursorPosition(COORD Pos) {

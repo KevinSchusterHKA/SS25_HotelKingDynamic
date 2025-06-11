@@ -108,7 +108,7 @@ private:
 
     //Menüs
     std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","##################################################","Startmenue"};
-    std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","##################################################","Spielermenue" };
+    std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","Runde Beenden","##################################################","Spielermenue"};
     std::vector<std::string> MenueSpielOptionen = { "Fortfahren","Spiel Speichern","Spiel Laden","Spielregeln","Beenden","Highscore","Zurueck","##################################################","Spielmenue"};
     std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","#############################################","Was willst du machen?" };
 
@@ -162,10 +162,10 @@ public:
     void UnitTest();
     int GetLaengstenStringMenueStartOptionen(void);
     int GetLaengstenStringMenueSpielOptionen(void);
-    int GetLaengstenStringMenueHandelsOptionen(void);
+    int GetLaengstenStringMenueSpielerOptionen(void);
 	int GetAnzMenuepunkteStartOptionen(void);
     int GetAnzMenuepunkteSpielOptionen(void);
-    int GetAnzMenuepunkteHandelsOptionen(void);
+    int GetAnzMenuepunkteSpielerOptionen(void);
     void UpdateCursorPosition(COORD Pos);
 };
 

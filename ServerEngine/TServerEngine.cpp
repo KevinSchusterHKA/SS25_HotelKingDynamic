@@ -19,7 +19,8 @@ void TServer::UnitTest() {
         Wuerfeln,
         Kaufen,
         Bauen,
-        Handeln,
+        Handeln, 
+        RundeBeenden,
         Fortfahren,
         SpielSpeichern,
         SpielLaden,
@@ -35,7 +36,6 @@ void TServer::UnitTest() {
     };
 
 
-    TControl TestControl;
     std::string playerNames[4] = { "a","bbbb","ccccc","ddddddddddddddddddddddddddddddddddddddddddddddddddd" };
     std::vector<std::vector<std::string>> GekObjNamen = { { "Strasse1"},
                                                           { "Strasse2","Gebaeude xyz2"},
@@ -86,7 +86,7 @@ void TServer::UnitTest() {
         }
         if (MomentanerSpieler >= AnzahlSpieler) {
             MomentanerSpieler = 0;
-		}
+        }
 
         switch (MomentanerSpieler)
         {
@@ -128,7 +128,7 @@ void TServer::UnitTest() {
             else if (option < TestControl.GetAnzMenuepunkteSpielOptionen() - 1 && MenueAuswahl == Menues::Optionen) {
                 option++;
             }
-            else if (option < TestControl.GetAnzMenuepunkteHandelsOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
+            else if (option < TestControl.GetAnzMenuepunkteSpielerOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
                 option++;
             }
             break;
@@ -169,7 +169,7 @@ void TServer::UnitTest() {
                 if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
                 break;
             case Menues::Spieler:
-                CursorPos = { short(x / 2 - 160), short(y / 2 - 36) };
+                CursorPos = { short(x / 2 - 160), short(y / 2 - 40 + TestControl.GetAnzMenuepunkteSpielerOptionen()) };
                 TestControl.UpdateCursorPosition(CursorPos);
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln )
                 {
@@ -194,18 +194,23 @@ void TServer::UnitTest() {
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                 {
                     player[MomentanerSpieler].bezahle(board.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                    std::cout << player[MomentanerSpieler].getBudget();
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
-
-                    std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Bauen von Objekten ist noch nicht implementiert!" << std::endl;
-                    //Code zum Bauen von Objekten
+                    player[MomentanerSpieler].bezahle(board.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
                 {
                     std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Handeln von Objekten
+                    //player[MomentanerSpieler].handel(board.(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+
+                }
+                if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
+                {
+                    MomentanerSpieler++;
+                    HatGewuerfelt = false;
+                    system("cls");
                 }
                 UpdateSpielfeld = TRUE;
                 
@@ -238,9 +243,19 @@ void TServer::UnitTest() {
                     RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen() + 2); }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 9) { Spiellaueft = FALSE; }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { 
-                    TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen() + 2); 
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 10) { Spiellaueft = FALSE; }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 13) { 
+                    std::vector<HighscoreEntry> player;
+                    load_highscores("highscores.txt", player);
+                    std::vector<std::string> playerNames;
+                    std::vector<int> playerScore;
+                    for (size_t i = 0; i < player.size(); i++)
+                    {
+                        playerNames.push_back(player[i].playerName);
+                        playerScore.push_back(player[i].score);
+                    }
+
+                    TestControl.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - TestControl.GetLaengstenStringMenueSpielOptionen() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen() + 2);
                 }
 
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) {
@@ -279,7 +294,7 @@ void TServer::UnitTest() {
             TestControl.AusgabeSpielOptionen(option, x / 2 - TestControl.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         case Menues::Handel:
-            TestControl.AusgabeHandelsMenu(option, x / 2 - TestControl.GetLaengstenStringMenueHandelsOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteHandelsOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
+            TestControl.AusgabeHandelsMenu(option, x / 2 - TestControl.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
         default:
             break;
         }
@@ -288,7 +303,11 @@ void TServer::UnitTest() {
         {
             //TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
             TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
-            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+            std::vector<std::string> tempNamen;
+            std::vector<int> tempBudgets;
+
+            
+            TestControl.AusgabeSpielerInformationen(player., player.get, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
         }
 
 
