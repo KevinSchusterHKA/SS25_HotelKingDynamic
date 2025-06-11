@@ -123,9 +123,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EngineDateien\Config.cpp" />
+    <ClCompile Include="EngineDateien\CPU_opponent.cpp" />
+    <ClCompile Include="EngineDateien\Logger.cpp" />
+    <ClCompile Include="EngineDateien\Map.cpp" />
+    <ClCompile Include="EngineDateien\MapReturnObj.cpp" />
+    <ClCompile Include="EngineDateien\Player.cpp" />
+    <ClCompile Include="EngineDateien\Space.cpp" />
+    <ClCompile Include="EngineDateien\SpaceConfig.cpp" />
+    <ClCompile Include="EngineDateien\TControl.cpp" />
     <ClCompile Include="TServerEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EngineDateien\Config.h" />
+    <ClInclude Include="EngineDateien\CPU_opponent.h" />
+    <ClInclude Include="EngineDateien\Logger.h" />
+    <ClInclude Include="EngineDateien\LookUp.h" />
+    <ClInclude Include="EngineDateien\Map.h" />
+    <ClInclude Include="EngineDateien\MapReturnObj.h" />
+    <ClInclude Include="EngineDateien\Player.h" />
+    <ClInclude Include="EngineDateien\Space.h" />
+    <ClInclude Include="EngineDateien\SpaceConfig.h" />
+    <ClInclude Include="EngineDateien\TControl.h" />
     <ClInclude Include="TServerEngine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
