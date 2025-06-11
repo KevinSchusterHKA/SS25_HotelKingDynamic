@@ -26,14 +26,9 @@
 
 #define TARGET_FPS 60
 #define FRAME_DURATION 1000 / TARGET_FPS
-
-
-
-class TControl{
-private:
-    enum class Farbe {
-    Zuruecksetzen=0,
-    Schwarz=30,
+enum class Farbe {
+    Zuruecksetzen = 0,
+    Schwarz = 30,
     Rot,
     Gruen,
     Gelb,
@@ -41,7 +36,7 @@ private:
     Magenta,
     Cyan,
     Weiss,
-    BG_Schwarz=40,
+    BG_Schwarz = 40,
     BG_Rot,
     BG_Gruen,
     BG_Gelb,
@@ -49,30 +44,16 @@ private:
     BG_Magenta,
     BG_Cyan,
     BG_Weiss
-    };
+};
 
-    enum MenueOptionen {
-        Reset=-1,
-        Start=0,
-        Highscore,
-        Optionen,
-        Beenden,
-        Wuerfeln,
-		Kaufen,
-        Bauen,
-        Handeln,
-		Fortfahren,
-        SpielSpeichern,
-        SpielLaden,
-        SpielRegeln,
-        Zurueck
-	};
 
-    enum class Menues {
-        Start=100,
-        Spieler,
-        Optionen
-    };
+class TControl{
+private:
+    
+
+    
+
+    
     int ZeitKorrekturKonstante = 30;
 
 	//ASCII Art
@@ -127,7 +108,7 @@ private:
 
     //Menüs
     std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","##################################################","Startmenue"};
-    std::vector<std::string> MenueHandelsOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","##################################################","Spielermenue" };
+    std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","##################################################","Spielermenue" };
     std::vector<std::string> MenueSpielOptionen = { "Fortfahren","Spiel Speichern","Spiel Laden","Spielregeln","Beenden","Highscore","Zurueck","##################################################","Spielmenue"};
     std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","#############################################","Was willst du machen?" };
 

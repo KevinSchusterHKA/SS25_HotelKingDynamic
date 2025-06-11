@@ -320,7 +320,6 @@ void TControl::AusgabeHighscore(std::string Namen[], int HighscoreWert[],int siz
 }
 void TControl::AusgabeStartMenu(int& option, int x, int y) {
     this->SetFarbe(Farbe::Weiss);
-    std::string temp[7];
     int BreiteMenue = this->MenueStartOptionen[this->MenueStartOptionen.size() - 2].size();
     int linkerRandText = (BreiteMenue - 2) / 2 - this->MenueStartOptionen.back().size() / 2;
     this->coord.X = x;
@@ -464,10 +463,10 @@ void TControl::AusgabeSpielerOptionen(int& option, int x, int y,Farbe f) {
     this->SetFarbe(Farbe::Schwarz);
     this->coord.Y = y;
 	this->coord.X = x;
-    for (size_t i = 0; i < this->MenueHandelsOptionen.size(); i++)
+    for (size_t i = 0; i < this->MenueSpielerOptionen.size(); i++)
     {
-        if (maxSizeOption < this->MenueHandelsOptionen[i].size()) {
-            maxSizeOption = this->MenueHandelsOptionen[i].size();
+        if (maxSizeOption < this->MenueSpielerOptionen[i].size()) {
+            maxSizeOption = this->MenueSpielerOptionen[i].size();
         }
     }
 
@@ -481,9 +480,9 @@ void TControl::AusgabeSpielerOptionen(int& option, int x, int y,Farbe f) {
     this->coord.Y++;
     SetConsoleCursorPosition(this->hConsole, this->coord);
     std::cout << "#"
-        << setw(maxSizeOption / 2 - this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1].size() / 2) << ""
-        << std::left << this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1]
-        << setw(maxSizeOption / 2 - this->MenueHandelsOptionen[this->MenueHandelsOptionen.size() - 1].size() / 2 - 2) << ""
+        << setw(maxSizeOption / 2 - this->MenueSpielerOptionen[this->MenueSpielerOptionen.size() - 1].size() / 2) << ""
+        << std::left << this->MenueSpielerOptionen[this->MenueSpielerOptionen.size() - 1]
+        << setw(maxSizeOption / 2 - this->MenueSpielerOptionen[this->MenueSpielerOptionen.size() - 1].size() / 2 - 2) << ""
         << "#";
     this->coord.Y++;
     this->coord.X = x;
@@ -500,7 +499,7 @@ void TControl::AusgabeSpielerOptionen(int& option, int x, int y,Farbe f) {
     int AbstandTextMitte = maxSizeOption / 2 - MaxLaenge / 2;
 
 	//Ausgabe der Handelsoptionen
-    for (size_t i = 0; i < this->MenueHandelsOptionen.size() - 2; i++)
+    for (size_t i = 0; i < this->MenueSpielerOptionen.size() - 2; i++)
     {
         coord.Y++;
         SetConsoleCursorPosition(this->hConsole, this->coord);
@@ -511,7 +510,7 @@ void TControl::AusgabeSpielerOptionen(int& option, int x, int y,Farbe f) {
                 << setw(AbstandTextMitte - 3) << std::right << ">"
                 << setw(3) << "[" + to_string(i + 1) + "]"
                 << setw(16) << std::left
-                << std::left << this->MenueHandelsOptionen[i]
+                << std::left << this->MenueSpielerOptionen[i]
                 << setw(AbstandTextMitte - 2) << ""
                 << "#";
         }
@@ -521,7 +520,7 @@ void TControl::AusgabeSpielerOptionen(int& option, int x, int y,Farbe f) {
                 << setw(AbstandTextMitte - 3) << ""
                 << setw(3) << "[" + to_string(i + 1) + "]"
                 << setw(16) << std::left
-                << std::left << this->MenueHandelsOptionen[i]
+                << std::left << this->MenueSpielerOptionen[i]
                 << setw(AbstandTextMitte - 2) << ""
                 << "#";
         }
@@ -657,7 +656,30 @@ void TControl::SetFarbe(Farbe farbe) {
 }
 void TControl::UnitTest() {
 
-    enum OptionenMenu { Reset = 0, Start = 3, Highscore = 4, Beenden = 5 };
+    enum MenueOptionen {
+        Reset = -1,
+        Start = 0,
+        Highscore,
+        Optionen,
+        Beenden,
+        Wuerfeln,
+        Kaufen,
+        Bauen,
+        Handeln,
+        Fortfahren,
+        SpielSpeichern,
+        SpielLaden,
+        SpielRegeln,
+        Zurueck
+    };
+
+    enum class Menues {
+        Start = 100,
+        Spieler,
+        Optionen,
+        Handel
+    };
+
 
     TControl TestControl;
     std::string playerNames[4] = { "a","bbbb","ccccc","ddddddddddddddddddddddddddddddddddddddddddddddddddd" };
@@ -756,23 +778,23 @@ void TControl::UnitTest() {
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln)
                 {
                     
-					std::cout<< setw(this->MenueHandelsOptionen[4].size()) <<std::left<< "Spieler X: wirft den Wuerfel!";
+					std::cout<< setw(this->MenueSpielerOptionen[4].size()) <<std::left<< "Spieler X: wirft den Wuerfel!";
 
 					TestControl.AusgabeWuerfel(3, x / 2 - 160, y / 2 - 30, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen)
                 {
 					//Code zum Kaufen von Objekten
-					std::cout << setw(this->MenueHandelsOptionen[4].size()) << "Kaufen von Objekten ist noch nicht implementiert!" << std::endl;
+					std::cout << setw(this->MenueSpielerOptionen[4].size()) << "Kaufen von Objekten ist noch nicht implementiert!" << std::endl;
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
-                    std::cout << setw(this->MenueHandelsOptionen[4].size()) << "Bauen von Objekten ist noch nicht implementiert!" << std::endl;
+                    std::cout << setw(this->MenueSpielerOptionen[4].size()) << "Bauen von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Bauen von Objekten
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
                 {
-                    std::cout << setw(this->MenueHandelsOptionen[4].size()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
+                    std::cout << setw(this->MenueSpielerOptionen[4].size()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Handeln von Objekten
                 }
 
@@ -794,6 +816,10 @@ void TControl::UnitTest() {
                         CursorPos = { short(x / 2 - GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + GetAnzMenuepunkteSpielOptionen() + 1) };
                         TestControl.UpdateCursorPosition(CursorPos);
                         std::cout <<setw(GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
+                    }
+                    else
+                    {
+                        std::cout << setw(GetLaengstenStringMenueSpielOptionen()) << "Es gibt keine Runde zum speichern!";
                     }
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
@@ -823,7 +849,7 @@ void TControl::UnitTest() {
                 break;
             }
 
-            option = Reset;
+            option = Reset+1;
             break;
         default:
             break;
@@ -841,6 +867,8 @@ void TControl::UnitTest() {
         case Menues::Optionen:
             TestControl.AusgabeSpielOptionen(option, x / 2 - GetLaengstenStringMenueSpielOptionen() /2, y / 2 - GetAnzMenuepunkteSpielOptionen() / 2);
             break;
+		case Menues::Handel:
+			TestControl.AusgabeHandelsMenu(option, x / 2 - GetLaengstenStringMenueHandelsOptionen() / 2, y / 2 - GetAnzMenuepunkteHandelsOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
         default:
             break;
         }
@@ -860,7 +888,8 @@ void TControl::UnitTest() {
 }
 
 void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
-	this->SetFarbe(f);
+    this->SetFarbe(Farbe::BG_Schwarz);
+    this->SetFarbe(Farbe::Weiss);
     static bool AusgabeWurf = false;
     std::string WuerfelFlaeche[6][5] = {
     {
@@ -919,14 +948,13 @@ void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
 		rand = dist(rng); 
         if (counter >= 6)
         {
-            this->SetFarbe(Farbe::BG_Rot);
-            this->SetFarbe(Farbe::Weiss);
+            this->SetFarbe(f);
+            this->SetFarbe(Farbe::Schwarz);
             for (int i = 0; i < 5; i++) {
                 this->coord.Y = y + i;
                 SetConsoleCursorPosition(this->hConsole, this->coord);
                 std::cout << setw(10) << WuerfelFlaeche[wuerfel - 1][i];
             }
-            this->SetFarbe(f);
             break;
         }
         else
@@ -943,7 +971,6 @@ void TControl::AusgabeWuerfel(int wuerfel, int x, int y, Farbe f) {
 	counter = 0;
 	this->SetFarbe(Farbe::Zuruecksetzen);
 }
-
 void TControl::GetMaximizedConsoleSize(int& width, int& height) {
     HWND consoleWindow = GetConsoleWindow();
     if (!consoleWindow) {
@@ -992,7 +1019,6 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
     height = rect.bottom / fontInfo.dwFontSize.Y;
 	std::cout << "Console size: " << width << "x" << height << std::endl;
 }
-
 void TControl::AusgabeTestFeld(int x, int y) {
     //Außen MAP :   Hoehe = 8*11 , Breite = 20*11 
 
@@ -1043,7 +1069,6 @@ void TControl::AusgabeTestFeld(int x, int y) {
     }
 
 }
-
 int TControl::GetLaengstenStringMenueStartOptionen(void){
     int tempMax = 0;
     for (std::string option : this->MenueStartOptionen) {
@@ -1064,7 +1089,7 @@ int TControl::GetLaengstenStringMenueSpielOptionen(void) {
 }
 int TControl::GetLaengstenStringMenueHandelsOptionen(void) {
     int tempMax = 0;
-    for (std::string option : this->MenueHandelsOptionen) {
+    for (std::string option : this->MenueSpielerOptionen) {
         if (option.size() > tempMax) {
             tempMax = option.size();
         }
@@ -1078,7 +1103,7 @@ int TControl::GetAnzMenuepunkteSpielOptionen(void){
     return MenueSpielOptionen.size() - 2;
 }
 int TControl::GetAnzMenuepunkteHandelsOptionen(void) {
-	return MenueHandelsOptionen.size() - 2;  
+	return MenueSpielerOptionen.size() - 2;  
 }
 void TControl::UpdateCursorPosition(COORD Pos) {
     SetConsoleCursorPosition(this->hConsole, Pos);
