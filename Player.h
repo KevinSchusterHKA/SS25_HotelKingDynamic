@@ -4,7 +4,7 @@
 #include <vector>
 #include <random>
 #include <cstdlib> // rand()
-#include "map.h"
+//#include "map.h"
 
 using namespace std;
 enum PlayerType {HUMAN,  CPU1,  CPU2,  }; // human player ,level 1,level 2
@@ -81,10 +81,10 @@ public:
 	int anzahlHaeuser(string strasse);
 };
 
-//class Map; // temp
+class Map; // temp
 
-//struct Property; // temp
-//std::vector<Property> getTempPropertiesForPlayer(int playerID); //  temp
+struct Property; // temp
+std::vector<Property> getTempPropertiesForPlayer(int playerID); //  temp
 
 class cpu_player1 : public player {
 public:
