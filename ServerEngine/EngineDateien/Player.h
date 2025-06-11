@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <cstdlib> // rand()
+//#include "map.h"
+
 using namespace std;
 enum PlayerType {HUMAN,  CPU1,  CPU2,  }; // human player ,level 1,level 2
 class player
@@ -17,14 +20,15 @@ private:
 	int PaschCounter		= 0;
 	bool ImGefaengnis	 = false;
 	int GefaengnisRunden = 0;
-	vector<string> GekaufteStrassen; 
-	vector<string> GebauteHaeuser;
+	vector<int> GekaufteStrassen; 
+	vector<int> GebauteHaeuser;
 
 
 
 public:
 	player();
 	player(int id, int budget, int position);
+	player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
 	~player();
 
 	void getData();
@@ -32,6 +36,8 @@ public:
 	int getID();
 	int getHuman();
 	void setHuman(int h);
+	string getName();
+	void setName(string name);
 
 	int getBudget();
 	void setBudget(int b);
@@ -63,14 +69,27 @@ public:
 	bool istPleite();
 	void geheZu(int feld);
 
-	void addStrasse(string strasse);
-	void deleteStrasse(string strasse);
-	bool besitztStrasse(string strasse);
-	int handel(string request, int preowner);
-	bool verkaufeStrasseAn(player* zielspieler, string strasse, int betrag);
+	void addStrasse(int strasse);
+	void deleteStrasse(int strasse);
+	bool besitztStrasse(int strasse);
+	int handel(int request, int preowner);
+	bool verkaufeStrasseAn(player* zielspieler, int strasse, int betrag);
 
-	void baueHaus(string strasse);
-	void verkaufeHaus(string strasse);
-	int anzahlHaeuser(string strasse);
+	void baueHaus(int strasse);
+	void verkaufeHaus(int strasse);
+	int anzahlHaeuser(int strasse);
 };
 
+class Map; // temp
+
+struct Property; // temp
+std::vector<Property> getTempPropertiesForPlayer(int playerID); //  temp
+
+class cpu_player1 : public player {
+public:
+	cpu_player1();
+
+	int handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<player*>& p);
+	bool acceptTrade(Map& gameMap, int spaceIndex, int offer);
+	bool tryBuyStreet(Map& gameMap, std::vector<player*>& p);
+};
