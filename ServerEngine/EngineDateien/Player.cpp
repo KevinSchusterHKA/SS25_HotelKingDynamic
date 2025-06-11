@@ -1,5 +1,5 @@
 #include "Player.h"
-//#include "CPU_opponent.h"
+#include "CPU_opponent.h"
 //######################################################################################################################################Temp
 //struct Property {//temp just for test
 //	std::string name;
