@@ -702,7 +702,7 @@ void TControl::UnitTest() {
 	bool UpdateSpielfeld = FALSE;
 	int AnzahlSpieler = 4;
     int x=0,y=0;
-    GetMaximizedConsoleSize(x, y);
+    TestControl.GetMaximizedConsoleSize(x, y);
 	//Ausgabe des Startbildschirms
     do
     {
@@ -738,13 +738,13 @@ void TControl::UnitTest() {
             break;
         case KEY_DOWN:
 		case KEY_S:
-            if (option < GetAnzMenuepunkteStartOptionen() - 1 && MenueAuswahl==Menues::Start) {
+            if (option < TestControl.GetAnzMenuepunkteStartOptionen() - 1 && MenueAuswahl==Menues::Start) {
                 option++;
             }
-            else if (option < GetAnzMenuepunkteSpielOptionen() - 1 && MenueAuswahl == Menues::Optionen) {
+            else if (option < TestControl.GetAnzMenuepunkteSpielOptionen() - 1 && MenueAuswahl == Menues::Optionen) {
                 option++;
             }
-            else if (option < GetAnzMenuepunkteHandelsOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
+            else if (option < TestControl.GetAnzMenuepunkteHandelsOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
                 option++;
             }
             break;
@@ -768,7 +768,7 @@ void TControl::UnitTest() {
                     RundeVorhanden = TRUE;
                     UpdateSpielfeld = TRUE;
                 }
-                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size()/2-8, y / 2 + GetAnzMenuepunkteStartOptionen() + 2); }
+                if (option == MenueOptionen::Highscore) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size()/2-8, y / 2 + TestControl.GetAnzMenuepunkteStartOptionen() + 2); }
                 if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                 if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
                 break;
@@ -778,23 +778,23 @@ void TControl::UnitTest() {
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln)
                 {
                     
-					std::cout<< setw(this->MenueSpielerOptionen[4].size()) <<std::left<< "Spieler X: wirft den Wuerfel!";
+					std::cout<< setw(TestControl.GetLaengstenStringMenueSpielOptionen()) <<std::left<< "Spieler X: wirft den Wuerfel!";
 
 					TestControl.AusgabeWuerfel(3, x / 2 - 160, y / 2 - 30, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen)
                 {
 					//Code zum Kaufen von Objekten
-					std::cout << setw(this->MenueSpielerOptionen[4].size()) << "Kaufen von Objekten ist noch nicht implementiert!" << std::endl;
+					std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Kaufen von Objekten ist noch nicht implementiert!" << std::endl;
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
-                    std::cout << setw(this->MenueSpielerOptionen[4].size()) << "Bauen von Objekten ist noch nicht implementiert!" << std::endl;
+                    std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Bauen von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Bauen von Objekten
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
                 {
-                    std::cout << setw(this->MenueSpielerOptionen[4].size()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
+                    std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Handeln von Objekten
                 }
 
@@ -813,24 +813,24 @@ void TControl::UnitTest() {
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
                     
                     if (RundeVorhanden) {
-                        CursorPos = { short(x / 2 - GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + GetAnzMenuepunkteSpielOptionen() + 1) };
+                        CursorPos = { short(x / 2 - TestControl.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen() + 1) };
                         TestControl.UpdateCursorPosition(CursorPos);
-                        std::cout <<setw(GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
+                        std::cout <<setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
                     }
                     else
                     {
-                        std::cout << setw(GetLaengstenStringMenueSpielOptionen()) << "Es gibt keine Runde zum speichern!";
+                        std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Es gibt keine Runde zum speichern!";
                     }
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
-                    CursorPos = { short(x / 2 - GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + GetAnzMenuepunkteSpielOptionen() + 1) };
+                    CursorPos = { short(x / 2 - TestControl.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen() + 1) };
                     TestControl.UpdateCursorPosition(CursorPos);
-                    std::cout << setw(GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
+                    std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
 					RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                 }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + GetAnzMenuepunkteSpielOptionen() + 2);}
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { TestControl.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen() + 2);}
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 9) { Spiellaueft = FALSE; }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + GetAnzMenuepunkteSpielOptionen()+2); }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 12) { TestControl.AusgabeHighscore(playerNames, budget, 4, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + TestControl.GetAnzMenuepunkteSpielOptionen()+2); }
                 
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) { 
                     MenueAuswahl = MenueLetztes;
@@ -859,16 +859,16 @@ void TControl::UnitTest() {
         switch (MenueAuswahl)
         {
         case Menues::Start:
-            TestControl.AusgabeStartMenu(option, x / 2 - GetLaengstenStringMenueStartOptionen() / 2, y / 2 - GetAnzMenuepunkteStartOptionen() / 2);
+            TestControl.AusgabeStartMenu(option, x / 2 - TestControl.GetLaengstenStringMenueStartOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteStartOptionen() / 2);
             break;
         case Menues::Spieler:
             TestControl.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, Farbe::BG_Gruen); //die Farbe dem zugehörigen Spieler anpassen
             break;
         case Menues::Optionen:
-            TestControl.AusgabeSpielOptionen(option, x / 2 - GetLaengstenStringMenueSpielOptionen() /2, y / 2 - GetAnzMenuepunkteSpielOptionen() / 2);
+            TestControl.AusgabeSpielOptionen(option, x / 2 - TestControl.GetLaengstenStringMenueSpielOptionen() /2, y / 2 - TestControl.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
 		case Menues::Handel:
-			TestControl.AusgabeHandelsMenu(option, x / 2 - GetLaengstenStringMenueHandelsOptionen() / 2, y / 2 - GetAnzMenuepunkteHandelsOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
+			TestControl.AusgabeHandelsMenu(option, x / 2 - TestControl.GetLaengstenStringMenueHandelsOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteHandelsOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
         default:
             break;
         }
