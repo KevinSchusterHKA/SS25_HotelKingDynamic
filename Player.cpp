@@ -192,6 +192,90 @@ int player::anzahlHaeuser(string strasse) {
 	}
 	return count;
 }
+cpu_player1::cpu_player1() : player() {}
+
+// cpu to player
+int cpu_player1::handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<player*>& p) {
+	if ((rand() % 100) > 5) {
+		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
+		return -1;
+	}
+	int targetPlayer;
+	do {
+		targetPlayer = rand() % totalPlayers;
+	} while (targetPlayer == cpuID);
+
+	std::vector<int> ownedProperties = gameMap.getOwnedProperties(targetPlayer);
+	if (ownedProperties.empty()) {
+		//std::cout << "CPU Spieler " << targetPlayer << " besitzt keine Straben.\n";
+		return -1;
+	}
+
+	int randIndex = rand() % ownedProperties.size();
+	int propIndex = ownedProperties[randIndex];
+
+	int minPercent = 5;
+	int maxPercent = 15;
+	int offerPercent = minPercent + rand() % (maxPercent - minPercent + 1);
+	int  offer = (1 + offerPercent / 100.0) * gameMap.getPropertyPrice(propIndex);
+
+	if (offer > p[cpuID]->getBudget()) {
+		/*  std::cout << "CPU Kann sich das Angebot von " << offer
+			   << "' nicht leisten.\n";*/
+		return -1;
+	}
+
+	//std::cout << "CPU bietet " << offer << /*" (" << offerPercent << */"% von "
+	//    << offer << ") fur '" << prop.name << "' von Spieler " << targetPlayer << ".\n";
+
+	return offer;
+}
+
+// player to cpu 
+bool cpu_player1::acceptTrade(Map& gameMap, int spaceIndex, int offer) {
+	int id = getID();
+	int propPrice = gameMap.getPropertyPrice(spaceIndex);
+	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
+
+	if (offer <= propPrice * (acceptThresholdPercent / 100.0) && offer <= getBudget()) {
+		std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer << " fur '" << prop.name
+			<< '\n' /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
+		return true;
+	}
+	else {
+		std::cout << "CPU" << id << "lehnt das Angebot von " << offer << " fur '" << prop.name << '\n';
+		/*<< "' ab (Schwelle: " << acceptThresholdPercent << "%).\n";*/
+		return false;
+	}
+}
+
+// buy street
+bool cpu_player1::tryBuyStreet(Map& gameMap, std::vector<player*>& p) {
+	int price = gameMap.getStreetPrice(getPosition());
+	int id = getID();
+	int pos = getPosition();
+	if (price < 0) {
+		//std::cout << "CPU"<< id <<"Kein Kaufmoeglichkeit auf Position " << pos << ".\n";
+		return false;
+	}
+
+	if (getBudget() >= price) {
+		bool success = gameMap.buyStreet(getID(), getBudget());
+		if (success) {
+			setBudget(getBudget() - price);
+			//std::cout << "CPU"<< id << "kauft Strasse auf Position " << pos << " fuer " << price << ".\n";
+			return true;
+		}
+		else {
+			std::cout << "CPU" << id << "Kauf auf Position " << pos << " fehlgeschlagen.\n";
+		}
+	}
+	else {
+		std::cout << "CPU" << id << " Kein Geld fuer Strasse auf Position " << pos << ".\n";
+	}
+	return false;
+}
+
 
 void UNITTEST() {
 	int number_cpu_level_1 = 2, number_human_players = 2;
@@ -343,10 +427,47 @@ void UNITTEST() {
 		current_player = (current_player + 1) % p.size();
 	}
 }
+void UNITTEST_cpu() {
+	std::srand(std::time(nullptr));  // random seed 
+	std::vector<player*> players;
+
+	for (int i = 0; i < 2; ++i) {
+		players.push_back(new player());
+		players.back()->setID(i);
+		players.back()->setHuman(HUMAN);
+		players.back()->setBudget(1000);
+		players.back()->setPosition(i);
+	}
+
+	for (int i = 0; i < 5; ++i) {
+		players.push_back(new cpu_player1());
+		players.back()->setID(i + 2);
+		players.back()->setHuman(CPU1);
+		players.back()->setBudget(1000);
+		players.back()->setPosition(i + 3);
+	}
+
+	Map gameMap;
+	for (size_t i = 0; i < players.size(); ++i) {
+		if (players[i]->getHuman() == CPU1) {
+			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
+			cpu->tryBuyStreet(gameMap, players);
+			cpu->handel(cpu->getID(), players.size(), players);
+			Property exampleProp = { "Teststrabe", 400 };
+			int offer = 390;
+			cpu->acceptTrade(exampleProp, offer);
+			cout << "##############" << endl;
+		}
+	}
+}
+
+
+
 
 
 int main() {
-
+	UNITTEST_cpu();
 	UNITTEST();
 	return 0;
 }
+
