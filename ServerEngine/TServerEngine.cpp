@@ -220,10 +220,10 @@ void TServer::UnitTest() {
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
-                    int space = 0;
-                    player[MomentanerSpieler].bezahle(board.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget())); // Bug
+                    int space = MRobj[MomentanerSpieler].SpaceNr;// Bug
+                    player[MomentanerSpieler].bezahle(board.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget()));
                 }
-                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
+                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                 {
                     std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Handeln von Objekten
