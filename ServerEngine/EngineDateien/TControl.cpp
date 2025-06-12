@@ -1019,8 +1019,8 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
         return;
     }
 
-    width = rect.right / (fontInfo.dwFontSize.X ? fontInfo.dwFontSize.X : 12);
-    height = rect.bottom / (fontInfo.dwFontSize.Y ? fontInfo.dwFontSize.Y : 4);
+    width = rect.right / (fontInfo.dwFontSize.X ? fontInfo.dwFontSize.X : 6);
+    height = rect.bottom / (fontInfo.dwFontSize.Y ? fontInfo.dwFontSize.Y : 12);
 	std::cout << "Console size: " << width << "x" << height << std::endl;
 }
 void TControl::AusgabeTestFeld(int x, int y) {

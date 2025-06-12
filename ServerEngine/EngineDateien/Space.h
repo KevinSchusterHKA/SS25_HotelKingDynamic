@@ -200,9 +200,9 @@ public:
 		return out;
 	}
 
-	MapReturnObj getProps(int player, int usestation, int prison, int free)
+	MapReturnObj getProps(int player)
 	{
-		MapReturnObj out(-1,Owner,Config.Rentarr[Houses + 1],0,"");
+		MapReturnObj out(-1,Config.Type,Owner,Config.Rentarr[Houses + 1],0,"");
 		switch (Config.Type)
 		{
 		case TypeStreet:
@@ -212,10 +212,10 @@ public:
 			}
 			break;
 		case TypeStation:
-			if (!usestation)
-			{
-				out.Rent = 0;
-			}
+
+			break;
+		case TypeTax:
+
 			break;
 		case TypeChance:
 			out = _chanceCards[(int)(rand()%14)];
@@ -227,21 +227,15 @@ public:
 			out.Rent = -200;
 			break;
 		case TypePrison:
-			if (prison != 0)
-			{
-				out.Prison = prison - 1;
-			}
-			if (prison == 0||free)
-			{
-				out.Prison = 0;
-			}
+
 			break;
 		case TypePark:
-			out.Rent *= -1;
+			Config.Rentarr[0] = 0;
+			insertStr(intToStr(Config.Rentarr[0]), 1);
 			break;
 		case TypeGTP:
 			out.SpaceNr = 10;
-			out.Prison = 3;
+			out.Prison = 1;
 			out.flag = 1;
 			break;
 		default:
@@ -324,6 +318,15 @@ public:
 		{
 			Config.Price *= mult;
 			insertStr(intToStr(Config.Price), 1);
+		}
+	}
+
+	void addTax(int tax)
+	{
+		if (Config.Type == TypePark)
+		{
+			Config.Rentarr[0] += tax;
+			insertStr(intToStr(Config.Rentarr[0]), 1);
 		}
 	}
 

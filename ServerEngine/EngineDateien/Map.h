@@ -20,7 +20,7 @@ public:
 	int getStreetPrice(int player) {
 		return Spaces[Playerpos[player]].getPrice();
 	}
-	int getPropertyPrice(int spaceIndex){
+	int getPropertyPrice(int spaceIndex) {
 		if (spaceIndex < 0 || spaceIndex >= 40) {
 			return -1;
 		}
@@ -29,7 +29,7 @@ public:
 	std::vector<int> getOwnedProperties(int playerID) {
 		std::vector<int> owned;
 		for (int i = 0; i < 40; i++) {
-			if (Spaces[i].getOwner() == playerID) {  
+			if (Spaces[i].getOwner() == playerID) {
 				owned.push_back(i);
 			}
 		}
@@ -42,7 +42,7 @@ public:
 		{
 			Spaces[i] = Space(_boardarr[i]);
 		}
-		for (int i = 0; i < 9*_dimX; i++)
+		for (int i = 0; i < 9 * _dimX; i++)
 		{
 			Buffer += " ";
 		}
@@ -55,7 +55,7 @@ public:
 			Spaces[0].setPlayer(i);
 		}
 	}
- 
+
 	string toStr()
 	{
 		string out = _fgcolortable[4];
@@ -71,7 +71,7 @@ public:
 		{
 			for (int j = 0; j < _dimY; j++)
 			{
-				out += Spaces[i].toStr(j) + Buffer + Spaces[50-i].toStr(j);
+				out += Spaces[i].toStr(j) + Buffer + Spaces[50 - i].toStr(j);
 				out += "\n";
 			}
 
@@ -91,11 +91,25 @@ public:
 
 	int movePlayer(int player, int distance, int flag)
 	{
+		Spaces[Playerpos[player]].removePlayer(player);
+		vector<int> pos;
+		for (int i = 0; i < 40; i++)
+		{
+			if (_moveMatrix[Playerpos[player]][i] == distance)
+			{
+				pos.push_back(i);
+			}
+		}
+		return setPlayer(player, pos.at(flag), 0);
+	}
+
+	int setPlayer(int player, int space, int flag)
+	{
 		int out = 0;
 		Spaces[Playerpos[player]].removePlayer(player);
-		out = (Playerpos[player] + distance >= 40 && flag == 0) ? -200 : 0;
-		Playerpos[player] = (Playerpos[player] + distance) % 40;
-		if (flag)
+		out = (Playerpos[player] > space && flag == 0) ? -200 : 0;
+		Playerpos[player] = space;
+		if (flag == -1)
 		{
 			Spaces[Playerpos[player]].prisonPlayer(player);
 		}
@@ -103,6 +117,14 @@ public:
 			Spaces[Playerpos[player]].setPlayer(player);
 		}
 		return out;
+	}
+
+	void freePlayer(int player)
+	{
+		if (Playerpos[player] == 10)
+		{
+			Spaces[Playerpos[player]].setPlayer(player);
+		}
 	}
 
 	int buyStreet(int player, int funds)
@@ -193,18 +215,20 @@ public:
 		return -1;
 	}
 
-	MapReturnObj getSpaceProps(int player, int usestation, int free)
+	MapReturnObj getSpaceProps(int player)
 	{
-		MapReturnObj out(Spaces[Playerpos[player]].getProps(player,usestation,PlayerPrison[player],free));
-		PlayerPrison[player] = out.Prison;
+		MapReturnObj out(Spaces[Playerpos[player]].getProps(player));
 		if (out.SpaceNr == -1)
 		{
 			out.SpaceNr = Playerpos[player];
 		}
 		else {
-			
-			movePlayer(player,(out.SpaceNr - Playerpos[player]) + 40, out.Prison);	
+			out.Rent += setPlayer(player,out.SpaceNr, out.Prison);
 			out.flag = 1;
+		}
+		if (out.Type == TypeTax)
+		{
+			Spaces[20].addTax(out.Rent);
 		}
 		if (out.Owner == -3)
 		{

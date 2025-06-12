@@ -57,7 +57,7 @@ void TServer::UnitTest() {
     int AnzahlSpieler = 4;
     int MomentanerSpieler = 0;
     int x = 0, y = 0;
-    MapReturnObj MRobj;
+    MapReturnObj MRobj[4];
 
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
     TestControl.GetMaximizedConsoleSize(x, y);
@@ -186,15 +186,26 @@ void TServer::UnitTest() {
 
                         TestControl.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                         TestControl.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                        player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
-                        MRobj = board.getSpaceProps(MomentanerSpieler, 0, 0);
-                        if (MRobj.Rent != -1)
+                        if (MRobj[MomentanerSpieler].Type == 1)// Bug
                         {
-                            player[MomentanerSpieler].bezahle(MRobj.Rent);
+                            player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 1));
+                            player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
                         }
-                        if (MRobj.Owner != -1)
+                        else {
+                            player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
+                        }
+                        MRobj[MomentanerSpieler] = board.getSpaceProps(MomentanerSpieler);
+                        if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 1) && (MRobj[MomentanerSpieler].Type != 7))
                         {
-                            player[MRobj.Owner].erhalte(MRobj.Rent);
+                            player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                        }
+                        if (MRobj[MomentanerSpieler].Type == 7)
+                        {
+                            player[MomentanerSpieler].erhalte(MRobj[MomentanerSpieler].Rent);
+                        }
+                        if (MRobj[MomentanerSpieler].Owner != -1)
+                        {
+                            player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
                         }
                         HatGewuerfelt = (wuerfel1!=wuerfel2); // Bug
                     }
@@ -221,7 +232,7 @@ void TServer::UnitTest() {
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
                 {
-                    MomentanerSpieler++;
+                    ++MomentanerSpieler %= AnzahlSpieler;
                     HatGewuerfelt = false;
                     system("cls");
                 }
@@ -314,6 +325,20 @@ void TServer::UnitTest() {
 
         if (UpdateSpielfeld)
         {
+            //TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
+            while (MRobj[MomentanerSpieler].flag)
+            {
+                MRobj[MomentanerSpieler] = board.getSpaceProps(MomentanerSpieler);
+                if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 7))
+                {
+                    player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                }
+                if (MRobj[MomentanerSpieler].Owner != -1)
+                {
+                    player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
+                }
+                //TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
+            }
             TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
             /*std::vector<std::string> Namen;
             std::vector<std::vector<std::string>> gekObjNamen;
@@ -332,7 +357,7 @@ void TServer::UnitTest() {
     //        }
             
             //TestControl.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
-            std::cout << MRobj.Msg << "\n";
+            std::cout << MRobj[MomentanerSpieler].Msg << "\n";
             for (int i = 0; i < AnzahlSpieler; i++)
             {
                 std::cout << player[i].getBudget() << "     ";

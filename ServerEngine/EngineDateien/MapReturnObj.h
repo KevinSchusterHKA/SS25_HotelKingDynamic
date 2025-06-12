@@ -7,6 +7,7 @@ class MapReturnObj
 {
 public:
 	int SpaceNr;
+	int Type;
 	int Owner;
 	int Rent;
 	int Prison;
@@ -16,15 +17,17 @@ public:
 	MapReturnObj()
 	{
 		SpaceNr = 0;
+		Type = 0;
 		Owner = 0;
 		Rent = 0;
 		Prison = 0;
 		Msg = "";
 	}
 
-	MapReturnObj(int spaceNr, int owner, int rent, int prison, string msg)
+	MapReturnObj(int spaceNr, int type, int owner, int rent, int prison, string msg)
 	{
 		SpaceNr = spaceNr;
+		Type = type;
 		Owner = owner;
 		Rent = rent;
 		Prison = prison;
