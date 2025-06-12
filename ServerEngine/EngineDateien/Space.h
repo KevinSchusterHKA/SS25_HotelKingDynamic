@@ -235,7 +235,7 @@ public:
 			break;
 		case TypeGTP:
 			out.SpaceNr = 10;
-			out.Prison = 1;
+			out.Prison = -1;
 			out.flag = 1;
 			break;
 		default:
@@ -301,6 +301,10 @@ public:
 	int HouseCount(int player)
 	{
 		int out = 0;
+		if (player != Owner)
+		{
+			return out;
+		}
 		if (Houses > 0 && Houses < 5)
 		{
 			out = Houses;

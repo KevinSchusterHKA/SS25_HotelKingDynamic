@@ -236,10 +236,11 @@ void TServer::UnitTest() {
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
-                    player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                    int space = MRobj[MomentanerSpieler].SpaceNr;// Bug
+                    player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget()));
 					ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                 }
-                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
+                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                 {
                     std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Handeln von Objekten

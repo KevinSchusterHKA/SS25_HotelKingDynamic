@@ -95,19 +95,20 @@ public:
 		vector<int> pos;
 		for (int i = 0; i < 40; i++)
 		{
-			if (_moveMatrix[Playerpos[player]][i] == distance)
+			int j = (i + Playerpos[player]) % 40;
+			if (_moveMatrix[Playerpos[player]][j] == distance)
 			{
-				pos.push_back(i);
+				pos.push_back(j);
 			}
 		}
-		return setPlayer(player, pos.at(flag), 0);
+		int	out = flag % pos.size();
+		return setPlayer(player, pos.at(out), flag);
 	}
 
 	int setPlayer(int player, int space, int flag)
 	{
-		int out = 0;
 		Spaces[Playerpos[player]].removePlayer(player);
-		out = (Playerpos[player] > space && flag == 0) ? -200 : 0;
+		int out = (Playerpos[player] > space && flag == 0) ? -200 : 0;
 		Playerpos[player] = space;
 		if (flag == -1)
 		{
