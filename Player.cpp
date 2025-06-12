@@ -316,8 +316,8 @@ bool cpu_player1::acceptTrade(Map& gameMap, int spaceIndex, int offer) {
 	int id = getID();
 	int propPrice = gameMap.getPropertyPrice(spaceIndex);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
-
-	if (offer <= propPrice * (acceptThresholdPercent / 100.0) && offer <= getBudget()) {
+	int bud = getBudget();
+	if ((offer >= propPrice * (acceptThresholdPercent / 100.0))) {
 		std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
 		return true;
 	}
@@ -526,7 +526,7 @@ void UNITTEST_cpu() {
 	}
 
 	Map gameMap;
-	int testPositions[] = { 400, 10, 0 };   
+	int testPositions[] = { 0, 1, 2,3,4,5,6 };   
 
 	for (size_t i = 0; i < players.size(); ++i) {
 		if (players[i]->getHuman() == CPU1) {
@@ -534,7 +534,7 @@ void UNITTEST_cpu() {
 			cpu->tryBuyStreet(gameMap, players);
 			cpu->handel(gameMap, cpu->getID(), players.size(), players);
 			int pos = testPositions[i % (sizeof(testPositions) / sizeof(testPositions[0]))];
-			int offer = 390;
+			int offer = 205;
 			cpu->acceptTrade(gameMap, pos, offer);
 			std::cout << "##############" << std::endl;
 		}
