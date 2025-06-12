@@ -37,7 +37,7 @@ public:
 	}
 
 
-	Map(int playernumber) {
+	Map() {
 		for (int i = 0; i < 40; i++)
 		{
 			Spaces[i] = Space(_boardarr[i]);
@@ -46,11 +46,15 @@ public:
 		{
 			Buffer += " ";
 		}
+	};
+
+	void SetPlayerNumber(int playernumber)
+	{
 		for (int i = 0; i < playernumber; i++)
 		{
 			Spaces[0].setPlayer(i);
 		}
-	};
+	}
  
 	string toStr()
 	{
@@ -112,7 +116,7 @@ public:
 			{
 				Spaces[i].setPrice(_factor);
 			}
-			int streetcolor = ownsStreets(player);
+			int streetcolor = ownsStreets(player, Playerpos[player]);
 			if (streetcolor != -1)
 			{
 				Spaces[_streetarr[streetcolor][0]].buyHouse();
@@ -132,14 +136,38 @@ public:
 		return Spaces[spaceNr].getPrice();
 	}
 
-	int ownsStreets(int player)
+	int setOwner(int oldowner, int newowner, int space)
+	{
+		if (space < 0 || space > 39)
+		{
+			return -1;
+		}
+		int streetcolor = ownsStreets(oldowner, space);
+		if (streetcolor != -1)
+		{
+			Spaces[_streetarr[streetcolor][0]].sellHouse();
+			Spaces[_streetarr[streetcolor][1]].sellHouse();
+			if (_streetarr[streetcolor][2] != -1)
+			{
+				Spaces[_streetarr[streetcolor][2]].sellHouse();
+			}
+		}
+		if (Spaces[space].getOwner() == oldowner)
+		{
+			Spaces[space].setOwner(newowner);
+			return 1;
+		}
+		return -1;
+	}
+
+	int ownsStreets(int player, int space)
 	{
 		int color = 0;
 		for (bool contains = false; color < 8 && !contains; color++)
 		{
-			contains |= (_streetarr[color][0] == Playerpos[player]);
-			contains |= (_streetarr[color][1] == Playerpos[player]);
-			contains |= (_streetarr[color][2] == Playerpos[player]);
+			contains |= (_streetarr[color][0] == space);
+			contains |= (_streetarr[color][1] == space);
+			contains |= (_streetarr[color][2] == space);
 		}
 		color--;
 		bool colorOwned = true;
@@ -155,12 +183,16 @@ public:
 		return -1;
 	}
 
-	int buyHouses(int player, int funds)
+	int buyHouses(int player, int space, int funds)
 	{
-		int out = Spaces[Playerpos[player]].getHousePrice();
-		if (player == Spaces[Playerpos[player]].getOwner() && out < funds)//&&RemainingSpaces==0
+		if (space < 0 || space > 39)
 		{
-			Spaces[Playerpos[player]].buyHouse();
+			return -1;
+		}
+		int out = Spaces[space].getHousePrice(player);
+		if (out != -1 && out < funds)//&&RemainingSpaces==0
+		{
+			Spaces[space].buyHouse();
 			return out;
 		}
 		return -1;
@@ -171,7 +203,7 @@ public:
 		return Spaces[spaceNr].getHousePrice();
 	}
 
-	MapReturnObj getPlayerProps(int player, int usestation, int free)
+	MapReturnObj getSpaceProps(int player, int usestation, int free)
 	{
 		MapReturnObj out(Spaces[Playerpos[player]].getProps(player,usestation,PlayerPrison[player],free));
 		PlayerPrison[player] = out.Prison;

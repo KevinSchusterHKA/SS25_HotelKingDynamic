@@ -30,7 +30,7 @@
 enum class Farbe {
     Zuruecksetzen = 0,
     Schwarz = 30,
-    Rot,
+    Rot = 91,
     Gruen,
     Gelb,
     Blau,
@@ -38,7 +38,7 @@ enum class Farbe {
     Cyan,
     Weiss,
     BG_Schwarz = 40,
-    BG_Rot,
+    BG_Rot = 101,
     BG_Gruen,
     BG_Gelb,
     BG_Blau,

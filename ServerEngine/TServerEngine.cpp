@@ -57,8 +57,9 @@ void TServer::UnitTest() {
     int AnzahlSpieler = 4;
     int MomentanerSpieler = 0;
     int x = 0, y = 0;
+    MapReturnObj MRobj;
 
-	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
+	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe fï¿½r den ersten Spieler
     ControlEngine.SetConsoleFontSize(12);
     ControlEngine.GetMaximizedConsoleSize(x, y);
     if (ControlEngine.isRunningInWindowsTerminal())
@@ -66,7 +67,7 @@ void TServer::UnitTest() {
 		Spiellaueft = FALSE; 
         return;
     }
-	
+    board.SetPlayerNumber(AnzahlSpieler);
     //Ausgabe des Startbildschirms
     if (Spiellaueft)
     {
@@ -80,6 +81,7 @@ void TServer::UnitTest() {
             }
         } while (!_kbhit()&&Spiellaueft);
         std::cin.clear();
+        system("chcp 850");
         system("cls");
     }
     Menues MenueAuswahl = Menues::Start;
@@ -110,7 +112,7 @@ void TServer::UnitTest() {
             MomentanerSpielerFarbe = Farbe::BG_Gelb;
             break;
         case 3:
-            MomentanerSpielerFarbe = Farbe::BG_Blau;
+            MomentanerSpielerFarbe = Farbe::BG_Cyan;
             break;
         default:
             break;
@@ -192,14 +194,25 @@ void TServer::UnitTest() {
                         int wuerfel1 = player[MomentanerSpieler].wurfeln();
                         int wuerfel2 = player[MomentanerSpieler].wurfeln();
 
-                        ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                        ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
+                        ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehï¿½rigen Spieler anpassen
+                        ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehï¿½rigen Spieler anpassen
                         MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
                         HatGewuerfelt = TRUE;
                         ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
-                        ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
-						ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
+                        ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straï¿½e"); //TODO: Mit MapEngine absprechen wegen String
+						ConfigEngineLogging.onEventField("Event xyz wurde ausgelï¿½st");  //TODO: Mit MapEngine absprechen wegen String
 						ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
+                        player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
+                        MRobj = board.getSpaceProps(MomentanerSpieler, 0, 0);
+                        if (MRobj.Rent != -1)
+                        {
+                            player[MomentanerSpieler].bezahle(MRobj.Rent);
+                        }
+                        if (MRobj.Owner != -1)
+                        {
+                            player[MRobj.Owner].erhalte(MRobj.Rent);
+                        }
+                        HatGewuerfelt = (wuerfel1!=wuerfel2); // Bug
                     }
                     else {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
@@ -209,7 +222,7 @@ void TServer::UnitTest() {
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                 {
                     player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                    ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
+                    ConfigEngineLogging.playerBuysObject("Straï¿½e wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
@@ -306,20 +319,20 @@ void TServer::UnitTest() {
             break;
         }
 
-        //Ausgabe des ausgewählten Menüs
+        //Ausgabe des ausgewï¿½hlten Menï¿½s
         switch (MenueAuswahl)
         {
         case Menues::Start:
             ControlEngine.AusgabeStartMenu(option, x / 2 - ControlEngine.GetLaengstenStringMenueStartOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteStartOptionen() / 2);
             break;
         case Menues::Spieler:
-            ControlEngine.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
+            ControlEngine.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, MomentanerSpielerFarbe); //die Farbe dem zugehï¿½rigen Spieler anpassen
             break;
         case Menues::Optionen:
             ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         case Menues::Handel:
-            ControlEngine.AusgabeHandelsMenu(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
+            ControlEngine.AusgabeHandelsMenu(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehï¿½rigen Spieler anpassen
         default:
             break;
         }
@@ -336,11 +349,11 @@ void TServer::UnitTest() {
     //        for (size_t i = 0; i < 4; i++)
     //        {
     //            Namen.push_back(player[i].getName());
-				//gekObjNamen[i].push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
-				//gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
+				//gekObjNamen[i].push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurï¿½ckgibt
+				//gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurï¿½ckgibt
     //            tempBudgets.push_back(player[i].getBudget());
-				//gekObjAnz.push_back(player[i].getGekObjAnz);          // Hier wird angenommen, dass getGekObjAnz() eine int zurückgibt
-				//gebObjAnz.push_back(player[i].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurückgibt
+				//gekObjAnz.push_back(player[i].getGekObjAnz);          // Hier wird angenommen, dass getGekObjAnz() eine int zurï¿½ckgibt
+				//gebObjAnz.push_back(player[i].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurï¿½ckgibt
     //        }
             
             //TestControl.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);

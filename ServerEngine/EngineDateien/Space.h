@@ -299,6 +299,11 @@ public:
 		Houses++;
 	}
 
+	void sellHouse()
+	{
+		Houses--;
+	}
+
 	int HouseCount(int player)
 	{
 		int out = 0;
@@ -325,5 +330,10 @@ public:
 	int getOwner()
 	{
 		return Owner;
+	}
+
+	void setOwner(int newowner)
+	{
+		Owner = newowner;
 	}
 };
