@@ -57,7 +57,7 @@ void TServer::UnitTest() {
     int AnzahlSpieler = 4;
     int MomentanerSpieler = 0;
     int x = 0, y = 0;
-    MapReturnObj MRobj;
+    MapReturnObj MRobj[4];
 
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe f�r den ersten Spieler
     ControlEngine.SetConsoleFontSize(12);
@@ -196,21 +196,31 @@ void TServer::UnitTest() {
 
                         ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugeh�rigen Spieler anpassen
                         ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugeh�rigen Spieler anpassen
-                        MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
                         HatGewuerfelt = TRUE;
+                        if (MRobj[MomentanerSpieler].Type == 1)// Bug
+                        {
+                            player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 1));
+                            player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                        }
+                        else {
+                            player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
+                        }
                         ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
                         ConfigEngineLogging.playerOnStreet("Spieler kommt auf Stra�e"); //TODO: Mit MapEngine absprechen wegen String
 						ConfigEngineLogging.onEventField("Event xyz wurde ausgel�st");  //TODO: Mit MapEngine absprechen wegen String
 						ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
-                        player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
-                        MRobj = board.getSpaceProps(MomentanerSpieler, 0, 0);
-                        if (MRobj.Rent != -1)
+                        MRobj[MomentanerSpieler] = board.getSpaceProps(MomentanerSpieler);
+                        if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 1) && (MRobj[MomentanerSpieler].Type != 7))
                         {
-                            player[MomentanerSpieler].bezahle(MRobj.Rent);
+                            player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
                         }
-                        if (MRobj.Owner != -1)
+                        if (MRobj[MomentanerSpieler].Type == 7)
                         {
-                            player[MRobj.Owner].erhalte(MRobj.Rent);
+                            player[MomentanerSpieler].erhalte(MRobj[MomentanerSpieler].Rent);
+                        }
+                        if (MRobj[MomentanerSpieler].Owner != -1)
+                        {
+                            player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
                         }
                         HatGewuerfelt = (wuerfel1!=wuerfel2); // Bug
                     }
@@ -339,6 +349,20 @@ void TServer::UnitTest() {
 
         if (UpdateSpielfeld)
         {
+            //TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
+            while (MRobj[MomentanerSpieler].flag)
+            {
+                MRobj[MomentanerSpieler] = board.getSpaceProps(MomentanerSpieler);
+                if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 7))
+                {
+                    player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                }
+                if (MRobj[MomentanerSpieler].Owner != -1)
+                {
+                    player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
+                }
+                //TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
+            }
             ControlEngine.AusgabeFeld(MapEngine.toStr(), x / 2 - 110, y / 2 - 44);
             /*std::vector<std::string> Namen;
             std::vector<std::vector<std::string>> gekObjNamen;
@@ -357,6 +381,11 @@ void TServer::UnitTest() {
     //        }
             
             //TestControl.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
+            std::cout << MRobj[MomentanerSpieler].Msg << "\n";
+            for (int i = 0; i < AnzahlSpieler; i++)
+            {
+                std::cout << player[i].getBudget() << "     ";
+            }
             ControlEngine.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz , AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
         }
 
