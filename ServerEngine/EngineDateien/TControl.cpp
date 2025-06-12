@@ -983,45 +983,49 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
     }
 
     // Maximize the console window
-    if (!ShowWindow(consoleWindow, SW_MAXIMIZE)) {
-        std::cerr << "Warning: ShowWindow failed\n";
-        // Continue anyway
-    }
+    ShowWindow(consoleWindow, SW_MAXIMIZE);
 
     // Small delay to allow window to maximize
-	Sleep(100); // Sleep for 100 milliseconds
+    Sleep(100);
+
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hConsole == INVALID_HANDLE_VALUE) {
         std::cerr << "Error: Could not get console handle\n";
         return;
     }
 
-    // Method 1: Using GetLargestConsoleWindowSize
+    // Try Method 1: Using GetLargestConsoleWindowSize first
     COORD largest = GetLargestConsoleWindowSize(hConsole);
-    if (largest.X == 0 && largest.Y == 0) {
-        std::cerr << "Error: GetLargestConsoleWindowSize failed\n";
-    }
-    else {
+    if (largest.X > 0 && largest.Y > 0) {
         width = largest.X;
         height = largest.Y;
+        std::cout << "Console size (GetLargestConsoleWindowSize): " << width << "x" << height << std::endl;
+        return; // Success with method 1
     }
 
-    // Method 2: Using GetClientRect and current font size
+    // Fall back to Method 2: Using GetClientRect and current font size
     RECT rect;
     if (!GetClientRect(consoleWindow, &rect)) {
         std::cerr << "Error: GetClientRect failed\n";
         return;
     }
-    
+
     CONSOLE_FONT_INFO fontInfo;
     if (!GetCurrentConsoleFont(hConsole, FALSE, &fontInfo)) {
         std::cerr << "Error: GetCurrentConsoleFont failed\n";
         return;
     }
 
+    // Check for zero font size to prevent division by zero
+    if (fontInfo.dwFontSize.X == 0 || fontInfo.dwFontSize.Y == 0) {
+        std::cerr << "Error: Invalid font size reported ("
+            << fontInfo.dwFontSize.X << "x" << fontInfo.dwFontSize.Y << ")\n";
+        return;
+    }
+
     width = rect.right / fontInfo.dwFontSize.X;
     height = rect.bottom / fontInfo.dwFontSize.Y;
-	std::cout << "Console size: " << width << "x" << height << std::endl;
+    std::cout << "Console size (GetClientRect): " << width << "x" << height << std::endl;
 }
 void TControl::AusgabeTestFeld(int x, int y) {
     //Außen MAP :   Hoehe = 8*11 , Breite = 20*11 
