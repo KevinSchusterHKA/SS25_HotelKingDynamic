@@ -64,8 +64,8 @@ void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
 }
 void TControl::AusgabeFeld(std::string FeldBlock,int x,int y){
 
-    int sizeFeldX = 220;
-	int sizeFeldY =  88;
+    //int sizeFeldX = 220;
+	//int sizeFeldY =  88;
 	this->coord.X = x;               
 	this->coord.Y = y;      
     SetConsoleCursorPosition(this->hConsole, this->coord);
@@ -95,12 +95,12 @@ void TControl::AusgabeSpielerInformationen( std::string Namen[4],
                                             std::vector<std::vector<std::string>> GekaufteObjekte,
                                             std::vector<std::vector<std::string>> GebauteObjekte) {
 
-    Farbe start = Farbe::Rot;
+    Farbe start[] = { Farbe::Rot, Farbe::Gruen, Farbe::Gelb, Farbe::Cyan };
     int BreiteMenueSpielerBox = this->SpielerInformationen[this->SpielerInformationen.size() - 2].size();
 
     for (int i = 0; i < AnzSpieler; i++) {
-        this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * BreiteMenueSpielerBox+x, y, static_cast<Farbe>(static_cast<int>(start) + i));
-		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, static_cast<Farbe>(static_cast<int>(start) + i));
+        this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * BreiteMenueSpielerBox+x, y, start[i]);
+		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, start[i]);
     }
 }
 
@@ -617,21 +617,21 @@ std::string TControl::GetDigitsInt(int Zahl){
 std::string TControl::GetFarbe(Farbe farbe) {
         switch (farbe) {
             case Farbe::Schwarz:   return "\033[30m";
-            case Farbe::Rot:       return "\033[31m";
-            case Farbe::Gruen:     return "\033[32m";
-            case Farbe::Gelb:      return "\033[33m";
-            case Farbe::Blau:      return "\033[34m";
-            case Farbe::Magenta:   return "\033[35m";
-            case Farbe::Cyan:      return "\033[36m";
-            case Farbe::Weiss:     return "\033[37m";
+            case Farbe::Rot:       return "\033[91m";
+            case Farbe::Gruen:     return "\033[92m";
+            case Farbe::Gelb:      return "\033[93m";
+            case Farbe::Blau:      return "\033[94m";
+            case Farbe::Magenta:   return "\033[95m";
+            case Farbe::Cyan:      return "\033[96m";
+            case Farbe::Weiss:     return "\033[97m";
             case Farbe::BG_Schwarz:   return "\033[40m";   // Schwarzer Hintergrund
-            case Farbe::BG_Rot:       return "\033[41m";   // Roter Hintergrund
-            case Farbe::BG_Gruen:     return "\033[42m";   // Grüner Hintergrund
-            case Farbe::BG_Gelb:      return "\033[43m";   // Gelber Hintergrund
-            case Farbe::BG_Blau:      return "\033[44m";   // Blauer Hintergrund
-            case Farbe::BG_Magenta:   return "\033[45m";   // Magenta Hintergrund
-            case Farbe::BG_Cyan:      return "\033[46m";   // Cyan Hintergrund
-            case Farbe::BG_Weiss:     return "\033[47m";   // Weißer Hintergrund
+            case Farbe::BG_Rot:       return "\033[101m";   // Roter Hintergrund
+            case Farbe::BG_Gruen:     return "\033[102m";   // Grüner Hintergrund
+            case Farbe::BG_Gelb:      return "\033[103m";   // Gelber Hintergrund
+            case Farbe::BG_Blau:      return "\033[104m";   // Blauer Hintergrund
+            case Farbe::BG_Magenta:   return "\033[105m";   // Magenta Hintergrund
+            case Farbe::BG_Cyan:      return "\033[106m";   // Cyan Hintergrund
+            case Farbe::BG_Weiss:     return "\033[107m";   // Weißer Hintergrund
             case Farbe::Zuruecksetzen: return "\033[0m"; // Zurücksetzen auf Standardfarbe
             default:               return "\033[0m";     // Standardfarbe
         }
@@ -639,21 +639,21 @@ std::string TControl::GetFarbe(Farbe farbe) {
 void TControl::SetFarbe(Farbe farbe) {
     switch (farbe) {
     case Farbe::Schwarz:   std::cout << "\033[30m"; break;
-    case Farbe::Rot:       std::cout << "\033[31m"; break;
-    case Farbe::Gruen:     std::cout << "\033[32m"; break;
-    case Farbe::Gelb:      std::cout << "\033[33m"; break;
-    case Farbe::Blau:      std::cout << "\033[34m"; break;
-    case Farbe::Magenta:   std::cout << "\033[35m"; break;
-    case Farbe::Cyan:      std::cout << "\033[36m"; break;
-    case Farbe::Weiss:     std::cout << "\033[37m"; break;
+    case Farbe::Rot:       std::cout << "\033[91m"; break;
+    case Farbe::Gruen:     std::cout << "\033[92m"; break;
+    case Farbe::Gelb:      std::cout << "\033[93m"; break;
+    case Farbe::Blau:      std::cout << "\033[94m"; break;
+    case Farbe::Magenta:   std::cout << "\033[95m"; break;
+    case Farbe::Cyan:      std::cout << "\033[96m"; break;
+    case Farbe::Weiss:     std::cout << "\033[97m"; break;
     case Farbe::BG_Schwarz: std::cout << "\033[40m"; break; // Schwarzer Hintergrund
-    case Farbe::BG_Rot:    std::cout << "\033[41m"; break; // Roter Hintergrund
-    case Farbe::BG_Gruen:  std::cout << "\033[42m"; break; // Grüner Hintergrund
-    case Farbe::BG_Gelb:   std::cout << "\033[43m"; break; // Gelber Hintergrund
-    case Farbe::BG_Blau:   std::cout << "\033[44m"; break; // Blauer Hintergrund
-    case Farbe::BG_Magenta: std::cout << "\033[45m"; break; // Magenta Hintergrund
-    case Farbe::BG_Cyan:   std::cout << "\033[46m"; break; // Cyan Hintergrund
-    case Farbe::BG_Weiss:  std::cout << "\033[47m"; break; // Weißer Hintergrund
+    case Farbe::BG_Rot:    std::cout << "\033[101m"; break; // Roter Hintergrund
+    case Farbe::BG_Gruen:  std::cout << "\033[102m"; break; // Grüner Hintergrund
+    case Farbe::BG_Gelb:   std::cout << "\033[103m"; break; // Gelber Hintergrund
+    case Farbe::BG_Blau:   std::cout << "\033[104m"; break; // Blauer Hintergrund
+    case Farbe::BG_Magenta: std::cout << "\033[105m"; break; // Magenta Hintergrund
+    case Farbe::BG_Cyan:   std::cout << "\033[106m"; break; // Cyan Hintergrund
+    case Farbe::BG_Weiss:  std::cout << "\033[107m"; break; // Weißer Hintergrund
     case Farbe::Zuruecksetzen: std::cout << "\033[0m"; break; // Zurücksetzen auf Standardfarbe
     default:               std::cout << "\033[0m"; break; // Standardfarbe
     }
@@ -1019,8 +1019,8 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
         return;
     }
 
-    width = rect.right / fontInfo.dwFontSize.X;
-    height = rect.bottom / fontInfo.dwFontSize.Y;
+    width = rect.right / (fontInfo.dwFontSize.X ? fontInfo.dwFontSize.X : 12);
+    height = rect.bottom / (fontInfo.dwFontSize.Y ? fontInfo.dwFontSize.Y : 4);
 	std::cout << "Console size: " << width << "x" << height << std::endl;
 }
 void TControl::AusgabeTestFeld(int x, int y) {

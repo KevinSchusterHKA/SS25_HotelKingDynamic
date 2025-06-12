@@ -58,8 +58,8 @@ enum _char {
     SP
 };
 
-const string _playerchars[] = { (string)(_fgcolortable[fgred] + 'A' + _fgcolortable[fgwhite]), (string)(_fgcolortable[fggreen] + 'B' + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgyellow] + 'C' + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgcyan] + 'D' + _fgcolortable[fgwhite]), " "};//♥♦♣♠ 3-6
-const char _symbolchars[] = { '*', (char)174, (char)175, '€', (char)179, (char)196, (char)218, (char)191, (char)192, (char)217, (char)193, (char)194, (char)195, (char)180, (char)197, '#', '§', '=', ' '};//⌂(char)127 « » ©(char)184 │ ─ ┌ ┐└ ┘┬ ┴ ├ ┤ ┼ ☺(char)1 §(char)21 =
+const string _playerchars[] = { (string)(_fgcolortable[fgred] + (char)3 + _fgcolortable[fgwhite]), (string)(_fgcolortable[fggreen] + (char)4 + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgyellow] + (char)5 + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgcyan] + (char)6 + _fgcolortable[fgwhite]), " "};//♥♦♣♠ 3-6
+const char _symbolchars[] = { (char)127, (char)174, (char)175, (char)184, (char)179, (char)196, (char)218, (char)191, (char)192, (char)217, (char)193, (char)194, (char)195, (char)180, (char)197, (char)1, (char)21, '=', ' '};//⌂(char)127 « » ©(char)184 │ ─ ┌ ┐└ ┘┬ ┴ ├ ┤ ┼ ☺(char)1 §(char)21 =
 
 enum _type {
     TypeStreet,
@@ -174,45 +174,45 @@ const int _designGTP[_dimY][_dimX] = {
 
 const SpaceConfig _boardarr[40] = {
     SpaceConfig("LOS", TypeGo, 200, bgblack),
-    SpaceConfig("Badstrasse", TypeStreet, 60, 50, new int[7] {2, 10, 30, 90, 160, 250}, bgmagenta),
+    SpaceConfig("Badstrasse|1", TypeStreet, 60, 50, new int[7] {2, 10, 30, 90, 160, 250}, bgmagenta),
     SpaceConfig("Gemeinschafts-|feld", TypeChest, bgblack),
-    SpaceConfig("Turmstrasse", TypeStreet, 60, 50, new int[7] {4, 20, 60, 180, 320, 450}, bgmagenta),
+    SpaceConfig("Turmstrasse|3", TypeStreet, 60, 50, new int[7] {4, 20, 60, 180, 320, 450}, bgmagenta),
     SpaceConfig("Einkommensteuer", TypeTax, 200, bgblack),
     SpaceConfig("Suedbahnhof", TypeStation, 200, bgblack),
-    SpaceConfig("Chausseestrasse", TypeStreet, 100, 50, new int[7] {6, 30, 90, 270, 400, 550}, bgcyan),
+    SpaceConfig("Chausseestrasse|6", TypeStreet, 100, 50, new int[7] {6, 30, 90, 270, 400, 550}, bgcyan),
     SpaceConfig("Ereignisfeld", TypeChance, bgblack),
-    SpaceConfig("Elisenstrasse", TypeStreet, 100, 50, new int[7] {6, 30, 90, 270, 400, 550}, bgcyan),
-    SpaceConfig("Poststrasse", TypeStreet, 120, 50, new int[7] {8, 40, 100, 300, 450, 600}, bgcyan),
+    SpaceConfig("Elisenstrasse|8", TypeStreet, 100, 50, new int[7] {6, 30, 90, 270, 400, 550}, bgcyan),
+    SpaceConfig("Poststrasse|9", TypeStreet, 120, 50, new int[7] {8, 40, 100, 300, 450, 600}, bgcyan),
     SpaceConfig("Gefaengnis", TypePrison, bgblack),
-    SpaceConfig("Seestrasse", TypeStreet, 140, 100, new int[7] {10, 50, 150, 450, 625, 750}, bgbrightmagenta),
+    SpaceConfig("Seestrasse|11", TypeStreet, 140, 100, new int[7] {10, 50, 150, 450, 625, 750}, bgbrightmagenta),
     SpaceConfig("Elektrizi-|taetswerk", TypeStation, 150, bgblack),
-    SpaceConfig("Hafenstrasse", TypeStreet, 140, 100, new int[7] {10, 50, 150, 450, 625, 750}, bgbrightmagenta),
-    SpaceConfig("Neue Strasse", TypeStreet, 160, 100, new int[7] {12, 60, 180, 500, 700, 900}, bgbrightmagenta),
+    SpaceConfig("Hafenstrasse|13", TypeStreet, 140, 100, new int[7] {10, 50, 150, 450, 625, 750}, bgbrightmagenta),
+    SpaceConfig("Neue Strasse|14", TypeStreet, 160, 100, new int[7] {12, 60, 180, 500, 700, 900}, bgbrightmagenta),
     SpaceConfig("Westbahnhof", TypeStation, 200, bgblack),
-    SpaceConfig("Muenchener|Strasse", TypeStreet, 180, 100, new int[7] {14, 70, 200, 550, 750, 950}, bgblue),
+    SpaceConfig("Muenchener|Strasse 16", TypeStreet, 180, 100, new int[7] {14, 70, 200, 550, 750, 950}, bgblue),
     SpaceConfig("Gemeinschafts-|feld", TypeChest, bgblack),
-    SpaceConfig("Wiener Strasse", TypeStreet, 180, 100, new int[7] {14, 70, 200, 550, 750, 950}, bgblue),
-    SpaceConfig("Berliner|Strasse", TypeStreet, 200, 100, new int[7] {16, 80, 220, 600, 800, 1000}, bgblue),
+    SpaceConfig("Wiener Strasse|18", TypeStreet, 180, 100, new int[7] {14, 70, 200, 550, 750, 950}, bgblue),
+    SpaceConfig("Berliner|Strasse 19", TypeStreet, 200, 100, new int[7] {16, 80, 220, 600, 800, 1000}, bgblue),
     SpaceConfig("Freies Parken", TypePark, 0, bgblack),
-    SpaceConfig("Theaterstrasse", TypeStreet, 220, 150, new int[7] {18, 90, 250, 700, 875, 1050}, bgred),
+    SpaceConfig("Theaterstrasse|21", TypeStreet, 220, 150, new int[7] {18, 90, 250, 700, 875, 1050}, bgred),
     SpaceConfig("Ereignisfeld", TypeChance, bgblack),
-    SpaceConfig("Museumstrasse", TypeStreet, 220, 150, new int[7] {18, 90, 250, 700, 875, 1050}, bgred),
-    SpaceConfig("Opernplatz", TypeStreet, 240, 150, new int[7] {20, 100, 300, 750, 925, 1100}, bgred),
+    SpaceConfig("Museumstrasse|23", TypeStreet, 220, 150, new int[7] {18, 90, 250, 700, 875, 1050}, bgred),
+    SpaceConfig("Opernplatz|24", TypeStreet, 240, 150, new int[7] {20, 100, 300, 750, 925, 1100}, bgred),
     SpaceConfig("Nordbahnhof", TypeStation, 200, bgblack),
-    SpaceConfig("Lessingstrasse", TypeStreet, 260, 150, new int[7] {22, 110, 330, 800, 975, 1150}, bgyellow),
-    SpaceConfig("Schillerstrasse", TypeStreet, 260, 150, new int[7] {22, 110, 330, 800, 975, 1150}, bgyellow),
+    SpaceConfig("Lessingstrasse|26", TypeStreet, 260, 150, new int[7] {22, 110, 330, 800, 975, 1150}, bgyellow),
+    SpaceConfig("Schillerstrasse|27", TypeStreet, 260, 150, new int[7] {22, 110, 330, 800, 975, 1150}, bgyellow),
     SpaceConfig("Wasserwerk", TypeStation, 150, bgblack),
-    SpaceConfig("Goethestrasse", TypeStreet, 280, 150, new int[7] {24, 120, 360, 850, 1025, 1200}, bgyellow),
+    SpaceConfig("Goethestrasse|29", TypeStreet, 280, 150, new int[7] {24, 120, 360, 850, 1025, 1200}, bgyellow),
     SpaceConfig("Gehen Sie in|das Gefaengnis", TypeGTP, bgblack),
-    SpaceConfig("Rathausplatz", TypeStreet, 300, 200, new int[7] {26, 130, 390, 900, 1100, 1275}, bggreen),
-    SpaceConfig("Hauptstrasse", TypeStreet, 300, 200, new int[7] {26, 130, 390, 900, 1100, 1275}, bggreen),
+    SpaceConfig("Rathausplatz|31", TypeStreet, 300, 200, new int[7] {26, 130, 390, 900, 1100, 1275}, bggreen),
+    SpaceConfig("Hauptstrasse|32", TypeStreet, 300, 200, new int[7] {26, 130, 390, 900, 1100, 1275}, bggreen),
     SpaceConfig("Gemeinschafts-|feld", TypeChest, bgblack),
-    SpaceConfig("Bahnhofstrasse", TypeStreet, 320, 200, new int[7] {28, 150, 450, 1000, 1200, 1400}, bggreen),
+    SpaceConfig("Bahnhofstrasse|34", TypeStreet, 320, 200, new int[7] {28, 150, 450, 1000, 1200, 1400}, bggreen),
     SpaceConfig("Hauptbahnhof", TypeStation, 200, bgblack),
     SpaceConfig("Ereignisfeld", TypeChance, bgblack),
-    SpaceConfig("Parkstrasse", TypeStreet, 350, 200, new int[7] {35, 175, 500, 1100, 1300, 1500}, bgbrightblue),
+    SpaceConfig("Parkstrasse|37", TypeStreet, 350, 200, new int[7] {35, 175, 500, 1100, 1300, 1500}, bgbrightblue),
     SpaceConfig("Zusatzsteuer", TypeTax, 100, bgblack),
-    SpaceConfig("Schlossallee", TypeStreet, 400, 200, new int[7] {50, 200, 600, 1400, 1700, 2000}, bgbrightblue)
+    SpaceConfig("Schlossallee|39", TypeStreet, 400, 200, new int[7] {50, 200, 600, 1400, 1700, 2000}, bgbrightblue)
 };
 
 const int _streetarr[8][3] = {

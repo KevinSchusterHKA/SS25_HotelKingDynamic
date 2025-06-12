@@ -57,9 +57,11 @@ void TServer::UnitTest() {
     int AnzahlSpieler = 4;
     int MomentanerSpieler = 0;
     int x = 0, y = 0;
+    MapReturnObj MRobj;
 
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
     TestControl.GetMaximizedConsoleSize(x, y);
+    board.SetPlayerNumber(AnzahlSpieler);
     //Ausgabe des Startbildschirms
     do
     {
@@ -71,6 +73,7 @@ void TServer::UnitTest() {
         }
     } while (!_kbhit());
     std::cin.clear();
+    system("chcp 850");
     system("cls");
     Menues MenueAuswahl = Menues::Start;
     Menues MenueLetztes = MenueAuswahl;
@@ -100,7 +103,7 @@ void TServer::UnitTest() {
             MomentanerSpielerFarbe = Farbe::BG_Gelb;
             break;
         case 3:
-            MomentanerSpielerFarbe = Farbe::BG_Blau;
+            MomentanerSpielerFarbe = Farbe::BG_Cyan;
             break;
         default:
             break;
@@ -183,8 +186,17 @@ void TServer::UnitTest() {
 
                         TestControl.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                         TestControl.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                        board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
-                        HatGewuerfelt = TRUE;
+                        player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
+                        MRobj = board.getSpaceProps(MomentanerSpieler, 0, 0);
+                        if (MRobj.Rent != -1)
+                        {
+                            player[MomentanerSpieler].bezahle(MRobj.Rent);
+                        }
+                        if (MRobj.Owner != -1)
+                        {
+                            player[MRobj.Owner].erhalte(MRobj.Rent);
+                        }
+                        HatGewuerfelt = (wuerfel1!=wuerfel2); // Bug
                     }
                     else {
                         std::cout << setw(TestControl.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
@@ -193,11 +205,12 @@ void TServer::UnitTest() {
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                 {
-                    player[MomentanerSpieler].bezahle(board.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                    player[MomentanerSpieler].bezahle(board.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget())); // Bug
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
-                    player[MomentanerSpieler].bezahle(board.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                    int space = 0;
+                    player[MomentanerSpieler].bezahle(board.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget())); // Bug
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
                 {
@@ -319,6 +332,11 @@ void TServer::UnitTest() {
     //        }
             
             //TestControl.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
+            std::cout << MRobj.Msg << "\n";
+            for (int i = 0; i < AnzahlSpieler; i++)
+            {
+                std::cout << player[i].getBudget() << "     ";
+            }
             TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz , AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
         }
 
