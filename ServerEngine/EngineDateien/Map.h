@@ -192,7 +192,7 @@ public:
 		for (int i = 0; i < 3; i++)
 		{
 			int pos = _streetarr[color][i];
-			colorOwned &= (player == Spaces[(pos != -1) ? pos : _streetarr[color][i-1]].getOwner());
+			colorOwned &= (player == Spaces[(pos != -1) ? pos : _streetarr[color][0]].getOwner());
 		}
 		if (colorOwned)
 		{
@@ -208,7 +208,7 @@ public:
 			return -1;
 		}
 		int out = Spaces[space].getHousePrice(player);
-		if (out != -1 && out < funds)//&&RemainingSpaces==0
+		if (out != -1 && out < funds)//&&RemainingSpaces==0 // Bug
 		{
 			Spaces[space].buyHouse();
 			return out;
