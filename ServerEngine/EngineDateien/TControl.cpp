@@ -1116,3 +1116,48 @@ int TControl::GetAnzMenuepunkteSpielerOptionen(void) {
 void TControl::UpdateCursorPosition(COORD Pos) {
     SetConsoleCursorPosition(this->hConsole, Pos);
 }
+
+void TControl::SetConsoleFontSize(int fontSize) {
+    CONSOLE_FONT_INFOEX cfi;
+
+    // Get the current console font information
+    cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+    GetCurrentConsoleFontEx(this->hConsole, FALSE, &cfi);
+
+    // Set the new font size
+    cfi.dwFontSize.Y = fontSize; // Change the Y size (height)
+    cfi.dwFontSize.X = fontSize; // Change the X size (width)
+    SetCurrentConsoleFontEx(this->hConsole, FALSE, &cfi);
+}
+
+bool TControl::isRunningInWindowsTerminal() {
+    const int titleLength = 256;
+    char title[titleLength];
+
+    // Get the console title
+    GetConsoleTitleA(title, titleLength);
+    char className[256];
+
+    HWND hwnd = GetConsoleWindow();
+    GetClassNameA(hwnd, className, sizeof(className));
+    if (strcmp(className, "PseudoConsoleWindow") == 0) {
+        // Windows-Terminal
+        std::cout << "Folgendes Einstellungen umstellen:" << std::endl;
+        std::cout << "1) Windows-Taste->Terminaleinstellungen oeffnen." << std::endl;
+        std::cout << "2) im Reiter Terminal \"Windows-Terminal\" auf \"Windows-Konsolenhost\" umstellen!" << std::endl;
+        std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
+        std::cout << "Danach ueberpruefen ob der Buffer der Konsole groß genug ist:" << std::endl;
+        std::cout << "1) Windows-Taste->Konsole/Eingabeaufforderung oeffnen." << std::endl;
+        std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Buffer->Breite: 500, Hoehe: 100" << std::endl;
+        std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
+        return false;
+    }
+    else if (strcmp(className, "ConsoleWindowClass") == 0) {
+        // Windows-Konsolenhost
+		std::cout << "Wenn die Ausgabe immernoch Falsch dargestellt ." << std::endl;
+        std::cout << "1) Windows-Taste->Konsole/Eingabeaufforderung oeffnen." << std::endl;
+        std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Buffer->Breite: 500, Hoehe: 100" << std::endl;
+        std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
+    }
+    return true;
+}

@@ -59,7 +59,18 @@ void TServer::UnitTest() {
     int x = 0, y = 0;
 
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
+    TestControl.SetConsoleFontSize(8);
     TestControl.GetMaximizedConsoleSize(x, y);
+    if (TestControl.isRunningInWindowsTerminal())
+    {
+		//Continue with the default console size
+        Sleep(2000);
+    }
+    else
+    {
+		Spiellaueft = FALSE; 
+    }
+	
     //Ausgabe des Startbildschirms
     do
     {
@@ -69,9 +80,12 @@ void TServer::UnitTest() {
         if (ZeitDifferenz < FRAME_DURATION) {
             Sleep(FRAME_DURATION - ZeitDifferenz);
         }
-    } while (!_kbhit());
+    } while (!_kbhit()&&Spiellaueft);
     std::cin.clear();
-    system("cls");
+    if (Spiellaueft)
+    {
+        system("cls");
+    }
     Menues MenueAuswahl = Menues::Start;
     Menues MenueLetztes = MenueAuswahl;
     while (Spiellaueft)

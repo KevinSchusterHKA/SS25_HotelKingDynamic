@@ -6,8 +6,9 @@
 #include <windows.h> 
 #include <sstream>
 #include <iomanip>
-#include "LookUp.h"
+#include <tlhelp32.h>
 #include <random>
+#include "LookUp.h"
 
 //#include <ncurses.h> //für Linux, falls benötigt
 
@@ -167,5 +168,7 @@ public:
     int GetAnzMenuepunkteSpielOptionen(void);
     int GetAnzMenuepunkteSpielerOptionen(void);
     void UpdateCursorPosition(COORD Pos);
-};
+    void SetConsoleFontSize(int fontSize);
+    bool isRunningInWindowsTerminal();
 
+};
