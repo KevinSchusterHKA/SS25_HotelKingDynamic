@@ -1119,7 +1119,7 @@ bool TControl::isRunningInWindowsTerminal() {
         std::cout << "1) Windows-Taste->Konsole/Eingabeaufforderung oeffnen." << std::endl;
         std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Layout folgendes einstellen Breite: 500, Hoehe: 100" << std::endl;
         std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
-        return false;
+        return true;
     }
     else if (strcmp(className, "ConsoleWindowClass") == 0) {
         // Windows-Konsolenhost
@@ -1128,5 +1128,5 @@ bool TControl::isRunningInWindowsTerminal() {
         std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Layout folgendes einstellen Breite: 500, Hoehe: 100" << std::endl;
         std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
     }
-    return true;
+    return false;
 }
