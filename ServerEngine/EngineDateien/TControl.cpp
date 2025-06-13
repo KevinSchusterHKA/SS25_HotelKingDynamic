@@ -995,37 +995,13 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
     }
 
     // Try Method 1: Using GetLargestConsoleWindowSize first
-    COORD largest = GetLargestConsoleWindowSize(hConsole);
+    COORD largest = GetLargestConsoleWindowSize(this->hConsole);
     if (largest.X > 0 && largest.Y > 0) {
         width = largest.X;
         height = largest.Y;
         std::cout << "Console size (GetLargestConsoleWindowSize): " << width << "x" << height << std::endl;
         return; // Success with method 1
     }
-
-    // Fall back to Method 2: Using GetClientRect and current font size
-    RECT rect;
-    if (!GetClientRect(consoleWindow, &rect)) {
-        std::cerr << "Error: GetClientRect failed\n";
-        return;
-    }
-
-    CONSOLE_FONT_INFO fontInfo;
-    if (!GetCurrentConsoleFont(hConsole, FALSE, &fontInfo)) {
-        std::cerr << "Error: GetCurrentConsoleFont failed\n";
-        return;
-    }
-
-    // Check for zero font size to prevent division by zero
-    if (fontInfo.dwFontSize.X == 0 || fontInfo.dwFontSize.Y == 0) {
-        std::cerr << "Error: Invalid font size reported ("
-            << fontInfo.dwFontSize.X << "x" << fontInfo.dwFontSize.Y << ")\n";
-        return;
-    }
-
-    width = rect.right / fontInfo.dwFontSize.X;
-    height = rect.bottom / fontInfo.dwFontSize.Y;
-    std::cout << "Console size (GetClientRect): " << width << "x" << height << std::endl;
 }
 void TControl::AusgabeTestFeld(int x, int y) {
     //Außen MAP :   Hoehe = 8*11 , Breite = 20*11 
@@ -1120,22 +1096,15 @@ void TControl::UpdateCursorPosition(COORD Pos) {
 void TControl::SetConsoleFontSize(int fontSize) {
     CONSOLE_FONT_INFOEX cfi;
 
-    // Get the current console font information
     cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
     GetCurrentConsoleFontEx(this->hConsole, FALSE, &cfi);
 
-    // Set the new font size
-    cfi.dwFontSize.Y = fontSize; // Change the Y size (height)
-    cfi.dwFontSize.X = fontSize; // Change the X size (width)
+    cfi.dwFontSize.Y = fontSize;  
+    cfi.dwFontSize.X = fontSize;  
     SetCurrentConsoleFontEx(this->hConsole, FALSE, &cfi);
 }
 
 bool TControl::isRunningInWindowsTerminal() {
-    const int titleLength = 256;
-    char title[titleLength];
-
-    // Get the console title
-    GetConsoleTitleA(title, titleLength);
     char className[256];
 
     HWND hwnd = GetConsoleWindow();
@@ -1148,7 +1117,7 @@ bool TControl::isRunningInWindowsTerminal() {
         std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
         std::cout << "Danach ueberpruefen ob der Buffer der Konsole groß genug ist:" << std::endl;
         std::cout << "1) Windows-Taste->Konsole/Eingabeaufforderung oeffnen." << std::endl;
-        std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Buffer->Breite: 500, Hoehe: 100" << std::endl;
+        std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Layout folgendes einstellen Breite: 500, Hoehe: 100" << std::endl;
         std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
         return false;
     }
@@ -1156,7 +1125,7 @@ bool TControl::isRunningInWindowsTerminal() {
         // Windows-Konsolenhost
 		std::cout << "Wenn die Ausgabe immernoch Falsch dargestellt ." << std::endl;
         std::cout << "1) Windows-Taste->Konsole/Eingabeaufforderung oeffnen." << std::endl;
-        std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Buffer->Breite: 500, Hoehe: 100" << std::endl;
+        std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Layout folgendes einstellen Breite: 500, Hoehe: 100" << std::endl;
         std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
     }
     return true;
