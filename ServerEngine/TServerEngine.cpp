@@ -64,21 +64,22 @@ void TServer::UnitTest() {
     if (ControlEngine.isRunningInWindowsTerminal())
     {
 		Spiellaueft = FALSE; 
+        return;
     }
 	
     //Ausgabe des Startbildschirms
-    do
-    {
-        DWORD StartZeit = GetTickCount64();
-        ControlEngine.AusgabeStartBildschirm(TRUE, x / 2 - 43, y / 2 - 11);
-        DWORD ZeitDifferenz = GetTickCount64() - StartZeit;
-        if (ZeitDifferenz < FRAME_DURATION) {
-            Sleep(FRAME_DURATION - ZeitDifferenz);
-        }
-    } while (!_kbhit()&&Spiellaueft);
-    std::cin.clear();
     if (Spiellaueft)
     {
+        do
+        {
+            DWORD StartZeit = GetTickCount64();
+            ControlEngine.AusgabeStartBildschirm(TRUE, x / 2 - 43, y / 2 - 11);
+            DWORD ZeitDifferenz = GetTickCount64() - StartZeit;
+            if (ZeitDifferenz < FRAME_DURATION) {
+                Sleep(FRAME_DURATION - ZeitDifferenz);
+            }
+        } while (!_kbhit()&&Spiellaueft);
+        std::cin.clear();
         system("cls");
     }
     Menues MenueAuswahl = Menues::Start;
