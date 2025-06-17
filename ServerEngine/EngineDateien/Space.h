@@ -285,9 +285,9 @@ public:
 		Owner = player;
 	}
 
-	int getHousePrice(int player)
+	int getHousePrice()
 	{
-		if (Houses == 5 || Houses == -1 || Owner != player)
+		if (Houses == 5 || Houses == -1)
 		{
 			return -1;
 		}
