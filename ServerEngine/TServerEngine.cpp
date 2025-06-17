@@ -187,13 +187,15 @@ void TServer::UnitTest() {
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler "+to_string(MomentanerSpieler+1)+" : wirft den Wuerfel!";
 
-                        int wuerfel1 = player[MomentanerSpieler].wurfeln();
-                        int wuerfel2 = player[MomentanerSpieler].wurfeln();
+                        player[MomentanerSpieler].Wurfelmechn();
+                        int wuerfel1 = player[MomentanerSpieler].getWurfel(0);
+                        int wuerfel2 = player[MomentanerSpieler].getWurfel(1);
 
                         ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                         ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                         MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
-                        HatGewuerfelt = TRUE;
+                        if (player[MomentanerSpieler].paschcheck()) { HatGewuerfelt = FALSE; player[MomentanerSpieler].incPaschCounter(); }
+                        else { HatGewuerfelt = TRUE; }
                         ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
                         ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
 						ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
@@ -206,11 +208,13 @@ void TServer::UnitTest() {
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                 {
                     player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+					player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
                     ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
                     player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                    player[MomentanerSpieler].baueHaus(player[MomentanerSpieler].getPosition());
 					ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
@@ -329,24 +333,25 @@ void TServer::UnitTest() {
         if (UpdateSpielfeld)
         {
             ControlEngine.AusgabeFeld(MapEngine.toStr(), x / 2 - 110, y / 2 - 44);
-            /*std::vector<std::string> Namen;
+            std::vector<std::string> Namen;
             std::vector<std::vector<std::string>> gekObjNamen;
             std::vector<std::vector<std::string>> gebObjNamen;
             std::vector<int> tempBudgets;
             std::vector<int> gekObjAnz;
-            std::vector<int> gebObjAnz;*/
-    //        for (size_t i = 0; i < 4; i++)
-    //        {
-    //            Namen.push_back(player[i].getName());
-				//gekObjNamen[i].push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
-				//gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
-    //            tempBudgets.push_back(player[i].getBudget());
-				//gekObjAnz.push_back(player[i].getGekObjAnz);          // Hier wird angenommen, dass getGekObjAnz() eine int zurückgibt
-				//gebObjAnz.push_back(player[i].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurückgibt
-    //        }
+            std::vector<int> gebObjAnz;
+            for (size_t i = 0; i < 4; i++)
+            {
+                Namen.push_back(player[i].getName());
+				gekObjNamen.push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
+				gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
+                tempBudgets.push_back(player[i].getBudget());
+				gekObjAnz.push_back(player[i].getGekObjAnz());          // Hier wird angenommen, dass getGekObjAnz() eine int zurückgibt
+				gebObjAnz.push_back(player[i].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurückgibt
+            }
             
             //TestControl.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
-            ControlEngine.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz , AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+            //ControlEngine.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz , AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+			// !!! gekObjAnz, gebObjAnz sind int Werte muss in ControlEngine.AusgabeSpielerInformationen() angepasst werden
         }
 
 
