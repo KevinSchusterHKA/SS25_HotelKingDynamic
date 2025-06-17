@@ -5,7 +5,7 @@
 #include <random>
 #include <cstdlib> // rand()
 #include "map.h"
-#include "Unit_test.h"
+//#include "Unit_test.h"
 
 using namespace std;
 enum PlayerType { HUMAN, CPU1, CPU2, }; // human player ,level 1,level 2

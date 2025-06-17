@@ -9,7 +9,7 @@ player::~player() {};
 int player::Score() {
 	int score = this->getBudget();
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
-		score += GetPreisStrasse(i);
+		score += getPreisStrasse(i);
 	}
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		score += 50;
@@ -368,7 +368,7 @@ string LUT(int i) {
 	}
 }
 
-int GetPreisStrasse(int i) {
+int getPreisStrasse(int i) {
 	switch (i) {
 	case 1:  return 60;
 	case 3:  return 60;
