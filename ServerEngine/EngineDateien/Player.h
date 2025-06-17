@@ -5,7 +5,7 @@
 #include <random>
 #include <cstdlib> // rand()
 #include "map.h"
-//#include "Unit_test.h"
+#include "Unit_test.h"
 
 using namespace std;
 enum PlayerType { HUMAN, CPU1, CPU2, }; // human player ,level 1,level 2
@@ -33,6 +33,7 @@ public:
 	player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
 	~player();
 
+	int Score();
 	void getData();
 	void setID(int id);
 	int getID();
@@ -91,6 +92,7 @@ public:
 
 
 string LUT(int i);
+int getPreisStrasse(int i);
 
 class cpu_player1 : public player {
 public:

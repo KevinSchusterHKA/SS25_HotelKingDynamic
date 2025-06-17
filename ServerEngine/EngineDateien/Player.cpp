@@ -6,6 +6,16 @@ player::player(int id, int name, int budget, int position, bool imgefaengnis, in
 
 player::~player() {};
 
+int player::Score() {
+	int score = this->getBudget();
+	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
+		score += GetPreisStrasse(i);
+	}
+	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
+		score += 50;
+	}
+	return score;
+}
 void player::getData() {
 	cout << "Spieler-ID: " << this->ID << endl;
 	cout << "Budget: " << this->Budget << endl;
@@ -35,6 +45,9 @@ int player::getPosition() { return this->Position; }
 void player::setPosition(int p) { this->Position = p; }
 void player::incPosition(int p) {
 	this->Position += p;
+	if (this->Position == 30) { // Ins Gefängnis gehen
+		this->insGefaengnis();
+	}
 	if (this->Position >= 40) { // Eine Runde Übergangen
 		this->Position -= 40;
 	}
@@ -60,11 +73,16 @@ int player::getAugenzahl() { return this->Augenzahl; }
 void player::setAugenzahl(int a) { this->Augenzahl = a; }
 int player::getPaschCounter() { return this->PaschCounter; }
 void player::setPaschCounter(int p) { this->PaschCounter = p; }
-void player::incPaschCounter() { this->PaschCounter++; }
+void player::incPaschCounter() {
+	this->PaschCounter++;
+	if (this->PaschCounter >= 3) {
+		this->insGefaengnis();
+	}
+}
 
 void player::insGefaengnis() {
 	this->ImGefaengnis = true;
-	this->GefaengnisRunden = 3;
+	this->GefaengnisRunden = 1;
 	this->Position = 10; // Gefängnisfeld
 }
 void player::decGefaengnisRunden() {
@@ -350,7 +368,33 @@ string LUT(int i) {
 	}
 }
 
-
+int GetPreisStrasse(int i) {
+	switch (i) {
+	case 1:  return 60;
+	case 3:  return 60;
+	case 6:  return 100;
+	case 8:  return 100;
+	case 9:  return 120;
+	case 11: return 140;
+	case 13: return 140;
+	case 14: return 160;
+	case 16: return 180;
+	case 18: return 180;
+	case 19: return 200;
+	case 21: return 220;
+	case 23: return 220;
+	case 24: return 240;
+	case 26: return 260;
+	case 27: return 260;
+	case 29: return 280;
+	case 31: return 300;
+	case 32: return 300;
+	case 34: return 320;
+	case 37: return 350;
+	case 39: return 400;
+	default: return 0;
+	}
+}
 
 
 
