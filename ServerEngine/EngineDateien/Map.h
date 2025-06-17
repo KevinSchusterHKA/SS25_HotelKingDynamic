@@ -127,6 +127,11 @@ public:
 		return -1;
 	}
 
+	int getStreetPrice(int spaceNr)
+	{
+		return Spaces[spaceNr].getPrice();
+	}
+
 	int ownsStreets(int player)
 	{
 		int color = 0;
@@ -152,13 +157,18 @@ public:
 
 	int buyHouses(int player, int funds)
 	{
-		int out = Spaces[Playerpos[player]].getHousePrice(player);
-		if (out != -1 && out < funds)//&&RemainingSpaces==0
+		int out = Spaces[Playerpos[player]].getHousePrice();
+		if (player == Spaces[Playerpos[player]].getOwner() && out < funds)//&&RemainingSpaces==0
 		{
 			Spaces[Playerpos[player]].buyHouse();
 			return out;
 		}
 		return -1;
+	}
+
+	int getHousePrice(int spaceNr)
+	{
+		return Spaces[spaceNr].getHousePrice();
 	}
 
 	MapReturnObj getPlayerProps(int player, int usestation, int free)
