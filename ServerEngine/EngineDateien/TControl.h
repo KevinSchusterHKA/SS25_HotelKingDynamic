@@ -135,7 +135,7 @@ public:
     void GetMaximizedConsoleSize(int& width, int& height);
     void AusgabeStartMenu(int& option, int x, int y);
 	
-    void AusgabeJaNeinOption(int& option, int x, int y, Farbe f);
+    void AusgabeJaNeinOption(int& option, int x, int y, Farbe f, std::string Ueberschrift);
     void AusgabeHaeuserKaufen(int& option,int& WelcheStraﬂe, int x, int y, Farbe f);
 
     void AusgabeSpielOptionen(int& option, int x, int y);

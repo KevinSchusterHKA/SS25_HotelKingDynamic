@@ -1130,8 +1130,56 @@ bool TControl::isRunningInWindowsTerminal() {
     }
     return false;
 }
-void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f) {
+void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::string Ueberschrift) {
+    this->SetFarbe(Farbe::Weiss);
+    int BreiteMenue = Ueberschrift.size();
+    int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
+    this->coord.X = x;
+    this->coord.Y = y;
 
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    for (size_t i = 0; i < BreiteMenue; i++)
+    {
+        std::cout << "#";
+    }
+
+    this->coord.X = x;
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    std::cout << "#" << setw(linkerRandText) << " " << std::left << Ueberschrift << setw(linkerRandText + 1) << std::right << "#";
+    
+    this->coord.X = x;
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    for (size_t i = 0; i < BreiteMenue; i++)
+    {
+        std::cout << "#";
+    }
+    this->coord.X = x;
+    this->coord.Y++;
+    linkerRandText = (BreiteMenue - 2) / 2 - 13 / 2;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    if (option == 0)
+    {
+        std::cout << "#" << setw(linkerRandText - 3) << ">" << "[" + to_string(1) + "]" << setw(13) << std::left << "ja" << setw(linkerRandText) << std::right << "#";
+        std::cout << "#" << setw(linkerRandText - 3) << " " << "[" + to_string(2) + "]" << setw(13) << std::left << "nein" << setw(linkerRandText) << std::right << "#";
+
+    }
+    else
+    {
+        std::cout << "#" << setw(linkerRandText - 3) << " " << "[" + to_string(1) + "]" << setw(13) << std::left << "ja" << setw(linkerRandText) << std::right << "#";
+        std::cout << "#" << setw(linkerRandText - 3) << ">" << "[" + to_string(2) + "]" << setw(13) << std::left << "nein" << setw(linkerRandText) << std::right << "#";
+    }
+
+    this->coord.X = x;
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    for (size_t i = 0; i < BreiteMenue; i++)
+    {
+        std::cout << "#";
+    }
 }
 void TControl::AusgabeHaeuserKaufen(int& option, int& WelcheStraße, int x, int y, Farbe f) {
 
