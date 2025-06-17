@@ -87,7 +87,7 @@ void TServer::UnitTest() {
     while (Spiellaueft)
     {
         DWORD start_time = GetTickCount64();
-
+        ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
         if (player[MomentanerSpieler].imGefaengnis())
         {
             player[MomentanerSpieler].decGefaengnisRunden();
@@ -193,8 +193,10 @@ void TServer::UnitTest() {
 
                         ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                         ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                        board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
+                        MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
                         HatGewuerfelt = TRUE;
+                        ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
+                        ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße");//TODO: Mit MapEngine absprechen wegen String
                     }
                     else {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
@@ -203,18 +205,20 @@ void TServer::UnitTest() {
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                 {
-                    player[MomentanerSpieler].bezahle(board.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                    player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                    ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
-                    player[MomentanerSpieler].bezahle(board.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                    player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+					ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
                 {
                     std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
                     //Code zum Handeln von Objekten
                     //player[MomentanerSpieler].handel(board.(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-
+					//TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
                 {
@@ -223,6 +227,8 @@ void TServer::UnitTest() {
                         MomentanerSpieler++;
                         HatGewuerfelt = false;
                         system("cls");
+						ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
+                        ConfigEngineLogging.newRound();
                     }
                     else
                     {
@@ -242,7 +248,6 @@ void TServer::UnitTest() {
                     }
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
-
                     if (RundeVorhanden) {
                         CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                         ControlEngine.UpdateCursorPosition(CursorPos);
@@ -274,7 +279,6 @@ void TServer::UnitTest() {
 
                     ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2);
                 }
-
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) {
                     MenueAuswahl = MenueLetztes;
                     if (MenueAuswahl == Menues::Start)
@@ -318,7 +322,7 @@ void TServer::UnitTest() {
 
         if (UpdateSpielfeld)
         {
-            ControlEngine.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
+            ControlEngine.AusgabeFeld(MapEngine.toStr(), x / 2 - 110, y / 2 - 44);
             /*std::vector<std::string> Namen;
             std::vector<std::vector<std::string>> gekObjNamen;
             std::vector<std::vector<std::string>> gebObjNamen;
