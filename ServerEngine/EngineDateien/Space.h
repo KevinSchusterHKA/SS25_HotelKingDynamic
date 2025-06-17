@@ -281,6 +281,7 @@ public:
 	void buyStreet(int player)
 	{
 		Owner = player;
+		floatbuffer = Config.HousePrice;
 	}
 
 	int getHousePrice()
@@ -327,6 +328,10 @@ public:
 		{
 			Config.Price = (int)floatbuffer;
 			insertStr(intToStr(Config.Price), 1);
+		}
+		if (Config.Type == TypeStreet && Owner != -1)
+		{
+			Config.HousePrice = (int)floatbuffer;
 		}
 		if (Config.Type == TypeStation)
 		{
