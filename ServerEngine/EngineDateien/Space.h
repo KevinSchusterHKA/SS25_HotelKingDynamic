@@ -11,6 +11,7 @@ class Space
 private:
 	string Design[_dimY][_dimX + 2] = {};
 	const int *DesignBuffer;
+	float floatbuffer = 0;
 	int Owner = -1;
 	int Houses = -1;
 	int Players[4] = { 0 };
@@ -23,18 +24,21 @@ private:
 		case TypeStreet:
 			DesignBuffer = *_designStreet;
 			setup();
+			floatbuffer = Config.Price;
 			insertStr(intToStr(Config.Price), 1);
 			break;
 
 		case TypeStation:
 			DesignBuffer = *_designStation;
 			setup();
+			floatbuffer = Config.Rentarr[0];
 			insertStr(intToStr(Config.Rentarr[0]), 1);
 			break;
 
 		case TypeTax:
 			DesignBuffer = *_designTax;
 			setup();
+			floatbuffer = Config.Rentarr[0];
 			insertStr(intToStr(Config.Rentarr[0]), 1);
 			break;
 
@@ -318,10 +322,16 @@ public:
 
 	void setPrice(float mult)
 	{
+		floatbuffer *= mult;
 		if (Config.Type == TypeStreet && Owner == -1)
 		{
-			Config.Price *= mult;
+			Config.Price = (int)floatbuffer;
 			insertStr(intToStr(Config.Price), 1);
+		}
+		if (Config.Type == TypeStation)
+		{
+			Config.Rentarr[0] = (int)floatbuffer;
+			insertStr(intToStr(Config.Rentarr[0]), 1);
 		}
 	}
 
