@@ -161,6 +161,7 @@ void TServer::UnitTest() {
                     MenueAuswahl = Menues::Spieler;
                     RundeVorhanden = TRUE;
                     UpdateSpielfeld = TRUE;
+                    ConfigEngineLogging.newGame();
                 }
 				if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
 					std::vector<HighscoreEntry> player;
@@ -196,7 +197,9 @@ void TServer::UnitTest() {
                         MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
                         HatGewuerfelt = TRUE;
                         ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
-                        ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße");//TODO: Mit MapEngine absprechen wegen String
+                        ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
+						ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
+						ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
                     }
                     else {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
@@ -251,6 +254,7 @@ void TServer::UnitTest() {
                     if (RundeVorhanden) {
                         CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                         ControlEngine.UpdateCursorPosition(CursorPos);
+                        save_config("Spieldstand.txt",{});
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
                     }
                     else
