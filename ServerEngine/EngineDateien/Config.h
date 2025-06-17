@@ -34,8 +34,8 @@ struct PlayerState {
     int position = 0;
     bool inJail = false;
     bool hasFreeJailCard = false;
-    std::vector<int> ownedObjects;
-    std::vector<int> builtObjects;
+    std::vector<int> ownedObjects; //Positionen der gekauften Objekte, die der Spieler besitzt
+    std::vector<int> builtObjects; //Positionen der gebauten Objekte, die der Spieler besitzt
 };
 
 // Gesamtspielstand
@@ -51,7 +51,8 @@ bool load_config(const std::string& filename, GameRules& rules);
 bool save_config(const std::string& filename, const GameRules& rules);
 
 bool load_highscores(const std::string& filename, std::vector<HighscoreEntry>& highscores);
-bool save_highscores(const std::string& filename, const std::vector<HighscoreEntry>& highscores);
+//bool save_highscores(const std::string& filename, std::string Name,int Score); 
+bool save_highscores(const std::string& filename, const std::vector<HighscoreEntry>& highscores);//TODO: statt vector einfach Name und Score vom besten Spieler speichern 
 void sort_highscores(std::vector<HighscoreEntry>& highscores);
 
 

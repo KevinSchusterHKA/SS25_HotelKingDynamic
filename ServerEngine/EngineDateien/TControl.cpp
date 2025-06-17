@@ -1130,3 +1130,9 @@ bool TControl::isRunningInWindowsTerminal() {
     }
     return false;
 }
+void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f) {
+
+}
+void TControl::AusgabeHaeuserKaufen(int& option, int& WelcheStraße, int x, int y, Farbe f) {
+
+}

@@ -49,14 +49,13 @@ void TServer::UnitTest() {
     int budget[4] = { 100,10000,100000,99999999 }; //Budget der Spieler
     int gekObjAnz[4] = { 5,15,2,3 };//Anzahl gekaufter Objekte der Spieler
     int gebObjAnz[4] = { 0,2,3,99 };//Anzahl gebaute Objekte der Spieler
+
+
     COORD CursorPos = { 0,0 };
-    int option = 0;
-    bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE;
+    
+    int option = 0, AnzahlSpieler = 4, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0;
+    bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
-    bool UpdateSpielfeld = FALSE;
-    int AnzahlSpieler = 4;
-    int MomentanerSpieler = 0;
-    int x = 0, y = 0;
 
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
     ControlEngine.SetConsoleFontSize(12);
@@ -184,7 +183,6 @@ void TServer::UnitTest() {
                 ControlEngine.UpdateCursorPosition(CursorPos);
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln )
                 {
-
                     if (!HatGewuerfelt)
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler "+to_string(MomentanerSpieler+1)+" : wirft den Wuerfel!";
@@ -204,7 +202,6 @@ void TServer::UnitTest() {
                     else {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
                     }
-                    
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                 {
@@ -254,7 +251,8 @@ void TServer::UnitTest() {
                     if (RundeVorhanden) {
                         CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                         ControlEngine.UpdateCursorPosition(CursorPos);
-                        save_config("Spieldstand.txt",{});
+                        save_config("Config.txt",{});       //TODO: implementieren und auf Funktionalität testen
+						save_game("Spielstand.txt", {});    //TODO: implementieren und auf Funktionalität testen
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
                     }
                     else
@@ -266,9 +264,13 @@ void TServer::UnitTest() {
                     CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                     ControlEngine.UpdateCursorPosition(CursorPos);
                     std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
+                    //load_config("Config.txt", {}); //TODO: implementieren und auf Funktionalität testen
+                    //load_game("Spielstand.txt", {});//TODO: implementieren und auf Funktionalität testen
                     RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                 }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { ControlEngine.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2); }
+                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { 
+                    ControlEngine.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2); 
+                }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 10) { Spiellaueft = FALSE; }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 13) { 
                     std::vector<HighscoreEntry> player;
@@ -352,6 +354,14 @@ void TServer::UnitTest() {
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
+        if (player[MomentanerSpieler].getBudget() < 0)
+        {
+			GameFinished = TRUE;
+			Spiellaueft = FALSE;
+        }
+    }
+    if (GameFinished) {
+		save_highscores("highscores.txt",{}); //TODO: implementieren und auf Funktionalität testen
     }
 }
 int main() {

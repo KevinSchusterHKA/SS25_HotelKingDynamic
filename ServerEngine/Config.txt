@@ -1,0 +1,4 @@
+baseStreetPrice=0
+baseHousePrice=0
+baseHotelPrice=0
+priceIncreasePercent=0

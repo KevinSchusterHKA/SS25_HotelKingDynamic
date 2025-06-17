@@ -134,6 +134,10 @@ public:
     ~TControl();
     void GetMaximizedConsoleSize(int& width, int& height);
     void AusgabeStartMenu(int& option, int x, int y);
+	
+    void AusgabeJaNeinOption(int& option, int x, int y, Farbe f);
+    void AusgabeHaeuserKaufen(int& option,int& WelcheStraﬂe, int x, int y, Farbe f);
+
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
     void AusgabeSpielRegeln(std::vector<std::string> s, int x, int y);
@@ -170,5 +174,4 @@ public:
     void UpdateCursorPosition(COORD Pos);
     void SetConsoleFontSize(int fontSize);
     bool isRunningInWindowsTerminal();
-
 };
