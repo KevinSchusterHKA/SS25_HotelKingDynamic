@@ -17,9 +17,6 @@ private:
 	int RemainingSpaces = 22;
 
 public:
-	int getStreetPrice(int player) {
-		return Spaces[Playerpos[player]].getPrice();
-	}
 	int getPropertyPrice(int spaceIndex){
 		if (spaceIndex < 0 || spaceIndex >= 40) {
 			return -1;

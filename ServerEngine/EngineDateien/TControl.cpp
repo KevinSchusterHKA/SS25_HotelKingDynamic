@@ -993,14 +993,12 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
         std::cerr << "Error: Could not get console handle\n";
         return;
     }
-
-    // Try Method 1: Using GetLargestConsoleWindowSize first
     COORD largest = GetLargestConsoleWindowSize(this->hConsole);
     if (largest.X > 0 && largest.Y > 0) {
         width = largest.X;
         height = largest.Y;
         std::cout << "Console size (GetLargestConsoleWindowSize): " << width << "x" << height << std::endl;
-        return; // Success with method 1
+        return; 
     }
 }
 void TControl::AusgabeTestFeld(int x, int y) {
