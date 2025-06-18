@@ -69,7 +69,7 @@ void player::Paschwurf() {
 	this->setAugenzahl(this->getWurfel(0) + this->getWurfel(1));
 	this->incPosition(this->getAugenzahl());
 }
-int player::getAugenzahl() { return this->Augenzahl; }
+int player::getAugenzahl() { return this->getWurfel(0)+ this->getWurfel(1); }
 void player::setAugenzahl(int a) { this->Augenzahl = a; }
 int player::getPaschCounter() { return this->PaschCounter; }
 void player::setPaschCounter(int p) { this->PaschCounter = p; }

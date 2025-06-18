@@ -1,4 +1,4 @@
-#include "TServerEngine.h"
+ï»¿#include "TServerEngine.h"
 
 
 TServer::TServer(){
@@ -57,7 +57,7 @@ void TServer::UnitTest() {
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
 
-	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
+	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe fÃ¼r den ersten Spieler
     ControlEngine.SetConsoleFontSize(8);
     ControlEngine.GetMaximizedConsoleSize(x, y);
     if (ControlEngine.isRunningInWindowsTerminal())
@@ -190,15 +190,32 @@ void TServer::UnitTest() {
                         player[MomentanerSpieler].Wurfelmechn();
                         int wuerfel1 = player[MomentanerSpieler].getWurfel(0);
                         int wuerfel2 = player[MomentanerSpieler].getWurfel(1);
-                        /*
-                        wuerfel1 = 1;
-                        wuerfel2 = 1;
-                        player[MomentanerSpieler].setWurfel(1, 0);
-                        player[MomentanerSpieler].setWurfel(1, 1);*/
+                        
+                        //int wuerfel1 = 1;
+                        //int wuerfel2 = 2;
+                        //player[MomentanerSpieler].setWurfel(wuerfel1, 0);
+                        //player[MomentanerSpieler].setWurfel(wuerfel2, 1);
+                        //player[MomentanerSpieler].incPosition(player[MomentanerSpieler].getAugenzahl());
+                        //
+                        //bool besitztJemand = false;
+                        //int tempINDEX = -1;
 
+                        //// Welcher Spieler (Index) besitzt Strasse
+                        //for (int i = 0; i < AnzahlSpieler; i++) {
+                        //    if (i != MomentanerSpieler && player[i].besitztStrasse(player[MomentanerSpieler].getPosition())) {
+                        //        besitztJemand = true;
+                        //        tempINDEX = i;
+                        //        break;
+                        //    }
+                        //}
+                        //// Wenn jemand anderes Besitzer ist -> Miete zahlen
+                        //if (besitztJemand) {
+                        //    player[MomentanerSpieler].bezahle(MapEngine.getStreetPrice(player[MomentanerSpieler].getPosition()));
+                        //    player[tempINDEX].erhalte(MapEngine.getStreetPrice(player[MomentanerSpieler].getPosition())); // Methode um Geld zu bekommen
+                        //}
 
-                        ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                        ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
+                        ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehÃ¶rigen Spieler anpassen
+                        ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehÃ¶rigen Spieler anpassen
                         MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
                         if (player[MomentanerSpieler].paschcheck()) {
                             HatGewuerfelt = FALSE;
@@ -211,8 +228,8 @@ void TServer::UnitTest() {
                             //MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, -1);//TODO:mit Map absprechen
                         }
                         ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
-                        ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
-						ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
+                        ConfigEngineLogging.playerOnStreet("Spieler kommt auf StraÃŸe"); //TODO: Mit MapEngine absprechen wegen String
+						ConfigEngineLogging.onEventField("Event xyz wurde ausgelÃ¶st");  //TODO: Mit MapEngine absprechen wegen String
 						ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
                     }
                     else {
@@ -221,9 +238,28 @@ void TServer::UnitTest() {
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                 {
-                    player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-					player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
-                    ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
+                    //player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                    //player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
+                    //ConfigEngineLogging.playerBuysObject("StraÃŸe wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
+
+                    // PrÃ¼fen ob die StraÃŸe schon jemand besitzt
+                    bool istFrei = true;
+
+                    for (int i = 0; i < AnzahlSpieler; i++) {
+                        if (player[i].besitztStrasse(player[MomentanerSpieler].getPosition())) {
+                            istFrei = false;
+                            break;
+                        }
+                    }
+
+                    // Wenn StraÃŸe frei ist: kaufen
+                    if (istFrei) {
+                        player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                        player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
+                        ConfigEngineLogging.playerBuysObject("StraÃŸe wurde gekauft"); // TODO: String von MapEngine holen
+                    }
+
+                    
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
@@ -269,8 +305,8 @@ void TServer::UnitTest() {
                     if (RundeVorhanden) {
                         CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                         ControlEngine.UpdateCursorPosition(CursorPos);
-                        save_config("Config.txt",{});       //TODO: implementieren und auf Funktionalität testen
-						save_game("Spielstand.txt", {});    //TODO: implementieren und auf Funktionalität testen
+                        save_config("Config.txt",{});       //TODO: implementieren und auf FunktionalitÃ¤t testen
+						save_game("Spielstand.txt", {});    //TODO: implementieren und auf FunktionalitÃ¤t testen
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
                     }
                     else
@@ -282,8 +318,8 @@ void TServer::UnitTest() {
                     CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                     ControlEngine.UpdateCursorPosition(CursorPos);
                     std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
-                    //load_config("Config.txt", {}); //TODO: implementieren und auf Funktionalität testen
-                    //load_game("Spielstand.txt", {});//TODO: implementieren und auf Funktionalität testen
+                    //load_config("Config.txt", {}); //TODO: implementieren und auf FunktionalitÃ¤t testen
+                    //load_game("Spielstand.txt", {});//TODO: implementieren und auf FunktionalitÃ¤t testen
                     RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { 
@@ -326,20 +362,20 @@ void TServer::UnitTest() {
             break;
         }
 
-        //Ausgabe des ausgewählten Menüs
+        //Ausgabe des ausgewÃ¤hlten MenÃ¼s
         switch (MenueAuswahl)
         {
         case Menues::Start:
             ControlEngine.AusgabeStartMenu(option, x / 2 - ControlEngine.GetLaengstenStringMenueStartOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteStartOptionen() / 2);
             break;
         case Menues::Spieler:
-            ControlEngine.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
+            ControlEngine.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, MomentanerSpielerFarbe); //die Farbe dem zugehÃ¶rigen Spieler anpassen
             break;
         case Menues::Optionen:
             ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         case Menues::Handel:
-            ControlEngine.AusgabeHandelsMenu(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
+            ControlEngine.AusgabeHandelsMenu(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehÃ¶rigen Spieler anpassen
         default:
             break;
         }
@@ -356,11 +392,11 @@ void TServer::UnitTest() {
             for (size_t i = 0; i < 4; i++)
             {
                 Namen.push_back(player[i].getName());
-				gekObjNamen.push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
-				gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
+				gekObjNamen.push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurÃ¼ckgibt
+				gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurÃ¼ckgibt
                 tempBudgets.push_back(player[i].getBudget());
-				gekObjAnz.push_back(player[i].getGekObjAnz());          // Hier wird angenommen, dass getGekObjAnz() eine int zurückgibt
-				gebObjAnz.push_back(player[i].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurückgibt
+				gekObjAnz.push_back(player[i].getGekObjAnz());          // Hier wird angenommen, dass getGekObjAnz() eine int zurÃ¼ckgibt
+				gebObjAnz.push_back(player[i].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurÃ¼ckgibt
             }
             
             //TestControl.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
@@ -380,7 +416,7 @@ void TServer::UnitTest() {
         }
     }
     if (GameFinished) {
-		save_highscores("highscores.txt",{}); //TODO: implementieren und auf Funktionalität testen
+		save_highscores("highscores.txt",{}); //TODO: implementieren und auf FunktionalitÃ¤t testen
     }
 }
 int main() {
