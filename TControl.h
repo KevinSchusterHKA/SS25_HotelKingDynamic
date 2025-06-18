@@ -6,8 +6,9 @@
 #include <windows.h> 
 #include <sstream>
 #include <iomanip>
-#include "LookUp.h"
+#include <tlhelp32.h>
 #include <random>
+#include "LookUp.h"
 
 //#include <ncurses.h> //für Linux, falls benötigt
 
@@ -108,7 +109,7 @@ private:
 
     //Menüs
     std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","##################################################","Startmenue"};
-    std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","##################################################","Spielermenue" };
+    std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","Runde Beenden","##################################################","Spielermenue"};
     std::vector<std::string> MenueSpielOptionen = { "Fortfahren","Spiel Speichern","Spiel Laden","Spielregeln","Beenden","Highscore","Zurueck","##################################################","Spielmenue"};
     std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","#############################################","Was willst du machen?" };
 
@@ -127,18 +128,22 @@ private:
                             int x,
                             int y,
                             Farbe f);
-    void GetMaximizedConsoleSize(int& width, int& height);
-    void AusgabeTestFeld(int x, int y);
+    
 public:
     TControl();
     ~TControl();
+    void GetMaximizedConsoleSize(int& width, int& height);
     void AusgabeStartMenu(int& option, int x, int y);
+	
+    void AusgabeJaNeinOption(int& option, int x, int y, Farbe f, std::string Ueberschrift);
+    void AusgabeHaeuserKaufen(int& option,int& WelcheStraße, int x, int y, Farbe f);
+
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
     void AusgabeSpielRegeln(std::vector<std::string> s, int x, int y);
 	void AusgabeHandelsMenu(int& option, int x, int y, Farbe f);
     void AusgabeStartBildschirm(bool flip, int x, int y);
-    void AusgabeFeld(std::string Feld[], int x, int y);
+    void AusgabeFeld(std::string Feld, int x, int y);
     void AusgabeSpielerInformationen(   std::string Namen[4],
                                         int Budget[4],
                                         int AnzahlGekaufterObjekte[4],
@@ -156,15 +161,17 @@ public:
                                         int y,
                                         Farbe f);
     
+    void AusgabeTestFeld(int x, int y);
     void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
 	void AusgabeWuerfel(int wuerfel, int x, int y, Farbe f);
     void UnitTest();
     int GetLaengstenStringMenueStartOptionen(void);
     int GetLaengstenStringMenueSpielOptionen(void);
-    int GetLaengstenStringMenueHandelsOptionen(void);
+    int GetLaengstenStringMenueSpielerOptionen(void);
 	int GetAnzMenuepunkteStartOptionen(void);
     int GetAnzMenuepunkteSpielOptionen(void);
-    int GetAnzMenuepunkteHandelsOptionen(void);
+    int GetAnzMenuepunkteSpielerOptionen(void);
     void UpdateCursorPosition(COORD Pos);
+    void SetConsoleFontSize(int fontSize);
+    bool isRunningInWindowsTerminal();
 };
-

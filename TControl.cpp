@@ -62,22 +62,26 @@ void TControl::AusgabeStartBildschirm(bool flip,int x,int y) {
 
         
 }
-void TControl::AusgabeFeld(std::string FeldBlock[],int x,int y){
+void TControl::AusgabeFeld(std::string FeldBlock,int x,int y){
 
     int sizeFeldX = 220;
 	int sizeFeldY =  88;
-	this->coord.X = x;
-	this->coord.Y = y;
-    for (size_t i = 0; i < sizeFeldY; i++)
+	this->coord.X = x;               
+	this->coord.Y = y;      
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    for (char var : FeldBlock)
     {
-        for (size_t j = 0; j < sizeFeldX; j++)
+        if (var !='\n')
         {
-			SetConsoleCursorPosition(this->hConsole, this->coord);
-            std::cout << FeldBlock[sizeFeldY*i+j];
-            this->coord.X++;
+            std::cout << var;
         }
-		this->coord.X = x;
-		this->coord.Y++;
+        else
+        {
+            this->coord.Y++;
+            this->coord.X = x;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+        }
     }
 }
 
@@ -744,7 +748,7 @@ void TControl::UnitTest() {
             else if (option < TestControl.GetAnzMenuepunkteSpielOptionen() - 1 && MenueAuswahl == Menues::Optionen) {
                 option++;
             }
-            else if (option < TestControl.GetAnzMenuepunkteHandelsOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
+            else if (option < TestControl.GetAnzMenuepunkteSpielerOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
                 option++;
             }
             break;
@@ -868,7 +872,7 @@ void TControl::UnitTest() {
             TestControl.AusgabeSpielOptionen(option, x / 2 - TestControl.GetLaengstenStringMenueSpielOptionen() /2, y / 2 - TestControl.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
 		case Menues::Handel:
-			TestControl.AusgabeHandelsMenu(option, x / 2 - TestControl.GetLaengstenStringMenueHandelsOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteHandelsOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
+			TestControl.AusgabeHandelsMenu(option, x / 2 - TestControl.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - TestControl.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
         default:
             break;
         }
@@ -979,45 +983,23 @@ void TControl::GetMaximizedConsoleSize(int& width, int& height) {
     }
 
     // Maximize the console window
-    if (!ShowWindow(consoleWindow, SW_MAXIMIZE)) {
-        std::cerr << "Warning: ShowWindow failed\n";
-        // Continue anyway
-    }
+    ShowWindow(consoleWindow, SW_MAXIMIZE);
 
     // Small delay to allow window to maximize
-	Sleep(100); // Sleep for 100 milliseconds
+    Sleep(100);
+
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hConsole == INVALID_HANDLE_VALUE) {
         std::cerr << "Error: Could not get console handle\n";
         return;
     }
-
-    // Method 1: Using GetLargestConsoleWindowSize
-    COORD largest = GetLargestConsoleWindowSize(hConsole);
-    if (largest.X == 0 && largest.Y == 0) {
-        std::cerr << "Error: GetLargestConsoleWindowSize failed\n";
-    }
-    else {
+    COORD largest = GetLargestConsoleWindowSize(this->hConsole);
+    if (largest.X > 0 && largest.Y > 0) {
         width = largest.X;
         height = largest.Y;
+        std::cout << "Console size (GetLargestConsoleWindowSize): " << width << "x" << height << std::endl;
+        return; 
     }
-
-    // Method 2: Using GetClientRect and current font size
-    RECT rect;
-    if (!GetClientRect(consoleWindow, &rect)) {
-        std::cerr << "Error: GetClientRect failed\n";
-        return;
-    }
-    
-    CONSOLE_FONT_INFO fontInfo;
-    if (!GetCurrentConsoleFont(hConsole, FALSE, &fontInfo)) {
-        std::cerr << "Error: GetCurrentConsoleFont failed\n";
-        return;
-    }
-
-    width = rect.right / fontInfo.dwFontSize.X;
-    height = rect.bottom / fontInfo.dwFontSize.Y;
-	std::cout << "Console size: " << width << "x" << height << std::endl;
 }
 void TControl::AusgabeTestFeld(int x, int y) {
     //Außen MAP :   Hoehe = 8*11 , Breite = 20*11 
@@ -1087,7 +1069,7 @@ int TControl::GetLaengstenStringMenueSpielOptionen(void) {
     }
     return tempMax;
 }
-int TControl::GetLaengstenStringMenueHandelsOptionen(void) {
+int TControl::GetLaengstenStringMenueSpielerOptionen(void) {
     int tempMax = 0;
     for (std::string option : this->MenueSpielerOptionen) {
         if (option.size() > tempMax) {
@@ -1102,9 +1084,103 @@ int TControl::GetAnzMenuepunkteStartOptionen(void) {
 int TControl::GetAnzMenuepunkteSpielOptionen(void){
     return MenueSpielOptionen.size() - 2;
 }
-int TControl::GetAnzMenuepunkteHandelsOptionen(void) {
+int TControl::GetAnzMenuepunkteSpielerOptionen(void) {
 	return MenueSpielerOptionen.size() - 2;  
 }
 void TControl::UpdateCursorPosition(COORD Pos) {
     SetConsoleCursorPosition(this->hConsole, Pos);
+}
+
+void TControl::SetConsoleFontSize(int fontSize) {
+    CONSOLE_FONT_INFOEX cfi;
+
+    cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+    GetCurrentConsoleFontEx(this->hConsole, FALSE, &cfi);
+
+    cfi.dwFontSize.Y = fontSize;  
+    cfi.dwFontSize.X = fontSize;  
+    SetCurrentConsoleFontEx(this->hConsole, FALSE, &cfi);
+}
+
+bool TControl::isRunningInWindowsTerminal() {
+    char className[256];
+
+    HWND hwnd = GetConsoleWindow();
+    GetClassNameA(hwnd, className, sizeof(className));
+    if (strcmp(className, "PseudoConsoleWindow") == 0) {
+        // Windows-Terminal
+        std::cout << "Folgendes Einstellungen umstellen:" << std::endl;
+        std::cout << "1) Windows-Taste->Terminaleinstellungen oeffnen." << std::endl;
+        std::cout << "2) im Reiter Terminal \"Windows-Terminal\" auf \"Windows-Konsolenhost\" umstellen!" << std::endl;
+        std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
+        std::cout << "Danach ueberpruefen ob der Buffer der Konsole groß genug ist:" << std::endl;
+        std::cout << "1) Windows-Taste->Konsole/Eingabeaufforderung oeffnen." << std::endl;
+        std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Layout folgendes einstellen Breite: 500, Hoehe: 100" << std::endl;
+        std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
+        return true;
+    }
+    else if (strcmp(className, "ConsoleWindowClass") == 0) {
+        // Windows-Konsolenhost
+    }
+    return false;
+}
+void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::string Ueberschrift) {
+    this->SetFarbe(Farbe::Weiss);
+    int BreiteMenue = Ueberschrift.size()+20;
+    int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
+    this->coord.X = x;
+    this->coord.Y = y;
+
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    for (size_t i = 0; i < BreiteMenue; i++)
+    {
+        std::cout << "#";
+    }
+
+    this->coord.X = x;
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    std::cout << "#" << setw(linkerRandText) << " " << std::left << Ueberschrift << setw(linkerRandText + 1) << std::right << "#";
+    
+    this->coord.X = x;
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    for (size_t i = 0; i < BreiteMenue; i++)
+    {
+        std::cout << "#";
+    }
+    this->coord.X = x;
+    this->coord.Y++;
+    linkerRandText = (BreiteMenue - 2) / 2 - 13 / 2;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    if (option == 0)
+    {
+        std::cout << "#" << setw(linkerRandText - 3) << ">" << "[" + to_string(1) + "]" << setw(13) << std::left << "ja" << setw(linkerRandText) << std::right << "#";
+        this->coord.X = x;
+        this->coord.Y++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#" << setw(linkerRandText - 3) << " " << "[" + to_string(2) + "]" << setw(13) << std::left << "nein" << setw(linkerRandText) << std::right << "#";
+
+    }
+    else
+    {
+        std::cout << "#" << setw(linkerRandText - 3) << " " << "[" + to_string(1) + "]" << setw(13) << std::left << "ja" << setw(linkerRandText) << std::right << "#";
+        this->coord.X = x;
+        this->coord.Y++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << "#" << setw(linkerRandText - 3) << ">" << "[" + to_string(2) + "]" << setw(13) << std::left << "nein" << setw(linkerRandText) << std::right << "#";
+    }
+
+    this->coord.X = x;
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    for (size_t i = 0; i < BreiteMenue; i++)
+    {
+        std::cout << "#";
+    }
+}
+void TControl::AusgabeHaeuserKaufen(int& option, int& WelcheStraße, int x, int y, Farbe f) {
+
 }
