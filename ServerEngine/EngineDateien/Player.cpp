@@ -370,7 +370,7 @@ bool cpu_player1::acceptTrade(Map& gameMap, int spaceIndex, int offer) {
 
 // buy street
 bool cpu_player1::tryBuyStreet(Map& gameMap, std::vector<player*>& p) {
-	int price = gameMap.getStreetPrice(getPosition());
+	int price = gameMap.getPropertyPrice(getPosition());
 	int id = getID();
 	int pos = getPosition();
 	if (price < 0) {
