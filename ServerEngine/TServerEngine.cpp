@@ -58,7 +58,7 @@ void TServer::UnitTest() {
     char EingabeCh = MenueOptionen::Reset;
 
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
-    ControlEngine.SetConsoleFontSize(12);
+    ControlEngine.SetConsoleFontSize(8);
     ControlEngine.GetMaximizedConsoleSize(x, y);
     if (ControlEngine.isRunningInWindowsTerminal())
     {
