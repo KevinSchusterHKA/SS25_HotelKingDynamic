@@ -8,7 +8,7 @@
 #include <iomanip>
 #include <tlhelp32.h>
 #include <random>
-#include "LookUp.h"
+#include "LUT.h"
 
 //#include <ncurses.h> //für Linux, falls benötigt
 
@@ -119,7 +119,8 @@ private:
     void SetFarbe(Farbe farbe);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord;
-    void HideCursor(HANDLE hConsole);
+    void HideCursor();
+    void ShowCursor();
     //BOOL WINAPI SetConsoleCursorPosition(_In_ HANDLE hConsoleOutput,_In_ COORD  dwCursorPosition);
     void AusgabeSpielerBox( std::string Namen,
                             int Budget,
@@ -136,7 +137,7 @@ public:
     void AusgabeStartMenu(int& option, int x, int y);
 	
     void AusgabeJaNeinOption(int& option, int x, int y, Farbe f, std::string Ueberschrift);
-    void AusgabeHaeuserKaufen(int& option,int& WelcheStraße, int x, int y, Farbe f);
+    void AusgabeStrassenKaufen(int& option,int& WelcheStraße, int& Angebot, int x, int y, Farbe f);
 
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
