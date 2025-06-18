@@ -89,7 +89,7 @@ public:
 		return out;
 	}
 
-	int movePlayer(int player, int distance, int flag)
+	int movePlayer(int player, int distance, int flag) // flag = 0: normal bewegen; flag = 1: bahn fahren; flag = -1: kein LOS, evtl ins Gefängnis
 	{
 		Spaces[Playerpos[player]].removePlayer(player);
 		vector<int> pos;
