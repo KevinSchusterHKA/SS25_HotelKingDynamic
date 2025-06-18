@@ -296,7 +296,7 @@ int cpu_player1::handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<p
 	int minPercent = 5;
 	int maxPercent = 15;
 	int offerPercent = minPercent + rand() % (maxPercent - minPercent + 1);
-	int  offer = (1 + offerPercent / 100.0) * gameMap.getPropertyPrice(propIndex);
+	int  offer = (1 + offerPercent / 100.0) * gameMap.getStreetPrice(propIndex);
 
 	if (offer > p[cpuID]->getBudget()) {
 		/*  std::cout << "CPU Kann sich das Angebot von " << offer
@@ -313,7 +313,7 @@ int cpu_player1::handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<p
 // player to cpu 
 bool cpu_player1::acceptTrade(Map& gameMap, int spaceIndex, int offer) {
 	int id = getID();
-	int propPrice = gameMap.getPropertyPrice(spaceIndex);
+	int propPrice = gameMap.getStreetPrice(spaceIndex);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 
 	if (offer <= propPrice * (acceptThresholdPercent / 100.0) && offer <= getBudget()) {

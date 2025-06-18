@@ -358,4 +358,9 @@ public:
 	{
 		Owner = newowner;
 	}
+
+	string getName()
+	{
+		return Config.Name;
+	}
 };

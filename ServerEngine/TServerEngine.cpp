@@ -67,7 +67,7 @@ void TServer::UnitTest() {
 		Spiellaueft = FALSE; 
         return;
     }
-    board.SetPlayerNumber(AnzahlSpieler);
+    MapEngine.SetPlayerNumber(AnzahlSpieler);
     //Ausgabe des Startbildschirms
     if (Spiellaueft)
     {
@@ -89,7 +89,7 @@ void TServer::UnitTest() {
     while (Spiellaueft)
     {
         DWORD start_time = GetTickCount64();
-        ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
+        logger.newPlayer(player[MomentanerSpieler].getName());
         if (player[MomentanerSpieler].imGefaengnis())
         {
             player[MomentanerSpieler].decGefaengnisRunden();
@@ -163,7 +163,7 @@ void TServer::UnitTest() {
                     MenueAuswahl = Menues::Spieler;
                     RundeVorhanden = TRUE;
                     UpdateSpielfeld = TRUE;
-                    ConfigEngineLogging.newGame();
+                    logger.newGame();
                 }
 				if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
 					std::vector<HighscoreEntry> player;
@@ -199,17 +199,15 @@ void TServer::UnitTest() {
                         HatGewuerfelt = TRUE;
                         if (MRobj[MomentanerSpieler].Type == 1)// Bug
                         {
-                            player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 1));
+                            player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 1));
                             player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
                         }
                         else {
-                            player[MomentanerSpieler].bezahle(board.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
+                            player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
                         }
-                        ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
-                        ConfigEngineLogging.playerOnStreet("Spieler kommt auf Stra�e"); //TODO: Mit MapEngine absprechen wegen String
-						ConfigEngineLogging.onEventField("Event xyz wurde ausgel�st");  //TODO: Mit MapEngine absprechen wegen String
-						ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
-                        MRobj[MomentanerSpieler] = board.getSpaceProps(MomentanerSpieler);
+                        logger.playerRollingDice(wuerfel1, wuerfel2);
+
+                        MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);
                         if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 1) && (MRobj[MomentanerSpieler].Type != 7))
                         {
                             player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
@@ -222,6 +220,9 @@ void TServer::UnitTest() {
                         {
                             player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
                         }
+                        logger.playerOnStreet("Spieler kommt auf Strasse"); //TODO: Mit MapEngine absprechen wegen String
+                        logger.onEventField("Event xyz wurde ausgeloest");  //TODO: Mit MapEngine absprechen wegen String
+                        logger.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
                         HatGewuerfelt = (wuerfel1!=wuerfel2); // Bug
                     }
                     else {
@@ -232,13 +233,13 @@ void TServer::UnitTest() {
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                 {
                     player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                    ConfigEngineLogging.playerBuysObject("Stra�e wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
+                    logger.playerBuysObject("Strasse wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                 {
                     int space = MRobj[MomentanerSpieler].SpaceNr;// Bug
                     player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget()));
-					ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
+                    logger.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                 }
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                 {
@@ -254,8 +255,8 @@ void TServer::UnitTest() {
                         MomentanerSpieler++;
                         HatGewuerfelt = false;
                         system("cls");
-						ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
-                        ConfigEngineLogging.newRound();
+                        logger.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
+                        logger.newRound();
                     }
                     else
                     {
@@ -353,7 +354,7 @@ void TServer::UnitTest() {
             //TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
             while (MRobj[MomentanerSpieler].flag)
             {
-                MRobj[MomentanerSpieler] = board.getSpaceProps(MomentanerSpieler);
+                MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);
                 if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 7))
                 {
                     player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
