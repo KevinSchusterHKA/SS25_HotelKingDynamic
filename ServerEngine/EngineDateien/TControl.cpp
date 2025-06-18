@@ -1132,7 +1132,7 @@ bool TControl::isRunningInWindowsTerminal() {
 }
 void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::string Ueberschrift) {
     this->SetFarbe(Farbe::Weiss);
-    int BreiteMenue = Ueberschrift.size();
+    int BreiteMenue = Ueberschrift.size()+20;
     int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
     this->coord.X = x;
     this->coord.Y = y;
@@ -1164,12 +1164,18 @@ void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::strin
     if (option == 0)
     {
         std::cout << "#" << setw(linkerRandText - 3) << ">" << "[" + to_string(1) + "]" << setw(13) << std::left << "ja" << setw(linkerRandText) << std::right << "#";
+        this->coord.X = x;
+        this->coord.Y++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
         std::cout << "#" << setw(linkerRandText - 3) << " " << "[" + to_string(2) + "]" << setw(13) << std::left << "nein" << setw(linkerRandText) << std::right << "#";
 
     }
     else
     {
         std::cout << "#" << setw(linkerRandText - 3) << " " << "[" + to_string(1) + "]" << setw(13) << std::left << "ja" << setw(linkerRandText) << std::right << "#";
+        this->coord.X = x;
+        this->coord.Y++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
         std::cout << "#" << setw(linkerRandText - 3) << ">" << "[" + to_string(2) + "]" << setw(13) << std::left << "nein" << setw(linkerRandText) << std::right << "#";
     }
 

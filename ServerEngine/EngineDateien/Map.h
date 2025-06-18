@@ -127,10 +127,7 @@ public:
 		return -1;
 	}
 
-	int getStreetPrice(int spaceNr)
-	{
-		return Spaces[spaceNr].getPrice();
-	}
+	
 
 	int ownsStreets(int player)
 	{
