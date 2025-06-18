@@ -127,7 +127,19 @@ void player::geheZu(int feld) {
 }
 
 void player::addStrasse(int strasse) {
-	GekaufteStrassen.push_back(strasse);
+	if (this->GekaufteStrassen.size() == 0) {
+		GekaufteStrassen.push_back(strasse);
+	}
+	else
+	{
+		for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
+			if (this->GekaufteStrassen[i] == strasse) {
+			}
+			else {
+				GekaufteStrassen.push_back(strasse);
+			}
+		}
+	}
 	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
 void player::deleteStrasse(int strasse) {
@@ -148,6 +160,52 @@ bool player::besitztStrasse(int strasse) {
 	}
 	return false;
 }
+bool player::besitztStrassenSet() {
+	// Sets als Array von Vektoren definieren
+	vector<int> set1 = { 1, 3 };
+	vector<int> set2 = { 6, 8, 9 };
+	vector<int> set3 = { 11, 13, 14 };
+	vector<int> set4 = { 16, 18, 19 };
+	vector<int> set5 = { 21, 23, 24 };
+	vector<int> set6 = { 26, 27, 29 };
+	vector<int> set7 = { 31, 32, 34 };
+	vector<int> set8 = { 37, 39 };
+
+	// Liste mit allen Sets
+	vector<vector<int>> sets;
+	sets.push_back(set1);
+	sets.push_back(set2);
+	sets.push_back(set3);
+	sets.push_back(set4);
+	sets.push_back(set5);
+	sets.push_back(set6);
+	sets.push_back(set7);
+	sets.push_back(set8);
+
+	// Überprüfen ob Spieler ein Set vollständig hat
+	for (int i = 0; i < sets.size(); i++) {
+		int zaehler = 0;
+
+		for (int j = 0; j < sets[i].size(); j++) {
+			// Prüfen ob die Straße in GekaufteStrassen ist
+			for (int k = 0; k < this->GekaufteStrassen.size(); k++) {
+				if (this->GekaufteStrassen[k] == sets[i][j]) {
+					zaehler++;
+					break; // weiter zur nächsten Straße im Set
+				}
+			}
+		}
+
+		// Wenn Anzahl gefundener Straßen gleich der Anzahl im Set ist
+		if (zaehler == sets[i].size()) {
+			return true;
+		}
+	}
+
+	// Wenn kein vollständiges Set gefunden wurde
+	return false;
+}
+
 int player::handel(int r, int preowner) {
 	int Strasse = r;
 	int angebot = -1;
@@ -209,7 +267,7 @@ bool player::verkaufeStrasseAn(player* zielspieler, int strasse, int betrag) {
 }
 
 void player::baueHaus(int strasse) {
-	if (this->besitztStrasse(strasse)) {
+	if (this->besitztStrassenSet()) {
 		this->GebauteHaeuser.push_back(strasse);
 		cout << "Ein Haus wurde auf " << strasse << " gebaut.\n";
 	}
@@ -342,31 +400,50 @@ bool cpu_player1::tryBuyStreet(Map& gameMap, std::vector<player*>& p) {
 
 string LUT(int i) {
 	switch (i) {
-	case 1:  return "Kaiserstrasse";
-	case 3:  return "Erbprinzenstrasse";
-	case 6:  return "Ettlinger_Tor";
-	case 8:  return "Amalienstrasse";
-	case 9:  return "Waldstrasse";
-	case 11: return "Durlacher_Allee";
-	case 13: return "Rueppurrer_Strasse";
-	case 14: return "Moltkestrasse";
-	case 16: return "Herrenstrasse";
-	case 18: return "Kronenstrasse";
-	case 19: return "Kriegsstrasse";
-	case 21: return "Kanalweg";
-	case 23: return "Sophienstrasse";
-	case 24: return "Karlstrasse";
-	case 26: return "Tullastrasse";
-	case 27: return "Hardtstrasse";
-	case 29: return "Rintheimer_Strasse";
-	case 31: return "Wolfartsweierer_Strasse";
-	case 32: return "Nordendstrasse";
-	case 34: return "Lorenzstrasse";
-	case 37: return "Kuehler_Krug";
-	case 39: return "Europaplatz";
-	default: return "Unbekannte_Strasse";
+	case 0:  return "LOS";
+	case 1:  return "Badstrasse";
+	case 2:  return "Gemeinschaftsfeld";
+	case 3:  return "Turmstrasse";
+	case 4:  return "Einkommensteuer";
+	case 5:  return "Suedbahnhof";
+	case 6:  return "Chausseestrasse";
+	case 7:  return "Ereignisfeld";
+	case 8:  return "Elisenstrasse";
+	case 9:  return "Poststrasse";
+	case 10: return "Gefaengnis";
+	case 11: return "Seestrasse";
+	case 12: return "Elektrizitaetswerk";
+	case 13: return "Hafenstrasse";
+	case 14: return "Neue Strasse";
+	case 15: return "Westbahnhof";
+	case 16: return "Muenchener Strasse";
+	case 17: return "Gemeinschaftsfeld";
+	case 18: return "Wiener Strasse";
+	case 19: return "Berliner Strasse";
+	case 20: return "Freies Parken";
+	case 21: return "Theaterstrasse";
+	case 22: return "Ereignisfeld";
+	case 23: return "Museumstrasse";
+	case 24: return "Opernplatz";
+	case 25: return "Nordbahnhof";
+	case 26: return "Lessingstrasse";
+	case 27: return "Schillerstrasse";
+	case 28: return "Wasserwerk";
+	case 29: return "Goethestrasse";
+	case 30: return "Gehen Sie in das Gefaengnis";
+	case 31: return "Rathausplatz";
+	case 32: return "Hauptstrasse";
+	case 33: return "Gemeinschaftsfeld";
+	case 34: return "Bahnhofstrasse";
+	case 35: return "Hauptbahnhof";
+	case 36: return "Ereignisfeld";
+	case 37: return "Parkstrasse";
+	case 38: return "Zusatzsteuer";
+	case 39: return "Schlossallee";
+	default: return "Unbekanntes Feld";
 	}
 }
+
 
 int getPreisStrasse(int i) {
 	switch (i) {

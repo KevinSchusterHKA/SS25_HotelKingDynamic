@@ -190,12 +190,26 @@ void TServer::UnitTest() {
                         player[MomentanerSpieler].Wurfelmechn();
                         int wuerfel1 = player[MomentanerSpieler].getWurfel(0);
                         int wuerfel2 = player[MomentanerSpieler].getWurfel(1);
+                        /*
+                        wuerfel1 = 1;
+                        wuerfel2 = 1;
+                        player[MomentanerSpieler].setWurfel(1, 0);
+                        player[MomentanerSpieler].setWurfel(1, 1);*/
+
 
                         ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                         ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                         MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
-                        if (player[MomentanerSpieler].paschcheck()) { HatGewuerfelt = FALSE; player[MomentanerSpieler].incPaschCounter(); }
-                        else { HatGewuerfelt = TRUE; }
+                        if (player[MomentanerSpieler].paschcheck()) {
+                            HatGewuerfelt = FALSE;
+                            player[MomentanerSpieler].incPaschCounter(); 
+                        }
+                        else {
+                            HatGewuerfelt = TRUE; 
+                        }
+                        if (player[MomentanerSpieler].getPaschCounter() == 3) {
+                            //MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, -1);//TODO:mit Map absprechen
+                        }
                         ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
                         ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
 						ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
@@ -350,7 +364,7 @@ void TServer::UnitTest() {
             }
             
             //TestControl.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
-            //ControlEngine.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz , AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+            ControlEngine.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
 			// !!! gekObjAnz, gebObjAnz sind int Werte muss in ControlEngine.AusgabeSpielerInformationen() angepasst werden
         }
 

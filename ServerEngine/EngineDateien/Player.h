@@ -75,6 +75,7 @@ public:
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
 	bool besitztStrasse(int strasse);
+	bool besitztStrassenSet();
 	int handel(int request, int preowner);
 	bool kaufeStrasseVon(player* von, int strasse, int betrag);
 	bool verkaufeStrasseAn(player* zielspieler, int strasse, int betrag);
