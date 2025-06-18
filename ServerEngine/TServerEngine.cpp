@@ -65,24 +65,24 @@ void TServer::UnitTest() {
 		Spiellaueft = FALSE; 
         return;
     }
-    do
-    {
-        std::cout << "Folgendes Einstellungen umstellen:" << std::endl;
-        std::cout << "1) Windows-Taste->Terminaleinstellungen oeffnen." << std::endl;
-        std::cout << "2) im Reiter Terminal \"Windows-Terminal\" auf \"Windows-Konsolenhost\" umstellen!" << std::endl;
-        std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
-        std::cout << "Danach ueberpruefen ob der Buffer der Konsole gross genug ist:" << std::endl;
-        std::cout << "1) Windows-Taste->Konsole/Eingabeaufforderung oeffnen." << std::endl;
-        std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Layout folgendes einstellen Breite: 500, Hoehe: 100" << std::endl;
-        std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
-    } while (!_kbhit());
-	Sleep(1000);
+    std::cout << "Folgendes Einstellungen umstellen:" << std::endl;
+    std::cout << "1) Windows-Taste->Terminaleinstellungen oeffnen." << std::endl;
+    std::cout << "2) im Reiter Terminal \"Windows-Terminal\" auf \"Windows-Konsolenhost\" umstellen!" << std::endl;
+    std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
+    std::cout << "Danach ueberpruefen ob der Buffer der Konsole gross genug ist:" << std::endl;
+    std::cout << "1) Windows-Taste->Konsole/Eingabeaufforderung oeffnen." << std::endl;
+    std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Layout folgendes einstellen Breite: 500, Hoehe: 100" << std::endl;
+    std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
+	std::cout << "Irgendeine Taste druecken um fortzufahren!" << std::endl;
+    _getch(); 
+    
+
+	Sleep(500);
     //Ausgabe des Startbildschirms
     if (Spiellaueft)
     {
         do
         {
-            ControlEngine.AusgabeJaNeinOption(option, 20, 20, Farbe::Rot, "TEST");
             DWORD StartZeit = GetTickCount64();
             ControlEngine.AusgabeStartBildschirm(TRUE, x / 2 - 43, y / 2 - 11);
             DWORD ZeitDifferenz = GetTickCount64() - StartZeit;
