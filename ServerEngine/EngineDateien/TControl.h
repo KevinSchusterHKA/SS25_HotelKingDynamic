@@ -1,3 +1,5 @@
+
+
 #include <string>
 #include <iostream>
 #include <conio.h>
@@ -10,8 +12,6 @@
 #include <random>
 #include <limits>
 #include "LookUp.h"
-
-//#include <ncurses.h> //für Linux, falls benötigt
 
 #define KEY_UP 72     
 #define KEY_DOWN 80   
@@ -31,7 +31,7 @@
 enum class Farbe {
     Zuruecksetzen = 0,
     Schwarz = 30,
-    Rot,
+    Rot = 91,
     Gruen,
     Gelb,
     Blau,
@@ -39,7 +39,7 @@ enum class Farbe {
     Cyan,
     Weiss,
     BG_Schwarz = 40,
-    BG_Rot,
+    BG_Rot = 101,
     BG_Gruen,
     BG_Gelb,
     BG_Blau,
@@ -47,6 +47,7 @@ enum class Farbe {
     BG_Cyan,
     BG_Weiss
 };
+
 
 
 class TControl{
@@ -108,7 +109,7 @@ private:
  "            \\______/                Press any key                                    "}
     };
 
-    //Menüs
+    //MenÃ¼s
     std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","##################################################","Startmenue"};
     std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","Runde Beenden","##################################################","Spielermenue"};
     std::vector<std::string> MenueSpielOptionen = { "Fortfahren","Spiel Speichern","Spiel Laden","Spielregeln","Beenden","Highscore","Zurueck","##################################################","Spielmenue"};
@@ -138,7 +139,7 @@ public:
     void AusgabeStartMenu(int& option, int x, int y);
 	
     void AusgabeJaNeinOption(int& option, int x, int y, Farbe f, std::string Ueberschrift);
-    void AusgabeStrasseHandeln(int& option,int& WelcheStraße, int& Angebot, int x, int y, Farbe f);
+    void AusgabeStrasseHandeln(int& option,int& WelcheStraÃŸe, int& Angebot, int x, int y, Farbe f);
 	void AusgabeAuswahlSpieler(int& option, int x, int y, Farbe f, int& AnzahlSpieler, int& AnzahlCpuGegner, std::vector<std::string>& SpielerNamen);
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
