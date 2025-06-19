@@ -706,7 +706,7 @@ void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStraße,int& Angebo
     this->coord.Y++;
     SetConsoleCursorPosition(this->hConsole, this->coord);
 
-    std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue/2-11) << " " << std::left << "Bestaetige mit Enter" << std::setw(BreiteMenue / 2 - 11+1) << std::right << _symbolcharsControl[VL];
+    std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue/2-11) << " " << std::left << "Bestaetige mit Enter" << std::setw(BreiteMenue / 2 - 10+1) << std::right << _symbolcharsControl[VL];
     this->coord.Y++;
     SetConsoleCursorPosition(this->hConsole, this->coord);
 
@@ -759,7 +759,7 @@ void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStraße,int& Angebo
     this->coord.Y++;
     SetConsoleCursorPosition(this->hConsole, this->coord);
 
-    std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue/2- Ueberschrift.size()/2) << _symbolcharsControl[SP] << std::left << Ueberschrift << std::setw(BreiteMenue / 2 - Ueberschrift.size() / 2-2) <<_symbolcharsControl[SP] << std::right << _symbolcharsControl[VL];
+    std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue/2- Ueberschrift.size()/2) << _symbolcharsControl[SP] << std::left << Ueberschrift << std::setw(BreiteMenue / 2 - Ueberschrift.size() / 2-1) <<_symbolcharsControl[SP] << std::right << _symbolcharsControl[VL];
 
     this->coord.Y++;
     SetConsoleCursorPosition(this->hConsole, this->coord);

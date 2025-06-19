@@ -140,7 +140,8 @@ void player::addStrasse(int strasse) {
 			}
 		}
 	}
-	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
+	cout << "Spieler " << this->ID+1 << " hat " << LUT(strasse) << " gekauft.\n";
+	//cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
 void player::deleteStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {

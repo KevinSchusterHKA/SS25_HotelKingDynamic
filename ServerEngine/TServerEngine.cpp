@@ -309,7 +309,7 @@ void TServer::UnitTest() {
                     std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
 					int Angebot = -1;
 					int Strasse = -1;
-                    ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -110- 100, y / 2-44+10, Farbe::BG_Rot);
+                    ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, Farbe::BG_Rot);
 					MenueAuswahl = Menues::Handel;
                     //Code zum Handeln von Objekten
                     //player[MomentanerSpieler].handel(board.(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
@@ -429,7 +429,7 @@ void TServer::UnitTest() {
             ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         case Menues::Handel:
-            ControlEngine.AusgabeJaNeinOption(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Schwarz,"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
+            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Schwarz,"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
         default:
             break;
         }
