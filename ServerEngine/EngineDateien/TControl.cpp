@@ -621,7 +621,7 @@ void TControl::AusgabeHandelsMenu(int& option, int x, int y, Farbe f) {//TODO: H
     int maxSizeOption = 0;
 }
 void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::string Ueberschrift) {
-    this->SetFarbe(Farbe::Weiss);
+    this->SetFarbe(f);
     int BreiteMenue = Ueberschrift.size()+20;
     int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
     this->coord.X = x;
@@ -679,9 +679,10 @@ void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::strin
         std::cout << _symbolcharsControl[HL];
     }
     std::cout << _symbolcharsControl[LRC];
+    this->SetFarbe(Farbe::Zuruecksetzen);
 }
 void TControl::AusgabeStrassenKaufen(int& option, int& WelcheStraße,int& Angebot, int x, int y, Farbe f) {
-    this->SetFarbe(Farbe::Weiss);
+    this->SetFarbe(f);
     std::string Ueberschrift = "Welche Strasse moechten Sie kaufen? (Geben sie die Nummer unter der Strasse ein)";
     int BreiteMenue = Ueberschrift.size() + 20;
     int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
@@ -795,7 +796,248 @@ void TControl::AusgabeStrassenKaufen(int& option, int& WelcheStraße,int& Angebo
     this->ShowCursor();
     std::cin >> WelcheStraße;
     this->HideCursor();
+    this->SetFarbe(Farbe::Zuruecksetzen);
 }
+void TControl::AusgabeAuswahlSpieler(int& option, int x, int y, Farbe f, int& AnzahlSpieler,int& AnzahlCpuGegner,std::vector<std::string>& SpielerNamen) {
+    this->SetFarbe(f);
+    this->SetConsoleFontSize(20);
+	std::string tempNamen = "";
+    std::string Ueberschrift = "Gebe die Anzahl an Spieler ein (zwischen 2 und 4)";
+
+    int BreiteMenue = Ueberschrift.size() + 20;
+    int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
+    int tempy = 0;
+	int TempAnzahlSpieler = 0;
+    do
+    {
+        Ueberschrift = "Gebe die Anzahl an Spieler ein (zwischen 2 und 4)";
+        linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
+        tempy = 0;
+        TempAnzahlSpieler = 0;
+        do
+        {
+            this->coord.X = x;
+            this->coord.Y = y;
+	        //Ausgabe der Auswahl Spieler
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            std::cout << _symbolcharsControl[ULC];
+            for (size_t i = 1; i < BreiteMenue - 1; i++)
+            {
+                std::cout << _symbolcharsControl[HL];
+            }
+            std::cout << _symbolcharsControl[URC];
+
+            this->coord.Y++;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+
+            std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText) << " " << std::left << Ueberschrift << std::setw(linkerRandText + 1) << std::right << _symbolcharsControl[VL];
+            this->coord.Y++;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+
+            std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue / 2 - 11) << " " << std::left << "Bestaetige mit Enter" << std::setw(BreiteMenue / 2 - 11 + 2) << std::right << _symbolcharsControl[VL];
+            this->coord.Y++;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+
+            std::cout << _symbolcharsControl[LT];
+            for (size_t i = 1; i < BreiteMenue - 1; i++)
+            {
+                std::cout << _symbolcharsControl[HL];
+            }
+            std::cout << _symbolcharsControl[RT];
+
+            this->coord.Y++;
+            tempy = this->coord.Y;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            std::cout << _symbolcharsControl[VL];
+            for (size_t i = 1; i < BreiteMenue - 1; i++)
+            {
+                std::cout << _symbolcharsControl[SP];
+            }
+            std::cout << _symbolcharsControl[VL];
+
+            this->coord.Y++;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+
+            std::cout << _symbolcharsControl[LLC];
+            for (size_t i = 1; i < BreiteMenue - 1; i++)
+            {
+                std::cout << _symbolcharsControl[HL];
+            }
+            std::cout << _symbolcharsControl[LRC];
+            this->coord.X++;
+            this->coord.Y = tempy;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            this->ShowCursor();
+            std::cin >> AnzahlSpieler;
+            if (!std::cin)
+	        {
+		        std::cin.clear(); 
+                std::cin.ignore();
+            }
+            if (2 > AnzahlSpieler || AnzahlSpieler > 4)
+            {
+                this->coord.Y +=2;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+		        std::cout << std::setw(BreiteMenue - 2) << std::left << "Bitte geben Sie eine Zahl zwischen 2 und 4 ein!"  ; 
+            }
+        } while (2 > AnzahlSpieler || AnzahlSpieler > 4);
+	    //Ausgabe der Anzahl der CPU Gegner
+		TempAnzahlSpieler += AnzahlSpieler;
+        if (TempAnzahlSpieler < 4){
+            Ueberschrift = "Gebe die Anzahl an CPU-Gegner ein (zwischen 0 und 2)";
+            linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
+            do
+            {
+                this->coord.Y = y+8;
+                this->coord.X = x;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+                std::cout << _symbolcharsControl[ULC];
+                for (size_t i = 1; i < BreiteMenue - 1; i++)
+                {
+                    std::cout << _symbolcharsControl[HL];
+                }
+                std::cout << _symbolcharsControl[URC];
+
+                this->coord.Y++;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+
+                std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText) << " " << std::left << Ueberschrift << std::setw(linkerRandText+2) << std::right << _symbolcharsControl[VL];
+                this->coord.Y++;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+
+                std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue / 2 - 11) << " " << std::left << "Bestaetige mit Enter" << std::setw(BreiteMenue / 2 - 11 + 2) << std::right << _symbolcharsControl[VL];
+                this->coord.Y++;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+
+                std::cout << _symbolcharsControl[LT];
+                for (size_t i = 1; i < BreiteMenue - 1; i++)
+                {
+                    std::cout << _symbolcharsControl[HL];
+                }
+                std::cout << _symbolcharsControl[RT];
+
+                this->coord.Y++;
+                tempy = this->coord.Y;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+                std::cout << _symbolcharsControl[VL];
+                for (size_t i = 1; i < BreiteMenue - 1; i++)
+                {
+                    std::cout << _symbolcharsControl[SP];
+                }
+                std::cout << _symbolcharsControl[VL];
+
+                this->coord.Y++;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+
+                std::cout << _symbolcharsControl[LLC];
+                for (size_t i = 1; i < BreiteMenue - 1; i++)
+                {
+                    std::cout << _symbolcharsControl[HL];
+                }
+                std::cout << _symbolcharsControl[LRC];
+                this->coord.X++;
+                this->coord.Y = tempy;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+                this->ShowCursor();
+                std::cin >> AnzahlCpuGegner;
+                if (!std::cin)
+                {
+                    std::cin.clear();
+                    std::cin.ignore();
+                    AnzahlCpuGegner = -1;
+                }
+                if (0 > AnzahlCpuGegner || AnzahlCpuGegner > 3)
+                {
+                    this->coord.Y += 2;
+                    SetConsoleCursorPosition(this->hConsole, this->coord);
+                    std::cout << std::setw(BreiteMenue - 2) << std::left << "Bitte geben Sie eine Zahl zwischen 0 und 2 ein!";
+                }
+            } while ( AnzahlCpuGegner < 0 || AnzahlCpuGegner > 2);
+			TempAnzahlSpieler += AnzahlCpuGegner;
+            if (TempAnzahlSpieler > 4 || TempAnzahlSpieler < 2)
+            {
+                this->coord.Y += 2;
+                SetConsoleCursorPosition(this->hConsole, this->coord);
+                std::cout << std::setw(BreiteMenue - 2) << std::left << "Die Summe der Spieler und CPU Gegner muss zwischen 2 und 4 liegen!";
+            }
+        }
+    } while (2>TempAnzahlSpieler|| TempAnzahlSpieler >4);
+    
+	system("cls");
+
+    for (size_t i = 0; i < AnzahlSpieler; i++)
+    {
+        Ueberschrift = "Spieler "+std::to_string(i+1)+" gebe deinen Namen ein";
+        linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
+
+		this->SetFarbe(static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
+        this->coord.X = x;
+        this->coord.Y = y;
+        //Ausgabe der Auswahl Spieler
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << _symbolcharsControl[ULC];
+        for (size_t i = 1; i < BreiteMenue - 1; i++)
+        {
+            std::cout << _symbolcharsControl[HL];
+        }
+        std::cout << _symbolcharsControl[URC];
+
+        this->coord.Y++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+
+        std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText) << " " << std::left << Ueberschrift << std::setw(linkerRandText + 1) << std::right << _symbolcharsControl[VL];
+        this->coord.Y++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+
+        std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue / 2 - 11) << " " << std::left << "Bestaetige mit Enter" << std::setw(BreiteMenue / 2 - 11 + 2) << std::right << _symbolcharsControl[VL];
+        this->coord.Y++;
+
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+
+        std::cout << _symbolcharsControl[LT];
+        for (size_t i = 1; i < BreiteMenue - 1; i++)
+        {
+            std::cout << _symbolcharsControl[HL];
+        }
+        std::cout << _symbolcharsControl[RT];
+
+        this->coord.Y++;
+        tempy = this->coord.Y;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        std::cout << _symbolcharsControl[VL];
+        for (size_t i = 1; i < BreiteMenue - 1; i++)
+        {
+            std::cout << _symbolcharsControl[SP];
+        }
+        std::cout << _symbolcharsControl[VL];
+
+        this->coord.Y++;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+
+        std::cout << _symbolcharsControl[LLC];
+        for (size_t i = 1; i < BreiteMenue - 1; i++)
+        {
+            std::cout << _symbolcharsControl[HL];
+        }
+        std::cout << _symbolcharsControl[LRC];
+        this->coord.X++;
+        this->coord.Y = tempy;
+        SetConsoleCursorPosition(this->hConsole, this->coord);
+        this->ShowCursor();
+        std::cin >> tempNamen;
+		SpielerNamen.push_back(tempNamen);
+        system("cls");
+    }
+    for (size_t i = 0; i < AnzahlCpuGegner; i++)
+    {
+        SpielerNamen.push_back("CPU-Gegner" + std::to_string(i+1));
+    }
+    this->SetFarbe(Farbe::Zuruecksetzen);
+    this->HideCursor();
+    this->SetConsoleFontSize(8);
+
+}
+
 void TControl::AusgabeTestFeld(int x, int y) {
     //Außen MAP :   Hoehe = 8*11 , Breite = 20*11 
 

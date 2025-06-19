@@ -52,8 +52,8 @@ void TServer::UnitTest() {
 
 
     COORD CursorPos = { 0,0 };
-    
-    int option = 0, AnzahlSpieler = 4, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0;
+	std::vector<std::string> SpielerNamen;
+    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner=2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
 
@@ -65,23 +65,35 @@ void TServer::UnitTest() {
 		Spiellaueft = FALSE; 
         return;
     }
-    
+    ControlEngine.SetConsoleFontSize(22);
+    ControlEngine.UpdateCursorPosition({short(10),short(20) });
     std::cout << "Folgendes Einstellungen umstellen:" << std::endl;
+    ControlEngine.UpdateCursorPosition({ short(10),short(21) });
     std::cout << "1) Windows-Taste->Terminaleinstellungen oeffnen." << std::endl;
+    ControlEngine.UpdateCursorPosition({ short(10),short(22) });
     std::cout << "2) im Reiter Terminal \"Windows-Terminal\" auf \"Windows-Konsolenhost\" umstellen!" << std::endl;
+    ControlEngine.UpdateCursorPosition({ short(10),short(23) });
     std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
+    ControlEngine.UpdateCursorPosition({ short(10),short(25) });
     std::cout << "Danach ueberpruefen ob der Buffer der Konsole gross genug ist:" << std::endl;
+    ControlEngine.UpdateCursorPosition({ short(10),short(26) });
     std::cout << "1) Windows-Taste->Konsole/Eingabeaufforderung oeffnen." << std::endl;
+    ControlEngine.UpdateCursorPosition({ short(10),short(27) });
     std::cout << "2) Rechtsklick auf die Titelleiste->Eigenschaften->Layout folgendes einstellen Breite: 500, Hoehe: 100" << std::endl;
+    ControlEngine.UpdateCursorPosition({ short(10),short(28) });
     std::cout << "3) Programm starten und zum Zoomen STRG + Mausrad benutzen!" << std::endl;
-	std::cout << "Irgendeine Taste druecken um fortzufahren!" << std::endl;
-    _getch(); 
+    ControlEngine.UpdateCursorPosition({ short(10),short(31) });
+    std::cout << "Irgendeine Taste druecken um fortzufahren!" << std::endl;
+    option = _getch();
     
-
-	Sleep(500);
+	system("cls");
+    ControlEngine.SetConsoleFontSize(8);
+    option = KEY_ENTER;
+	Sleep(100); 
     //Ausgabe des Startbildschirms
     if (Spiellaueft)
     {
+        Spiellaueft = FALSE;
         do
         {
             DWORD StartZeit = GetTickCount64();
@@ -90,12 +102,22 @@ void TServer::UnitTest() {
             if (ZeitDifferenz < FRAME_DURATION) {
                 Sleep(FRAME_DURATION - ZeitDifferenz);
             }
-        } while (!_kbhit()&&Spiellaueft);
+            if (_kbhit())
+            {
+                option = _getch();
+                if (!Spiellaueft)
+                {
+					option = KEY_ENTER; 
+                    Spiellaueft = TRUE; 
+                }
+            }
+        } while (((option == KEY_ENTER) || (option == KEY_SPACE)) && Spiellaueft);
         std::cin.clear();
         system("cls");
     }
     Menues MenueAuswahl = Menues::Start;
     Menues MenueLetztes = MenueAuswahl;
+    option = 0;
     while (Spiellaueft)
     {
         DWORD start_time = GetTickCount64();
@@ -177,10 +199,11 @@ void TServer::UnitTest() {
                     RundeVorhanden = TRUE;
                     UpdateSpielfeld = TRUE;
                     ConfigEngineLogging.newGame();
+                    ControlEngine.AusgabeAuswahlSpieler(option, x/7, y / 7, Farbe::Gelb, AnzahlSpieler,AnzahlCpuGegner, SpielerNamen);
                 }
 				if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
 					std::vector<HighscoreEntry> player;
-					load_highscores("highscores.txt", player);
+					load_highscores("highscore.txt", player);
                     std::vector<std::string> playerNames;
                     std::vector<int> playerScore;
                     for (size_t i = 0; i < player.size(); i++)
@@ -348,7 +371,7 @@ void TServer::UnitTest() {
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 10) { Spiellaueft = FALSE; }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 13) { 
                     std::vector<HighscoreEntry> player;
-                    load_highscores("highscores.txt", player);
+                    load_highscores("highscore.txt", player);
                     std::vector<std::string> playerNames;
                     std::vector<int> playerScore;
                     for (size_t i = 0; i < player.size(); i++)
@@ -416,7 +439,6 @@ void TServer::UnitTest() {
         if (UpdateSpielfeld)
         {
             ControlEngine.AusgabeFeld(MapEngine.toStr(), x / 2 - 110, y / 2 - 44);
-            std::vector<std::string> Namen;
             std::vector<std::vector<std::string>> gekObjNamen;
             std::vector<std::vector<std::string>> gebObjNamen;
             std::vector<int> tempBudgets;
@@ -424,7 +446,6 @@ void TServer::UnitTest() {
             std::vector<int> gebObjAnz;
             for (size_t i = 0; i < 4; i++)
             {
-                Namen.push_back(player[i].getName());
 				gekObjNamen.push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
 				gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
                 tempBudgets.push_back(player[i].getBudget());
@@ -433,7 +454,7 @@ void TServer::UnitTest() {
             }
             
             //TestControl.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
-            ControlEngine.AusgabeSpielerInformationen(Namen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
+            ControlEngine.AusgabeSpielerInformationen(SpielerNamen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
 			// !!! gekObjAnz, gebObjAnz sind int Werte muss in ControlEngine.AusgabeSpielerInformationen() angepasst werden
         }
 

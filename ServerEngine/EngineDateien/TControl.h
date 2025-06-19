@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <tlhelp32.h>
 #include <random>
+#include <limits>
 #include "LookUp.h"
 
 //#include <ncurses.h> //für Linux, falls benötigt
@@ -138,30 +139,21 @@ public:
 	
     void AusgabeJaNeinOption(int& option, int x, int y, Farbe f, std::string Ueberschrift);
     void AusgabeStrassenKaufen(int& option,int& WelcheStraße, int& Angebot, int x, int y, Farbe f);
-
+	void AusgabeAuswahlSpieler(int& option, int x, int y, Farbe f, int& AnzahlSpieler, int& AnzahlCpuGegner, std::vector<std::string>& SpielerNamen);
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
     void AusgabeSpielRegeln(std::vector<std::string> s, int x, int y);
 	void AusgabeHandelsMenu(int& option, int x, int y, Farbe f);
     void AusgabeStartBildschirm(bool flip, int x, int y);
     void AusgabeFeld(std::string Feld, int x, int y);
-    void AusgabeSpielerInformationen(   std::string Namen[4],
-                                        int Budget[4],
-                                        int AnzahlGekaufterObjekte[4],
-                                        int AnzahlGebauterObjekte[4],
+    void AusgabeSpielerInformationen(   std::string Namen[4],int Budget[4],
+                                        int AnzahlGekaufterObjekte[4],int AnzahlGebauterObjekte[4],
                                         int AnzSpieler,
-                                        int x,
-                                        int y,
+                                        int x,int y,
                                         std::vector<std::vector<std::string>> GekaufteObjekte,
                                         std::vector<std::vector<std::string>> GebauteObjekte);
 
-	void AusgabeSpielerInventarAnzeige( std::string Namen,
-                                        std::vector<std::string> GekaufteObjekte,
-                                        std::vector<std::string> GebauteObjekte,
-                                        int x,
-                                        int y,
-                                        Farbe f);
-    
+	void AusgabeSpielerInventarAnzeige( std::string Namen,std::vector<std::string> GekaufteObjekte,std::vector<std::string> GebauteObjekte,int x,int y,Farbe f);
     void AusgabeTestFeld(int x, int y);
     void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
 	void AusgabeWuerfel(int wuerfel, int x, int y, Farbe f);
