@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <string>
 #include "SpaceConfig.h"
 #include "MapReturnObj.h"
@@ -55,12 +55,39 @@ enum _char {
     HF,
     PG,
     EQ,
-    SP
+    SP,
+    CR
 };
 
 const string _playerchars[] = { (string)(_fgcolortable[fgred] + (char)3 + _fgcolortable[fgwhite]), (string)(_fgcolortable[fggreen] + (char)4 + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgyellow] + (char)5 + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgcyan] + (char)6 + _fgcolortable[fgwhite]), " "};//♥♦♣♠ 3-6
 const char _symbolchars[] = { (char)127, (char)174, (char)175, (char)184, (char)179, (char)196, (char)218, (char)191, (char)192, (char)217, (char)193, (char)194, (char)195, (char)180, (char)197, (char)1, (char)21, '=', ' '};//⌂(char)127 « » ©(char)184 │ ─ ┌ ┐└ ┘┬ ┴ ├ ┤ ┼ ☺(char)1 §(char)21 =
 
+const char _symbolcharsControl[] = { (char)127,   // ⌂ 
+                                (char)174, // « 1
+                                (char)175, // » 2
+                                (char)184, // © 3
+                                (char)186, // │ 4
+                                (char)205, // ─ 5
+                                (char)201, // ┌ 6
+                                (char)187, // ┐ 7
+
+                                (char)200, // └ 8
+                                (char)188, // ┘ 9
+                                (char)202, // ┴ 10
+
+                                (char)203, // ┬ 11
+
+                                (char)204, // ├ 12
+
+                                (char)185, // ┤ 13
+
+                                (char)197, // ┼ 14
+                                (char)1,   // ☺ 15
+                                (char)21,  // § 16
+                                '=',       // 17
+                                ' ',       // 18
+                                (char)111   //o 19
+};
 enum _type {
     TypeStreet,
     TypeStation,

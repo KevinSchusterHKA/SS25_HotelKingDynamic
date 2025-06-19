@@ -19,6 +19,22 @@ private:
 
 public:
 
+	/*int getPropertyPrice(int spaceIndex){
+		if (spaceIndex < 0 || spaceIndex >= 40) {
+			return -1;
+		}
+		return Spaces[spaceIndex].getPrice();
+	}
+	std::vector<int> getOwnedProperties(int playerID) {
+		std::vector<int> owned;
+		for (int i = 0; i < 40; i++) {
+			if (Spaces[i].getOwner() == playerID) {  
+				owned.push_back(i);
+			}
+		}
+		return owned;
+	}*/ //war noch develop
+
 	Map() {
 		for (int i = 0; i < 40; i++)
 		{
@@ -103,7 +119,7 @@ public:
 		return out;
 	}
 
-	int movePlayer(int player, int distance, int flag) // flag = 0: normal bewegen; flag = 1: bahn fahren; flag = -1: kein LOS, evtl ins Gefängnis
+	int movePlayer(int player, int distance, int flag) // flag = 0: normal bewegen; flag = 1: bahn fahren; flag = -1: kein LOS, evtl ins Gefï¿½ngnis
 	{
 		Spaces[Playerpos[player]].removePlayer(player);
 		vector<int> pos;
@@ -168,10 +184,7 @@ public:
 		return -1;
 	}
 
-	int getStreetPrice(int spaceNr)
-	{
-		return Spaces[spaceNr].getPrice();
-	}
+	
 
 	int setOwner(int oldowner, int newowner, int space)
 	{

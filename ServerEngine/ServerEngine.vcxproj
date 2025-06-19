@@ -137,6 +137,7 @@
     <ClInclude Include="EngineDateien\Config.h" />
     <ClInclude Include="EngineDateien\Logger.h" />
     <ClInclude Include="EngineDateien\LookUp.h" />
+    <ClInclude Include="EngineDateien\LUT.h" />
     <ClInclude Include="EngineDateien\Map.h" />
     <ClInclude Include="EngineDateien\MapReturnObj.h" />
     <ClInclude Include="EngineDateien\Player.h" />
