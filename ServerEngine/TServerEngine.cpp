@@ -93,7 +93,6 @@ void TServer::UnitTest() {
     //Ausgabe des Startbildschirms
     if (Spiellaueft)
     {
-        Spiellaueft = FALSE;
         do
         {
              DWORD StartZeit = GetTickCount64();
@@ -102,16 +101,16 @@ void TServer::UnitTest() {
             if (ZeitDifferenz < FRAME_DURATION) {
                 Sleep(FRAME_DURATION - ZeitDifferenz);
             } 
-            if (_kbhit())//Bug: funktioniert nicht richtig 
+            std::cout << _kbhit();
+            if (_kbhit()) 
             {
-                option = _getch();
-                if (!Spiellaueft)
+                option = _getch(); 
+                if (option!=KEY_ENTER && option != KEY_SPACE)
                 {
-					option = KEY_ENTER; 
-                    Spiellaueft = TRUE; 
+                    break;
                 }
             }
-        } while (((option == KEY_ENTER) || (option == KEY_SPACE)) && Spiellaueft);
+        } while (TRUE);
         std::cin.clear();
         system("chcp 850");
         system("cls");
