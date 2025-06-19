@@ -8,7 +8,7 @@
 #include <iomanip>
 #include <tlhelp32.h>
 #include <random>
-#include "LUT.h"
+#include "LookUp.h"
 
 //#include <ncurses.h> //für Linux, falls benötigt
 
