@@ -123,7 +123,7 @@ void TServer::UnitTest() {
     while (Spiellaueft)
     {
         DWORD start_time = GetTickCount64();
-        logger.newPlayer(player[MomentanerSpieler].getName());
+        ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
         if (player[MomentanerSpieler].imGefaengnis())
         {
             player[MomentanerSpieler].decGefaengnisRunden();
@@ -265,7 +265,6 @@ void TServer::UnitTest() {
                         else {
                             player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
                         }
-                        logger.playerRollingDice(wuerfel1, wuerfel2);
 
                         MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);
                         if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 1) && (MRobj[MomentanerSpieler].Type != 7))
@@ -353,8 +352,8 @@ void TServer::UnitTest() {
                         MomentanerSpieler++;
                         HatGewuerfelt = false;
                         system("cls");
-                        logger.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
-                        logger.newRound();
+                        ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
+                        ConfigEngineLogging.newRound();
                     }
                     else
                     {
@@ -492,7 +491,6 @@ void TServer::UnitTest() {
             std::vector<int> gekObjAnz;
             std::vector<int> gebObjAnz;               
             std::cout << MRobj[MomentanerSpieler].Msg << "\n";
-            std::vector<int> gebObjAnz;
             for (size_t i = 0; i < 4; i++)
             {
                 gekObjNamen.push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt

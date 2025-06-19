@@ -17,7 +17,7 @@ private:
 	TControl ControlEngine;
 	cpu_player1 cpu[2]; 
 	player player[4];
-	Logger logger;
+	Logger ConfigEngineLogging;
 	Map MapEngine;
 
 };
