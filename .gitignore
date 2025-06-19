@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /ControlEngine.vcxproj
 /ControlEngine.vcxproj.filters
 /LookUp.h
+/main.cpp
