@@ -88,7 +88,6 @@ void TServer::UnitTest() {
     
 	system("cls");
     ControlEngine.SetConsoleFontSize(8);
-    option = KEY_ENTER;
 	Sleep(100); 
 
     //Ausgabe des Startbildschirms
@@ -97,13 +96,13 @@ void TServer::UnitTest() {
         Spiellaueft = FALSE;
         do
         {
-            DWORD StartZeit = GetTickCount64();
+             DWORD StartZeit = GetTickCount64();
             ControlEngine.AusgabeStartBildschirm(TRUE, x / 2 - 43, y / 2 - 11);
-            DWORD ZeitDifferenz = GetTickCount64() - StartZeit;
+             DWORD ZeitDifferenz = GetTickCount64() - StartZeit;
             if (ZeitDifferenz < FRAME_DURATION) {
                 Sleep(FRAME_DURATION - ZeitDifferenz);
-            }
-            if (_kbhit())
+            } 
+            if (_kbhit())//Bug: funktioniert nicht richtig 
             {
                 option = _getch();
                 if (!Spiellaueft)
@@ -282,7 +281,7 @@ void TServer::UnitTest() {
 
                         ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
                         ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                        MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
+                        //MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
                         if (player[MomentanerSpieler].paschcheck()) {
                             HatGewuerfelt = FALSE;
                             player[MomentanerSpieler].incPaschCounter(); 
