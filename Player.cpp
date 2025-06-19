@@ -9,7 +9,7 @@ player::~player() {};
 int player::Score() {
 	int score = this->getBudget();
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
-		score += GetPreisStrasse(i);
+		score += getPreisStrasse(i);
 	}
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		score += 50;
@@ -256,11 +256,18 @@ int player::getGekObjAnz() { return this->GekaufteStrassen.size(); }
 int player::getGebObjAnz() { return this->GebauteHaeuser.size(); }
 
 cpu_player1::cpu_player1() : player() {}
-
+vector<int> player::getGekaufteStrassen() {
+	return this->GekaufteStrassen;
+}
+vector<int> player::getGebauteHaeuser() {
+	return this->GebauteHaeuser;
+}
 // cpu to player
-int cpu_player1::handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<player*>& p) {
-	if ((rand() % 100) > 5) {
+int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut) {
+	if ((rand() % 101) > 15) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
+		targetPlayerOut = -1;
+		propertyIndexOut = -1;
 		return -1;
 	}
 	int targetPlayer;
@@ -268,9 +275,11 @@ int cpu_player1::handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<p
 		targetPlayer = rand() % totalPlayers;
 	} while (targetPlayer == cpuID);
 
-	std::vector<int> ownedProperties = gameMap.getOwnedProperties(targetPlayer);
+	std::vector<int> ownedProperties = p[targetPlayer]->getGekaufteStrassen();
 	if (ownedProperties.empty()) {
 		//std::cout << "CPU Spieler " << targetPlayer << " besitzt keine Straben.\n";
+		targetPlayerOut = -1;
+		propertyIndexOut = -1;
 		return -1;
 	}
 
@@ -280,7 +289,7 @@ int cpu_player1::handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<p
 	int minPercent = 5;
 	int maxPercent = 15;
 	int offerPercent = minPercent + rand() % (maxPercent - minPercent + 1);
-	int  offer = (1 + offerPercent / 100.0) * gameMap.getPropertyPrice(propIndex);
+	int offer = (1 + offerPercent / 100.0) * getPreisStrasse(propIndex);
 
 	if (offer > p[cpuID]->getBudget()) {
 		/*  std::cout << "CPU Kann sich das Angebot von " << offer
@@ -290,51 +299,45 @@ int cpu_player1::handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<p
 
 	//std::cout << "CPU bietet " << offer << /*" (" << offerPercent << */"% von "
 	//    << offer << ") fur '" << prop.name << "' von Spieler " << targetPlayer << ".\n";
-
+	targetPlayerOut = targetPlayer;
+	propertyIndexOut = propIndex;
 	return offer;
 }
 
 // player to cpu 
-bool cpu_player1::acceptTrade(Map& gameMap, int spaceIndex, int offer) {
+bool cpu_player1::acceptTrade(int spaceIndex, int offer) {
 	int id = getID();
-	int propPrice = gameMap.getPropertyPrice(spaceIndex);
+	int propPrice = getPreisStrasse(spaceIndex);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 	int bud = getBudget();
 	if ((offer >= propPrice * (acceptThresholdPercent / 100.0))) {
-		std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
+		//std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
 		return true;
 	}
 	else {
-		std::cout << "CPU" << id << "lehnt das Angebot von " << offer;/*<< "' ab (Schwelle: " << acceptThresholdPercent << "%).\n";*/
+		//std::cout << "CPU" << id << "lehnt das Angebot von " << offer;/*<< "' ab (Schwelle: " << acceptThresholdPercent << "%).\n";*/
 		return false;
 	}
 }
 
 // buy street
-bool cpu_player1::tryBuyStreet(Map& gameMap, std::vector<player*>& p) {
-	int price = gameMap.getStreetPrice(getPosition());
+bool cpu_player1::tryBuyStreet(std::vector<player*>& p) {
+	int price = getPreisStrasse(getPosition());
 	int id = getID();
 	int pos = getPosition();
-	if (price < 0) {
+	if (price <= 0) {
 		//std::cout << "CPU"<< id <<"Kein Kaufmoeglichkeit auf Position " << pos << ".\n";
 		return false;
 	}
-
-	if (getBudget() >= price) {
-		bool success = gameMap.buyStreet(getID(), getBudget());
-		if (success) {
-			setBudget(getBudget() - price);
-			//std::cout << "CPU"<< id << "kauft Strasse auf Position " << pos << " fuer " << price << ".\n";
-			return true;
-		}
-		else {
-			std::cout << "CPU" << id << "Kauf auf Position " << pos << " fehlgeschlagen.\n";
-		}
+	if ((getBudget() * (20 + rand() % 66)) / 100.0 >= price) { //nur wenn price ist 20% - 65% das budgets
+		this->bezahle(price);
+		this->addStrasse(getPosition());
+		return true;
 	}
 	else {
-		std::cout << "CPU" << id << " Kein Geld fuer Strasse auf Position " << pos << ".\n";
+		//std::cout << "CPU" << getID() << " hat nicht genug Geld für die Strasse auf Position " << getPosition() << ".\n";
+		return false;
 	}
-	return false;
 }
 
 
@@ -368,7 +371,7 @@ string LUT(int i) {
 	}
 }
 
-int GetPreisStrasse(int i) {
+int getPreisStrasse(int i) {
 	switch (i) {
 	case 1:  return 60;
 	case 3:  return 60;

@@ -1,27 +1,4 @@
 #include "Player.h"
-struct Property {//temp just for test
-	std::string name;
-	int price;
-};
-
-
-std::vector<Property> getTempPropertiesForPlayer(int playerID) {//temp just for test
-	std::vector<Property> props;
-	if (playerID == 0) {
-		props.push_back({ "a0", 350 });
-		props.push_back({ "b0", 400 });
-	}
-	else if (playerID == 1) {
-		props.push_back({ "c1", 60 });
-	}
-	else if (playerID == 2) {
-		props.push_back({ "d2", 150 });
-		props.push_back({ "e2", 200 });
-	}
-	return props;
-}
-
-
 void UNITTEST() {
 	int number_cpu_level_1 = 2, number_human_players = 2;
 	vector<player*> p;
@@ -225,25 +202,57 @@ void UNITTEST_cpu() {
 		players.back()->setPosition(i);
 	}
 
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < 10; ++i) {
 		players.push_back(new cpu_player1());
 		players.back()->setID(i + 2);
 		players.back()->setHuman(CPU1);
 		players.back()->setBudget(1000);
-		players.back()->setPosition(i + 3);
+		players.back()->setPosition(i);
+	
+	} 
+	players[2]->addStrasse(13); //strasse handel test 
+	players[2]->addStrasse(14);
+	players[3]->addStrasse(16);
+	players[3]->addStrasse(18);
+	players[4]->addStrasse(19);
+	players[4]->addStrasse(21);
+	players[5]->addStrasse(23);
+	players[5]->addStrasse(24);
+	int testPositions[40] = {};
+	for (size_t i = 0; i < 40; i++)
+	{
+		 testPositions[i] = i;
 	}
-
-	Map gameMap;
-	int testPositions[] = { 0, 1, 2,3,4,5,6 };
 
 	for (size_t i = 0; i < players.size(); ++i) {
 		if (players[i]->getHuman() == CPU1) {
 			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
-			cpu->tryBuyStreet(gameMap, players);
-			cpu->handel(gameMap, cpu->getID(), players.size(), players);
-			int pos = testPositions[i % (sizeof(testPositions) / sizeof(testPositions[0]))];
-			int offer = 205;
-			cpu->acceptTrade(gameMap, pos, offer);
+
+			//street buy
+			bool bought = cpu->tryBuyStreet(players);
+			std::cout << "CPU" << cpu->getID() << (bought ? " bought a street." : " did not buy a street.") << std::endl;
+
+			//Handel cpu to player
+			int targetPlayer = -1;
+			int propertyIndex = -1;
+			int offer = cpu->handel(cpu->getID(), players.size(), players, targetPlayer, propertyIndex);
+			if (offer != -1 && targetPlayer != -1 && propertyIndex != -1) {
+				std::cout << "CPU" << cpu->getID() << " offers " << offer << " for property "
+					<< propertyIndex << " from player " << targetPlayer << std::endl;
+				//player to cpu 
+				if (players[targetPlayer]->getHuman() == CPU1) {
+					cpu_player1* targetCPU = static_cast<cpu_player1*>(players[targetPlayer]);
+					bool accepted = targetCPU->acceptTrade(propertyIndex, offer);
+					std::cout << "CPU" << targetCPU->getID() << (accepted ? " accepted the trade." : " rejected the trade.") << std::endl;
+				}
+				else {
+					std::cout << "Human player " << targetPlayer << " needs to decide on the offer." << std::endl;
+				}
+			}
+			else {
+				std::cout << "CPU" << cpu->getID() << " did not make a trade offer." << std::endl;
+			}
+
 			std::cout << "##############" << std::endl;
 		}
 	}

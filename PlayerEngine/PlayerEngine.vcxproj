@@ -127,13 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\CPU_opponent.cpp" />
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\Unit_test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\CPU_opponent.h" />
-    <ClInclude Include="..\map.h" />
     <ClInclude Include="..\Player.h" />
     <ClInclude Include="..\Unit_test.h" />
   </ItemGroup>

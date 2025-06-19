@@ -4,8 +4,6 @@
 #include <vector>
 #include <random>
 #include <cstdlib> // rand()
-#include "map.h"
-#include "Unit_test.h"
 
 using namespace std;
 enum PlayerType { HUMAN, CPU1, CPU2, }; // human player ,level 1,level 2
@@ -88,6 +86,8 @@ public:
 
 	int getGekObjAnz();
 	int getGebObjAnz();
+	vector<int> getGekaufteStrassen();
+	vector<int> getGebauteHaeuser();
 };
 
 
@@ -98,7 +98,7 @@ class cpu_player1 : public player {
 public:
 	cpu_player1();
 
-	int handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<player*>& p);
-	bool acceptTrade(Map& gameMap, int spaceIndex, int offer);
-	bool tryBuyStreet(Map& gameMap, std::vector<player*>& p);
+	int handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut);
+	bool acceptTrade(int spaceIndex, int offer);
+	bool tryBuyStreet(std::vector<player*>& p);
 };
