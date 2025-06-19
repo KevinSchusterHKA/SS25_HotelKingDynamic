@@ -681,9 +681,9 @@ void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::strin
     std::cout << _symbolcharsControl[LRC];
     this->SetFarbe(Farbe::Zuruecksetzen);
 }
-void TControl::AusgabeStrassenKaufen(int& option, int& WelcheStraße,int& Angebot, int x, int y, Farbe f) {
+void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStraße,int& Angebot, int x, int y, Farbe f) {
     this->SetFarbe(f);
-    std::string Ueberschrift = "Welche Strasse moechten Sie kaufen? (Geben sie die Nummer unter der Strasse ein)";
+    std::string Ueberschrift = "Welche Strasse moechten Sie handeln? (Geben sie die Nummer unter der Strasse ein)";
     int BreiteMenue = Ueberschrift.size() + 20;
     int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
     this->coord.X = x;
