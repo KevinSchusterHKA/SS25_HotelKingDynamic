@@ -655,19 +655,19 @@ void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::strin
     SetConsoleCursorPosition(this->hConsole, this->coord);
     if (option == 0)
     {
-        std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText - 3) << ">" << "[" + std::to_string(1) + "]" << std::setw(13) << std::left << "ja" << std::setw(linkerRandText+1) << std::right << _symbolcharsControl[VL];
+        std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText - 3) << ">" << "[" + std::to_string(1) + "]" << std::setw(13) << std::left << "ja" << std::setw(linkerRandText) << std::right << _symbolcharsControl[VL];
         this->coord.Y++;
         SetConsoleCursorPosition(this->hConsole, this->coord);
-        std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText - 3) << " " << "[" + std::to_string(2) + "]" << std::setw(13) << std::left << "nein" << std::setw(linkerRandText+1) << std::right << _symbolcharsControl[VL];
+        std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText - 3) << " " << "[" + std::to_string(2) + "]" << std::setw(13) << std::left << "nein" << std::setw(linkerRandText) << std::right << _symbolcharsControl[VL];
 
     }
     else
     {
-        std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText - 3) << " " << "[" + std::to_string(1) + "]" << std::setw(13) << std::left << "ja" << std::setw(linkerRandText+1) << std::right << _symbolcharsControl[VL];
+        std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText - 3) << " " << "[" + std::to_string(1) + "]" << std::setw(13) << std::left << "ja" << std::setw(linkerRandText) << std::right << _symbolcharsControl[VL];
         this->coord.X = x;
         this->coord.Y++;
         SetConsoleCursorPosition(this->hConsole, this->coord);
-        std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText - 3) << ">" << "[" + std::to_string(2) + "]" << std::setw(13) << std::left << "nein" << std::setw(linkerRandText+1) << std::right << _symbolcharsControl[VL];
+        std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText - 3) << ">" << "[" + std::to_string(2) + "]" << std::setw(13) << std::left << "nein" << std::setw(linkerRandText) << std::right << _symbolcharsControl[VL];
     }
 
     this->coord.Y++;

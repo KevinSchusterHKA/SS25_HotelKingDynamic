@@ -65,6 +65,7 @@ void TServer::UnitTest() {
 		Spiellaueft = FALSE; 
         return;
     }
+    
     std::cout << "Folgendes Einstellungen umstellen:" << std::endl;
     std::cout << "1) Windows-Taste->Terminaleinstellungen oeffnen." << std::endl;
     std::cout << "2) im Reiter Terminal \"Windows-Terminal\" auf \"Windows-Konsolenhost\" umstellen!" << std::endl;
@@ -150,6 +151,9 @@ void TServer::UnitTest() {
                 option++;
             }
             else if (option < ControlEngine.GetAnzMenuepunkteSpielerOptionen() - 1 && MenueAuswahl == Menues::Spieler) {
+                option++;
+            }
+            else if (option < 1 && MenueAuswahl == Menues::Handel) {
                 option++;
             }
             break;
@@ -282,6 +286,10 @@ void TServer::UnitTest() {
                 if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln)
                 {
                     std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
+					int Angebot = -1;
+					int Strasse = -1;
+                    ControlEngine.AusgabeStrassenKaufen(option, Strasse, Angebot, x / 2 -110- 100, y / 2-44+10, Farbe::BG_Rot);
+					MenueAuswahl = Menues::Handel;
                     //Code zum Handeln von Objekten
                     //player[MomentanerSpieler].handel(board.(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
 					//TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
@@ -364,6 +372,19 @@ void TServer::UnitTest() {
 
                 }
                 break;
+            case Menues::Handel:
+				
+                MenueAuswahl = Menues::Spieler;
+                UpdateSpielfeld = TRUE;
+				system("cls");
+                if (option == 0) //Akzeptieren
+                {
+					//Code zum Akzeptieren des Handels
+                }
+                else
+                {
+                    //Code zum Ablehnen des Handels
+                }
             default:
                 break;
             }
@@ -387,7 +408,7 @@ void TServer::UnitTest() {
             ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         case Menues::Handel:
-            ControlEngine.AusgabeHandelsMenu(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Gelb); //die Farbe dem zugehörigen Spieler anpassen
+            ControlEngine.AusgabeJaNeinOption(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielerOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielerOptionen() / 2, Farbe::BG_Schwarz,"Akzeptierst du den Handel Spieler "+std::to_string(MomentanerSpieler)+"?");
         default:
             break;
         }
