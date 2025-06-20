@@ -30,32 +30,19 @@ void TServer::UnitTest() {
         Start = 100,
         Spieler,
         Optionen,
-        Handel
+        Handel,
+        BahnFahren
     };
 
-
-    std::string playerNames[4] = { "a","bbbb","ccccc","ddddddddddddddddddddddddddddddddddddddddddddddddddd" };
-    std::vector<std::vector<std::string>> GekObjNamen = { { "Strasse1"},
-                                                          { "Strasse2","Gebaeude xyz2"},
-                                                          { "Strasse3","Gebaeude xyz3","Autobahn nach Karlsruhe3"},
-                                                          { "Strasse4","Gebaeude xyz4","Autobahn nach Karlsruhe4","4TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"} };
-    std::vector<std::vector<std::string>> GebObjNamen = { { "Haus 1"},
-                                                          { "Haus 2","Gebaeude zyx2"},
-                                                          { "Haus 3","Gebaeude zyx3","Hotel 3"},
-                                                          { "Haus 4","Gebaeude zyx4","Hotel 4","4TEXTSTRINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"} };
     std::vector<std::string> Spielregeln = { "Regel 1", "Regel 2", "Regel 3", "Regel 4", "Regel 5555555555555555555555555555555555555555555555555555555555555" };
-    int budget[4] = { 100,10000,100000,99999999 }; //Budget der Spieler
-    int gekObjAnz[4] = { 5,15,2,3 };//Anzahl gekaufter Objekte der Spieler
-    int gebObjAnz[4] = { 0,2,3,99 };//Anzahl gebaute Objekte der Spieler
-
 
     COORD CursorPos = { 0,0 };
-	  std::vector<std::string> SpielerNamen;
+	std::vector<std::string> SpielerNamen;
     int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner=2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
-	  Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
+	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
     ControlEngine.SetConsoleFontSize(8);
   
     ControlEngine.GetMaximizedConsoleSize(x, y);
@@ -213,7 +200,7 @@ void TServer::UnitTest() {
                         playerScore.push_back(player[i].score);
                     }
 
-                    ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - ControlEngine.GetLaengstenStringMenueStartOptionen() / 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteStartOptionen() + 2);
+                    ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - this->GetLongestStringVector(playerNames) / 2 - 6, y / 2 + ControlEngine.GetAnzMenuepunkteStartOptionen() + 2);
                 }
                 if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                 if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
@@ -232,8 +219,8 @@ void TServer::UnitTest() {
                         int wuerfel2 = player[MomentanerSpieler].getWurfel(1);
                         HatGewuerfelt = true;
 
-                        ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                        ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
+                        ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe);  
+                        ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe);  
 
                         if (player[MomentanerSpieler].paschcheck()) {
                             HatGewuerfelt = FALSE;
@@ -249,16 +236,7 @@ void TServer::UnitTest() {
                         }
                         if (MRobj[MomentanerSpieler].Type == 1)
                         {
-                            int option = 0;
-                            ControlEngine.AusgabeJaNeinOption(option,CursorPos.X, CursorPos.Y - 50,MomentanerSpielerFarbe,"Bahn fahren?"); // Bug
-                            if (option)// Bug
-                            {
-                                player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 1));
-                                player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
-                            }
-                            else {
-                                player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
-                            }
+                            MenueAuswahl = Menues::BahnFahren;
                         }
                         else {
                             player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
@@ -378,7 +356,7 @@ void TServer::UnitTest() {
                     RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { 
-                    ControlEngine.AusgabeSpielRegeln(Spielregeln, x / 2 - playerNames[3].size() / 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2); 
+                    ControlEngine.AusgabeSpielRegeln(Spielregeln, x / 2 - this->GetLongestStringVector(Spielregeln)/ 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2); 
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 10) { Spiellaueft = FALSE; }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 13) { 
@@ -392,7 +370,7 @@ void TServer::UnitTest() {
                         playerScore.push_back(player[i].score);
                     }
 
-                    ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2);
+                    ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - this->GetLongestStringVector(playerNames) / 2 - 6, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2);
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) {
                     MenueAuswahl = MenueLetztes;
@@ -420,6 +398,20 @@ void TServer::UnitTest() {
                 {
                     //Code zum Ablehnen des Handels
                 }
+            case Menues::BahnFahren:
+                MenueAuswahl = Menues::Spieler;
+                UpdateSpielfeld = TRUE;
+                system("cls");
+
+                if (option)
+                {
+                    player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, player[MomentanerSpieler].getAugenzahl(), 1));
+                    player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                }
+                else {
+                    player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, player[MomentanerSpieler].getAugenzahl(), 0));
+                }
+                break;
             default:
                 break;
             }
@@ -448,6 +440,9 @@ void TServer::UnitTest() {
         case Menues::Handel:
             ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Schwarz,"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
 
+        case Menues::BahnFahren:
+            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, MomentanerSpielerFarbe, "Bahn fahren?"); // Bug
+            break;
         default:
             break;
         }
@@ -501,6 +496,24 @@ void TServer::UnitTest() {
 		save_highscores("highscores.txt",{}); //TODO: implementieren und auf Funktionalität testen
     }
 }
+int TServer::GetLongestStringVector(std::vector<std::string> s) {
+    int temp = 0;
+    for (std::string var : s) {
+        if (var.size()>temp)
+        {
+            temp = var.size();
+        }
+    }
+    return temp;
+}
+
+
+
+
+
+
+
+
 int main() {
     TServer server;
     server.UnitTest();
