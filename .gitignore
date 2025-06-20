@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /ServerEngine/log.txt
 /ControlEngine.vcxproj
 /ControlEngine.vcxproj.filters
+/main.cpp
