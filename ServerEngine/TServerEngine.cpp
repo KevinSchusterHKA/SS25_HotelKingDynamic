@@ -164,6 +164,9 @@ void TServer::UnitTest() {
             else if (option < 1 && MenueAuswahl == Menues::Handel) {
                 option++;
             }
+            else if (option < 1 && MenueAuswahl == Menues::BahnFahren) {
+                option++;
+            }
             break;
         case KEY_ESCAPE:
             system("cls");
