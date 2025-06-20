@@ -112,7 +112,7 @@ bool player::paschcheck() {
 }
 
 void player::bezahle(int betrag) {
-	if (betrag >= 0) {
+	if (betrag != -1) {
 		if (this->Budget - betrag >= 0) {
 			this->Budget -= betrag;
 		}
@@ -131,18 +131,15 @@ void player::geheZu(int feld) {
 }
 
 void player::addStrasse(int strasse) {
-	if (this->GekaufteStrassen.size() == 0) {
-		GekaufteStrassen.push_back(strasse);
+	//if (this->GekaufteStrassen.size() == 0) {
+	//	GekaufteStrassen.push_back(strasse);
+	//}
+	bool owned = false;
+	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
+		owned |= (this->GekaufteStrassen[i] == strasse);
 	}
-	else
-	{
-		for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
-			if (this->GekaufteStrassen[i] == strasse) {
-			}
-			else {
-				GekaufteStrassen.push_back(strasse);
-			}
-		}
+	if (!owned) {
+		GekaufteStrassen.push_back(strasse);
 	}
 	cout << "Spieler " << this->ID+1 << " hat " << LUT(strasse) << " gekauft.\n";
 	//cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
@@ -375,8 +372,7 @@ bool cpu_player1::acceptTrade(Map& gameMap, int spaceIndex, int offer) {
 
 // buy street
 bool cpu_player1::tryBuyStreet(Map& gameMap, std::vector<player*>& p) {
-	//int price = gameMap.getStreetPrice(getPosition());
-	int price = 100; // TODO: getStreetPrice(getPosition()) from gameMap
+	int price = gameMap.getPropertyPrice(getPosition());
 	int id = getID();
 	int pos = getPosition();
 	if (price < 0) {
@@ -478,3 +474,6 @@ int getPreisStrasse(int i) {
 	default: return 0;
 	}
 }
+
+
+

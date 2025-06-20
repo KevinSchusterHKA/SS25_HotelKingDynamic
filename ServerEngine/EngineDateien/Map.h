@@ -19,12 +19,6 @@ private:
 
 public:
 
-	int getPropertyPrice(int spaceIndex){
-		if (spaceIndex < 0 || spaceIndex >= 40) {
-			return -1;
-		}
-		return Spaces[spaceIndex].getPrice();
-	}
 	/*std::vector<int> getOwnedProperties(int playerID) {
 		std::vector<int> owned;
 		for (int i = 0; i < 40; i++) {
@@ -184,7 +178,12 @@ public:
 		return -1;
 	}
 
-	
+	int getPropertyPrice(int spaceIndex) {
+		if (spaceIndex < 0 || spaceIndex >= 40) {
+			return -1;
+		}
+		return Spaces[spaceIndex].getPrice();
+	}
 
 	int setOwner(int oldowner, int newowner, int space)
 	{

@@ -230,34 +230,35 @@ void TServer::UnitTest() {
                         player[MomentanerSpieler].Wurfelmechn();
                         int wuerfel1 = player[MomentanerSpieler].getWurfel(0);
                         int wuerfel2 = player[MomentanerSpieler].getWurfel(1);
-                        
-                        //int wuerfel1 = 1;
-                        //int wuerfel2 = 2;
-                        //player[MomentanerSpieler].setWurfel(wuerfel1, 0);
-                        //player[MomentanerSpieler].setWurfel(wuerfel2, 1);
-                        //player[MomentanerSpieler].incPosition(player[MomentanerSpieler].getAugenzahl());
-                        //
-                        //bool besitztJemand = false;
-                        //int tempINDEX = -1;
+                        HatGewuerfelt = true;
 
-                        //// Welcher Spieler (Index) besitzt Strasse
-                        //for (int i = 0; i < AnzahlSpieler; i++) {
-                        //    if (i != MomentanerSpieler && player[i].besitztStrasse(player[MomentanerSpieler].getPosition())) {
-                        //        besitztJemand = true;
-                        //        tempINDEX = i;
-                        //        break;
-                        //    }
-                        //}
-                        //// Wenn jemand anderes Besitzer ist -> Miete zahlen
-                        //if (besitztJemand) {
-                        //    player[MomentanerSpieler].bezahle(MapEngine.getStreetPrice(player[MomentanerSpieler].getPosition()));
-                        //    player[tempINDEX].erhalte(MapEngine.getStreetPrice(player[MomentanerSpieler].getPosition())); // Methode um Geld zu bekommen
-                        //}
+                        ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
+                        ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
 
-                        if (MRobj[MomentanerSpieler].Type == 1)// Bug
+                        if (player[MomentanerSpieler].paschcheck()) {
+                            HatGewuerfelt = FALSE;
+                            player[MomentanerSpieler].incPaschCounter();
+                        }
+                        else {
+                            player[MomentanerSpieler].setPaschCounter(0);
+                        }
+                        if (player[MomentanerSpieler].getPaschCounter() == 3) {
+                            MapEngine.setPlayer(MomentanerSpieler, 10, -1);//TODO:mit Map absprechen wegen dem Gefaegnis
+                            player[MomentanerSpieler].setPaschCounter(0);
+                            break;
+                        }
+                        if (MRobj[MomentanerSpieler].Type == 1)
                         {
-                            player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 1));
-                            player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                            int option = 0;
+                            ControlEngine.AusgabeJaNeinOption(option,CursorPos.X, CursorPos.Y - 50,MomentanerSpielerFarbe,"Bahn fahren?"); // Bug
+                            if (option)// Bug
+                            {
+                                player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 1));
+                                player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                            }
+                            else {
+                                player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
+                            }
                         }
                         else {
                             player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
@@ -277,24 +278,10 @@ void TServer::UnitTest() {
                             player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
                         }
 
-                        ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                        ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe); //die Farbe dem zugehörigen Spieler anpassen
-                        //MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0);
-                        if (player[MomentanerSpieler].paschcheck()) {
-                            HatGewuerfelt = FALSE;
-                            player[MomentanerSpieler].incPaschCounter(); 
-                        }
-                        else {
-                            HatGewuerfelt = TRUE; 
-                        }
-                        if (player[MomentanerSpieler].getPaschCounter() == 3) {
-                            //MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, -1);//TODO:mit Map absprechen wegen dem Gefaegnis
-                        }
                         ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
                         ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
                         ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
                         ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
-
                     }
                     else {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
