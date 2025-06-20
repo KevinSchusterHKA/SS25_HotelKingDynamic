@@ -5,6 +5,7 @@
 #include <random>
 #include <cstdlib> // rand()
 #include "map.h"
+
 //#include "Unit_test.h"
 
 using namespace std;
@@ -90,10 +91,6 @@ public:
 	int getGekObjAnz();
 	int getGebObjAnz();
 };
-
-
-string LUT(int i);
-int getPreisStrasse(int i);
 
 class cpu_player1 : public player {
 public:
