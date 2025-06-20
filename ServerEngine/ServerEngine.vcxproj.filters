@@ -74,6 +74,9 @@
     <ClInclude Include="EngineDateien\TControl.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="EngineDateien\LUT.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="highscore.txt">

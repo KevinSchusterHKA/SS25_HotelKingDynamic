@@ -4,6 +4,7 @@
 #include "LookUp.h"
 #include "Space.h"
 #include "MapReturnObj.h"
+#include "Config.h"
 
 using namespace std;
 
@@ -17,13 +18,8 @@ private:
 	int RemainingSpaces = 22;
 
 public:
-	int getPropertyPrice(int spaceIndex){
-		if (spaceIndex < 0 || spaceIndex >= 40) {
-			return -1;
-		}
-		return Spaces[spaceIndex].getPrice();
-	}
-	std::vector<int> getOwnedProperties(int playerID) {
+
+	/*std::vector<int> getOwnedProperties(int playerID) {
 		std::vector<int> owned;
 		for (int i = 0; i < 40; i++) {
 			if (Spaces[i].getOwner() == playerID) {  
@@ -31,24 +27,59 @@ public:
 			}
 		}
 		return owned;
-	}
+	}*/ //war noch develop
 
-
-	Map(int playernumber) {
+	Map() {
 		for (int i = 0; i < 40; i++)
 		{
 			Spaces[i] = Space(_boardarr[i]);
 		}
-		for (int i = 0; i < 9*_dimX; i++)
+		for (int i = 0; i < 9 * _dimX; i++)
 		{
 			Buffer += " ";
 		}
+	};
+
+	void SetPlayerNumber(int playernumber)
+	{
 		for (int i = 0; i < playernumber; i++)
 		{
 			Spaces[0].setPlayer(i);
 		}
-	};
- 
+	}
+
+	void loadGame(vector<PlayerState> players)
+	{
+		int i = 0;
+		for (PlayerState player : players)
+		{
+			setPlayer(i, player.position, player.inJail ? -1:0);
+			int j = 0;
+			for (int space : player.ownedObjects)
+			{
+				Spaces[space].setOwner(i);
+				Spaces[space].setPrice(_factor);
+				int streetcolor = ownsStreets(i, Playerpos[i]);
+				if (streetcolor != -1)
+				{
+					Spaces[_streetarr[streetcolor][0]].buyHouse();
+					Spaces[_streetarr[streetcolor][1]].buyHouse();
+					if (_streetarr[streetcolor][2] != -1)
+					{
+						Spaces[_streetarr[streetcolor][2]].buyHouse();
+					}
+				}
+				for (int k = 0; k < player.builtObjects.at(j); k++)
+				{
+					Spaces[space].buyHouse();
+					Spaces[space].setPrice(_factor);
+				}
+				j++;
+			}
+			i++;
+		}
+	}
+
 	string toStr()
 	{
 		string out = _fgcolortable[4];
@@ -64,7 +95,7 @@ public:
 		{
 			for (int j = 0; j < _dimY; j++)
 			{
-				out += Spaces[i].toStr(j) + Buffer + Spaces[50-i].toStr(j);
+				out += Spaces[i].toStr(j) + Buffer + Spaces[50 - i].toStr(j);
 				out += "\n";
 			}
 
@@ -82,13 +113,28 @@ public:
 		return out;
 	}
 
-	int movePlayer(int player, int distance, int flag)
+	int movePlayer(int player, int distance, int flag) // flag = 0: normal bewegen; flag = 1: bahn fahren; flag = -1: kein LOS, evtl ins Gef�ngnis
 	{
-		int out = 0;
 		Spaces[Playerpos[player]].removePlayer(player);
-		out = (Playerpos[player] + distance >= 40 && flag == 0) ? -200 : 0;
-		Playerpos[player] = (Playerpos[player] + distance) % 40;
-		if (flag)
+		vector<int> pos;
+		for (int i = 0; i < 40; i++)
+		{
+			int j = (i + Playerpos[player]) % 40;
+			if (_moveMatrix[Playerpos[player]][j] == distance)
+			{
+				pos.push_back(j);
+			}
+		}
+		int	out = flag % pos.size();
+		return setPlayer(player, pos.at(out), flag);
+	}
+
+	int setPlayer(int player, int space, int flag)
+	{
+		Spaces[Playerpos[player]].removePlayer(player);
+		int out = (Playerpos[player] > space && flag == 0) ? -200 : 0;
+		Playerpos[player] = space;
+		if (flag == -1)
 		{
 			Spaces[Playerpos[player]].prisonPlayer(player);
 		}
@@ -96,6 +142,14 @@ public:
 			Spaces[Playerpos[player]].setPlayer(player);
 		}
 		return out;
+	}
+
+	void freePlayer(int player)
+	{
+		if (Playerpos[player] == 10)
+		{
+			Spaces[Playerpos[player]].setPlayer(player);
+		}
 	}
 
 	int buyStreet(int player, int funds)
@@ -109,7 +163,7 @@ public:
 			{
 				Spaces[i].setPrice(_factor);
 			}
-			int streetcolor = ownsStreets(player);
+			int streetcolor = ownsStreets(player, Playerpos[player]);
 			if (streetcolor != -1)
 			{
 				Spaces[_streetarr[streetcolor][0]].buyHouse();
@@ -124,23 +178,52 @@ public:
 		return -1;
 	}
 
-	
+	int getPropertyPrice(int spaceIndex) {
+		if (spaceIndex < 0 || spaceIndex >= 40) {
+			return -1;
+		}
+		return Spaces[spaceIndex].getPrice();
+	}
 
-	int ownsStreets(int player)
+	int setOwner(int oldowner, int newowner, int space)
+	{
+		if (space < 0 || space > 39)
+		{
+			return -1;
+		}
+		int streetcolor = ownsStreets(oldowner, space);
+		if (streetcolor != -1)
+		{
+			Spaces[_streetarr[streetcolor][0]].sellHouse();
+			Spaces[_streetarr[streetcolor][1]].sellHouse();
+			if (_streetarr[streetcolor][2] != -1)
+			{
+				Spaces[_streetarr[streetcolor][2]].sellHouse();
+			}
+		}
+		if (Spaces[space].getOwner() == oldowner)
+		{
+			Spaces[space].setOwner(newowner);
+			return 1;
+		}
+		return -1;
+	}
+
+	int ownsStreets(int player, int space)
 	{
 		int color = 0;
 		for (bool contains = false; color < 8 && !contains; color++)
 		{
-			contains |= (_streetarr[color][0] == Playerpos[player]);
-			contains |= (_streetarr[color][1] == Playerpos[player]);
-			contains |= (_streetarr[color][2] == Playerpos[player]);
+			contains |= (_streetarr[color][0] == space);
+			contains |= (_streetarr[color][1] == space);
+			contains |= (_streetarr[color][2] == space);
 		}
 		color--;
 		bool colorOwned = true;
 		for (int i = 0; i < 3; i++)
 		{
 			int pos = _streetarr[color][i];
-			colorOwned &= (player == Spaces[(pos != -1) ? pos : _streetarr[color][i-1]].getOwner());
+			colorOwned &= (player == Spaces[(pos != -1) ? pos : _streetarr[color][0]].getOwner());
 		}
 		if (colorOwned)
 		{
@@ -149,12 +232,26 @@ public:
 		return -1;
 	}
 
-	int buyHouses(int player, int funds)
+	vector<int> getOwnedProperties(int playerID) {
+		vector<int> owned;
+		for (int i = 0; i < 40; i++) {
+			if (Spaces[i].getOwner() == playerID) {
+				owned.push_back(i);
+			}
+		}
+		return owned;
+	}
+
+	int buyHouses(int player, int space, int funds)
 	{
-		int out = Spaces[Playerpos[player]].getHousePrice();
-		if (player == Spaces[Playerpos[player]].getOwner() && out < funds)//&&RemainingSpaces==0
+		if (space < 0 || space > 39)
 		{
-			Spaces[Playerpos[player]].buyHouse();
+			return -1;
+		}
+		int out = Spaces[space].getHousePrice();
+		if (player == Spaces[space].getOwner() && out < funds)//&&RemainingSpaces==0 // Bug
+		{
+			Spaces[space].buyHouse();
 			return out;
 		}
 		return -1;
@@ -165,18 +262,35 @@ public:
 		return Spaces[spaceNr].getHousePrice();
 	}
 
-	MapReturnObj getPlayerProps(int player, int usestation, int free)
+	int sellHouse(int player, int space)
 	{
-		MapReturnObj out(Spaces[Playerpos[player]].getProps(player,usestation,PlayerPrison[player],free));
-		PlayerPrison[player] = out.Prison;
+		if (space < 0 || space > 39)
+		{
+			return -1;
+		}
+		int out = Spaces[space].getHousePrice();
+		if (player == Spaces[space].getOwner() && Spaces[space].HouseCount(player) != 0)
+		{
+			Spaces[space].sellHouse();
+			return out/2;
+		}
+		return -1;
+	}
+
+	MapReturnObj getSpaceProps(int player)
+	{
+		MapReturnObj out(Spaces[Playerpos[player]].getProps(player));
 		if (out.SpaceNr == -1)
 		{
 			out.SpaceNr = Playerpos[player];
 		}
 		else {
-			
-			movePlayer(player,(out.SpaceNr - Playerpos[player]) + 40, out.Prison);	
+			out.Rent += setPlayer(player,out.SpaceNr, out.Prison);
 			out.flag = 1;
+		}
+		if (out.Type == TypeTax)
+		{
+			Spaces[20].addTax(out.Rent);
 		}
 		if (out.Owner == -3)
 		{
@@ -188,6 +302,11 @@ public:
 			}
 		}
 		return out;
+	}
+
+	string getName(int space)
+	{
+		return Spaces[space].getName();
 	}
 
 	string clear() {

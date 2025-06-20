@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <iostream>
 #include <conio.h>
@@ -8,9 +9,8 @@
 #include <iomanip>
 #include <tlhelp32.h>
 #include <random>
+#include <limits>
 #include "LookUp.h"
-
-//#include <ncurses.h> //für Linux, falls benötigt
 
 #define KEY_UP 72     
 #define KEY_DOWN 80   
@@ -30,7 +30,7 @@
 enum class Farbe {
     Zuruecksetzen = 0,
     Schwarz = 30,
-    Rot,
+    Rot = 91,
     Gruen,
     Gelb,
     Blau,
@@ -38,7 +38,7 @@ enum class Farbe {
     Cyan,
     Weiss,
     BG_Schwarz = 40,
-    BG_Rot,
+    BG_Rot = 101,
     BG_Gruen,
     BG_Gelb,
     BG_Blau,
@@ -46,6 +46,7 @@ enum class Farbe {
     BG_Cyan,
     BG_Weiss
 };
+
 
 
 class TControl{
@@ -107,7 +108,7 @@ private:
  "            \\______/                Press any key                                    "}
     };
 
-    //Menüs
+    //MenÃ¼s
     std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","##################################################","Startmenue"};
     std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","Runde Beenden","##################################################","Spielermenue"};
     std::vector<std::string> MenueSpielOptionen = { "Fortfahren","Spiel Speichern","Spiel Laden","Spielregeln","Beenden","Highscore","Zurueck","##################################################","Spielmenue"};
@@ -119,7 +120,8 @@ private:
     void SetFarbe(Farbe farbe);
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord;
-    void HideCursor(HANDLE hConsole);
+    void HideCursor();
+    void ShowCursor();
     //BOOL WINAPI SetConsoleCursorPosition(_In_ HANDLE hConsoleOutput,_In_ COORD  dwCursorPosition);
     void AusgabeSpielerBox( std::string Namen,
                             int Budget,
@@ -136,31 +138,22 @@ public:
     void AusgabeStartMenu(int& option, int x, int y);
 	
     void AusgabeJaNeinOption(int& option, int x, int y, Farbe f, std::string Ueberschrift);
-    void AusgabeHaeuserKaufen(int& option,int& WelcheStraße, int x, int y, Farbe f);
-
+    void AusgabeStrasseHandeln(int& option,int& WelcheStraÃŸe, int& Angebot, int x, int y, Farbe f);
+	void AusgabeAuswahlSpieler(int& option, int x, int y, Farbe f, int& AnzahlSpieler, int& AnzahlCpuGegner, std::vector<std::string>& SpielerNamen);
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
     void AusgabeSpielRegeln(std::vector<std::string> s, int x, int y);
 	void AusgabeHandelsMenu(int& option, int x, int y, Farbe f);
     void AusgabeStartBildschirm(bool flip, int x, int y);
     void AusgabeFeld(std::string Feld, int x, int y);
-    void AusgabeSpielerInformationen(   std::string Namen[4],
-                                        int Budget[4],
-                                        int AnzahlGekaufterObjekte[4],
-                                        int AnzahlGebauterObjekte[4],
+    void AusgabeSpielerInformationen(   std::string Namen[4],int Budget[4],
+                                        int AnzahlGekaufterObjekte[4],int AnzahlGebauterObjekte[4],
                                         int AnzSpieler,
-                                        int x,
-                                        int y,
+                                        int x,int y,
                                         std::vector<std::vector<std::string>> GekaufteObjekte,
                                         std::vector<std::vector<std::string>> GebauteObjekte);
 
-	void AusgabeSpielerInventarAnzeige( std::string Namen,
-                                        std::vector<std::string> GekaufteObjekte,
-                                        std::vector<std::string> GebauteObjekte,
-                                        int x,
-                                        int y,
-                                        Farbe f);
-    
+	void AusgabeSpielerInventarAnzeige( std::string Namen,std::vector<std::string> GekaufteObjekte,std::vector<std::string> GebauteObjekte,int x,int y,Farbe f);
     void AusgabeTestFeld(int x, int y);
     void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
 	void AusgabeWuerfel(int wuerfel, int x, int y, Farbe f);

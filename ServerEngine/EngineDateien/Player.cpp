@@ -2,7 +2,11 @@
 using namespace std;
 player::player() {};
 player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
-player::player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
+player::player( int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, 
+                vector<int> gekauftestrassen, vector<int> gebautehaeser) 
+                { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; 
+                    this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, 
+                    this->GebauteHaeuser = gebautehaeser; };
 
 player::~player() {};
 
@@ -45,10 +49,10 @@ int player::getPosition() { return this->Position; }
 void player::setPosition(int p) { this->Position = p; }
 void player::incPosition(int p) {
 	this->Position += p;
-	if (this->Position == 30) { // Ins Gefängnis gehen
+	if (this->Position == 30) { // Ins GefÃ¤ngnis gehen
 		this->insGefaengnis();
 	}
-	if (this->Position >= 40) { // Eine Runde Übergangen
+	if (this->Position >= 40) { // Eine Runde Ãœbergangen
 		this->Position -= 40;
 	}
 }
@@ -83,7 +87,7 @@ void player::incPaschCounter() {
 void player::insGefaengnis() {
 	this->ImGefaengnis = true;
 	this->GefaengnisRunden = 1;
-	this->Position = 10; // Gefängnisfeld
+	this->Position = 10; // GefÃ¤ngnisfeld
 }
 void player::decGefaengnisRunden() {
 	if (this->GefaengnisRunden > 0) {
@@ -108,7 +112,7 @@ bool player::paschcheck() {
 }
 
 void player::bezahle(int betrag) {
-	if (betrag >= 0) {
+	if (betrag != -1) {
 		if (this->Budget - betrag >= 0) {
 			this->Budget -= betrag;
 		}
@@ -121,26 +125,24 @@ void player::erhalte(int betrag) { this->Budget += betrag; }
 bool player::istPleite() { if (this->Budget <= 0) { return true; } return false; }
 void player::geheZu(int feld) {
 	if (feld < 0 || feld >= 40) {
-		return;					// Ungültiges Feld, nichts tun	
+		return;					// UngÃ¼ltiges Feld, nichts tun	
 	}
 	this->Position = feld;
 }
 
 void player::addStrasse(int strasse) {
-	if (this->GekaufteStrassen.size() == 0) {
+	//if (this->GekaufteStrassen.size() == 0) {
+	//	GekaufteStrassen.push_back(strasse);
+	//}
+	bool owned = false;
+	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
+		owned |= (this->GekaufteStrassen[i] == strasse);
+	}
+	if (!owned) {
 		GekaufteStrassen.push_back(strasse);
 	}
-	else
-	{
-		for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
-			if (this->GekaufteStrassen[i] == strasse) {
-			}
-			else {
-				GekaufteStrassen.push_back(strasse);
-			}
-		}
-	}
-	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
+	cout << "Spieler " << this->ID+1 << " hat " << LUT(strasse) << " gekauft.\n";
+	//cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
 void player::deleteStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
@@ -182,27 +184,27 @@ bool player::besitztStrassenSet() {
 	sets.push_back(set7);
 	sets.push_back(set8);
 
-	// Überprüfen ob Spieler ein Set vollständig hat
+	// ÃœberprÃ¼fen ob Spieler ein Set vollstÃ¤ndig hat
 	for (int i = 0; i < sets.size(); i++) {
 		int zaehler = 0;
 
 		for (int j = 0; j < sets[i].size(); j++) {
-			// Prüfen ob die Straße in GekaufteStrassen ist
+			// PrÃ¼fen ob die StraÃŸe in GekaufteStrassen ist
 			for (int k = 0; k < this->GekaufteStrassen.size(); k++) {
 				if (this->GekaufteStrassen[k] == sets[i][j]) {
 					zaehler++;
-					break; // weiter zur nächsten Straße im Set
+					break; // weiter zur nÃ¤chsten StraÃŸe im Set
 				}
 			}
 		}
 
-		// Wenn Anzahl gefundener Straßen gleich der Anzahl im Set ist
+		// Wenn Anzahl gefundener StraÃŸen gleich der Anzahl im Set ist
 		if (zaehler == sets[i].size()) {
 			return true;
 		}
 	}
 
-	// Wenn kein vollständiges Set gefunden wurde
+	// Wenn kein vollstÃ¤ndiges Set gefunden wurde
 	return false;
 }
 
@@ -249,7 +251,7 @@ bool player::verkaufeStrasseAn(player* zielspieler, int strasse, int betrag) {
 		return false;
 	}
 	cout << "Spieler " << zielspieler->getID() << ", akzeptierst du das Angebot von "
-		<< betrag << " für die Strasse " << strasse << "? (j/n)\n";
+		<< betrag << " fÃ¼r die Strasse " << strasse << "? (j/n)\n";
 	char antwort;
 	cin >> antwort;
 	if (antwort == 'j' || antwort == 'J') {

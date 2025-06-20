@@ -11,6 +11,7 @@ class Space
 private:
 	string Design[_dimY][_dimX + 2] = {};
 	const int *DesignBuffer;
+	float floatbuffer = 0;
 	int Owner = -1;
 	int Houses = -1;
 	int Players[4] = { 0 };
@@ -23,18 +24,21 @@ private:
 		case TypeStreet:
 			DesignBuffer = *_designStreet;
 			setup();
+			floatbuffer = Config.Price;
 			insertStr(intToStr(Config.Price), 1);
 			break;
 
 		case TypeStation:
 			DesignBuffer = *_designStation;
 			setup();
+			floatbuffer = Config.Rentarr[0];
 			insertStr(intToStr(Config.Rentarr[0]), 1);
 			break;
 
 		case TypeTax:
 			DesignBuffer = *_designTax;
 			setup();
+			floatbuffer = Config.Rentarr[0];
 			insertStr(intToStr(Config.Rentarr[0]), 1);
 			break;
 
@@ -200,9 +204,9 @@ public:
 		return out;
 	}
 
-	MapReturnObj getProps(int player, int usestation, int prison, int free)
+	MapReturnObj getProps(int player)
 	{
-		MapReturnObj out(-1,Owner,Config.Rentarr[Houses + 1],0,"");
+		MapReturnObj out(-1,Config.Type,Owner,Config.Rentarr[Houses + 1],0,"");
 		switch (Config.Type)
 		{
 		case TypeStreet:
@@ -212,10 +216,10 @@ public:
 			}
 			break;
 		case TypeStation:
-			if (!usestation)
-			{
-				out.Rent = 0;
-			}
+
+			break;
+		case TypeTax:
+
 			break;
 		case TypeChance:
 			out = _chanceCards[(int)(rand()%14)];
@@ -227,21 +231,15 @@ public:
 			out.Rent = -200;
 			break;
 		case TypePrison:
-			if (prison != 0)
-			{
-				out.Prison = prison - 1;
-			}
-			if (prison == 0||free)
-			{
-				out.Prison = 0;
-			}
+
 			break;
 		case TypePark:
-			out.Rent *= -1;
+			Config.Rentarr[0] = 0;
+			insertStr(intToStr(Config.Rentarr[0]), 1);
 			break;
 		case TypeGTP:
 			out.SpaceNr = 10;
-			out.Prison = 3;
+			out.Prison = -1;
 			out.flag = 1;
 			break;
 		default:
@@ -283,6 +281,7 @@ public:
 	void buyStreet(int player)
 	{
 		Owner = player;
+		floatbuffer = Config.HousePrice;
 	}
 
 	int getHousePrice()
@@ -299,9 +298,18 @@ public:
 		Houses++;
 	}
 
+	void sellHouse()
+	{
+		Houses--;
+	}
+
 	int HouseCount(int player)
 	{
 		int out = 0;
+		if (player != Owner)
+		{
+			return out;
+		}
 		if (Houses > 0 && Houses < 5)
 		{
 			out = Houses;
@@ -315,15 +323,44 @@ public:
 
 	void setPrice(float mult)
 	{
+		floatbuffer *= mult;
 		if (Config.Type == TypeStreet && Owner == -1)
 		{
-			Config.Price *= mult;
+			Config.Price = (int)floatbuffer;
 			insertStr(intToStr(Config.Price), 1);
+		}
+		if (Config.Type == TypeStreet && Owner != -1)
+		{
+			Config.HousePrice = (int)floatbuffer;
+		}
+		if (Config.Type == TypeStation)
+		{
+			Config.Rentarr[0] = (int)floatbuffer;
+			insertStr(intToStr(Config.Rentarr[0]), 1);
+		}
+	}
+
+	void addTax(int tax)
+	{
+		if (Config.Type == TypePark)
+		{
+			Config.Rentarr[0] += tax;
+			insertStr(intToStr(Config.Rentarr[0]), 1);
 		}
 	}
 
 	int getOwner()
 	{
 		return Owner;
+	}
+
+	void setOwner(int newowner)
+	{
+		Owner = newowner;
+	}
+
+	string getName()
+	{
+		return Config.Name;
 	}
 };
