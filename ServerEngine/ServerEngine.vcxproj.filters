@@ -79,7 +79,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="highscore.txt">
+    <Text Include="highscores.txt">
       <Filter>Ressourcendateien</Filter>
     </Text>
   </ItemGroup>

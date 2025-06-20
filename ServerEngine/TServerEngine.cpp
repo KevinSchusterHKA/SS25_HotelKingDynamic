@@ -101,7 +101,6 @@ void TServer::UnitTest() {
             if (ZeitDifferenz < FRAME_DURATION) {
                 Sleep(FRAME_DURATION - ZeitDifferenz);
             } 
-            std::cout << _kbhit();
             if (_kbhit()) 
             {
                 option = _getch(); 
@@ -205,7 +204,7 @@ void TServer::UnitTest() {
                 }
 				if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
 					std::vector<HighscoreEntry> player;
-					load_highscores("highscore.txt", player);
+					load_highscores("highscores.txt", player);
                     std::vector<std::string> playerNames;
                     std::vector<int> playerScore;
                     for (size_t i = 0; i < player.size(); i++)
@@ -397,7 +396,7 @@ void TServer::UnitTest() {
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 10) { Spiellaueft = FALSE; }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 13) { 
                     std::vector<HighscoreEntry> player;
-                    load_highscores("highscore.txt", player);
+                    load_highscores("highscores.txt", player);
                     std::vector<std::string> playerNames;
                     std::vector<int> playerScore;
                     for (size_t i = 0; i < player.size(); i++)

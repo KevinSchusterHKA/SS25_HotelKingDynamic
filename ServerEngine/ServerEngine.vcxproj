@@ -147,7 +147,7 @@
     <ClInclude Include="TServerEngine.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="highscore.txt" />
+    <Text Include="highscores.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="KonsolenEinstellungenUmstellen.png" />
