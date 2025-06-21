@@ -28,7 +28,7 @@ private:
 public:
 	player();
 	player(int id, int budget, int position);
-	player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
+	player(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
 	~player();
 
 	int Score(int runde, int anzGekGebObj);
@@ -74,9 +74,8 @@ public:
 	void deleteStrasse(int strasse);
 	bool besitztStrasse(int strasse);
 	bool besitztStrassenSet();
-	int handel(int request, int preowner);
-	bool kaufeStrasseVon(player* von, int strasse, int betrag);
-	bool verkaufeStrasseAn(player* zielspieler, int strasse, int betrag);
+	bool istStrassenSetHandelbar(vector<player*>& spielerListe, int feld);
+	bool Handeln(vector<player*>& spielerListe, int feld, int angebot);
 
 	void baueHaus(int strasse);
 	void verkaufeHaus(int strasse);
@@ -87,8 +86,8 @@ public:
 
 	int getGekObjAnz();
 	int getGebObjAnz();
-	vector<int> getGekaufteStrassen();
-	vector<int> getGebauteHaeuser();
+	vector<int> getGekObjVector();
+	vector<int> getGebObjVector();
 };
 
 

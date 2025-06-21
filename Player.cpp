@@ -1,9 +1,10 @@
 #include "Player.h"
 #include "Unit_test.h"
+#include "LUT.h"
 using namespace std;
 player::player() {};
 player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
-player::player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
+player::player(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
 
 player::~player() {};
 
@@ -213,63 +214,57 @@ bool player::besitztStrassenSet() {
 	// Wenn kein vollständiges Set gefunden wurde
 	return false;
 }
-int player::handel(int r, int preowner) {
-	int Strasse = r;
-	int angebot = -1;
-	if (preowner != -1) {
-		cout << "Sie koennen diese Strasse nicht kaufen, Sie gehoert niemandem.\n";
-	}
-	else {
-		cout << "Wie viel Geld moechten Sie fuer diese Strasse anbieten?\n";
-		while (angebot <= 0) {
-			cin >> angebot;
-			if (angebot <= 0) { cout << "Geben Sie bitte ein gueltiges Angebot an.\n"; }
+bool player::istStrassenSetHandelbar(vector<player*>& spielerListe, int feld) {
+	string farbe = _boardarr[feld].color;
+
+	for (int i = 0; i < 40; ++i) {
+		if (_boardarr[i].type == TypeStreet && _boardarr[i].color == farbe) {
+			// Prüfen ob auf irgendeiner Straße in der Gruppe Häuser stehen
+			for (player* p : spielerListe) {
+				if (p->anzahlHaeuserAuf(i) > 0) {
+					return false; // Set ist nicht handelbar
+				}
+			}
 		}
 	}
-	return angebot;
+	return true;
 }
-bool player::kaufeStrasseVon(player* von, int strasse, int betrag) {
-	if (!von->besitztStrasse(strasse)) {
-		cout << "Der Spieler besitzt diese Strasse nicht.\n";
+bool player::Handeln(vector<player*>& spielerListe, int feld, int angebot) {
+	// Prüfen ob Käufer genug Budget hat
+	if (this->getBudget() < angebot) {
+		cout << "Du hast nicht genug Budget für dieses Angebot." << endl;
 		return false;
 	}
-	cout << "Spieler " << von->getID() << ", akzeptierst du das Angebot von "
-		<< betrag << " fuer die Strasse " << strasse << "? (j/n)\n";
-	char antwort;
-	cin >> antwort;
-	if (antwort == 'j' || antwort == 'J') {
-		von->deleteStrasse(strasse);
-		von->setBudget(von->getBudget() + betrag);
 
-		this->addStrasse(strasse);
-		this->setBudget(this->getBudget() - betrag);
+	// Verkäufer suchen
+	for (player* verkaufer : spielerListe) {
+		if (verkaufer->getID() != this->getID() && verkaufer->besitztStrasse(feld)) {
 
-		cout << "Handel abgeschlossen.\n";
-		return true;
+			// Prüfen ob in der Farbgruppe Häuser stehen
+			if (!istStrassenSetHandelbar(spielerListe, feld)) {
+				cout << "Handel abgelehnt: In der Farbgruppe von " << LUT(feld)
+					<< " stehen noch Haeuser." << endl;
+				return false;
+			}
+			// Käufer bezahlt
+			this->bezahle(angebot);
+
+			// Verkäufer erhält Geld
+			verkaufer->erhalte(angebot);
+
+			// Straße übertragen
+			verkaufer->deleteStrasse(feld);
+			this->addStrasse(feld);
+
+			cout << "Handel erfolgreich: Strasse " << LUT(feld)
+				<< " von Spieler " << verkaufer->getID()
+				<< " gekauft fuer " << angebot << ".\n";
+
+			return true;
+		}
 	}
-	cout << "Handel abgelehnt.\n";
-	return false;
-}
-bool player::verkaufeStrasseAn(player* zielspieler, int strasse, int betrag) {
-	if (!this->besitztStrasse(strasse)) {
-		cout << "Du besitzt diese Strasse nicht.\n";
-		return false;
-	}
-	cout << "Spieler " << zielspieler->getID() << ", akzeptierst du das Angebot von "
-		<< betrag << " für die Strasse " << strasse << "? (j/n)\n";
-	char antwort;
-	cin >> antwort;
-	if (antwort == 'j' || antwort == 'J') {
-		this->deleteStrasse(strasse);
-		this->setBudget(this->getBudget() + betrag);
 
-		zielspieler->addStrasse(strasse);
-		zielspieler->setBudget(zielspieler->getBudget() - betrag);
-
-		cout << "Handel abgeschlossen.\n";
-		return true;
-	}
-	cout << "Handel abgelehnt.\n";
+	cout << "Kein Verkauufer für diese Strasse gefunden." << endl;
 	return false;
 }
 
@@ -321,10 +316,10 @@ int player::getGekObjAnz() { return this->GekaufteStrassen.size(); }
 int player::getGebObjAnz() { return this->GebauteHaeuser.size(); }
 
 cpu_player1::cpu_player1() : player() {}
-vector<int> player::getGekaufteStrassen() {
+vector<int> player::getGekObjVector() {
 	return this->GekaufteStrassen;
 }
-vector<int> player::getGebauteHaeuser() {
+vector<int> player::getGebObjVector() {
 	return this->GebauteHaeuser;
 }
 // cpu to player
@@ -340,7 +335,7 @@ int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, in
 		targetPlayer = rand() % totalPlayers;
 	} while (targetPlayer == cpuID);
 
-	std::vector<int> ownedProperties = p[targetPlayer]->getGekaufteStrassen();
+	std::vector<int> ownedProperties = p[targetPlayer]->getGekObjVector();
 	if (ownedProperties.empty()) {
 		//std::cout << "CPU Spieler " << targetPlayer << " besitzt keine Straben.\n";
 		targetPlayerOut = -1;
@@ -409,62 +404,15 @@ bool cpu_player1::tryBuyStreet(std::vector<player*>& p) {
 
 
 string LUT(int i) {
-	switch (i) {
-	case 1:  return "Kaiserstrasse";
-	case 3:  return "Erbprinzenstrasse";
-	case 6:  return "Ettlinger_Tor";
-	case 8:  return "Amalienstrasse";
-	case 9:  return "Waldstrasse";
-	case 11: return "Durlacher_Allee";
-	case 13: return "Rueppurrer_Strasse";
-	case 14: return "Moltkestrasse";
-	case 16: return "Herrenstrasse";
-	case 18: return "Kronenstrasse";
-	case 19: return "Kriegsstrasse";
-	case 21: return "Kanalweg";
-	case 23: return "Sophienstrasse";
-	case 24: return "Karlstrasse";
-	case 26: return "Tullastrasse";
-	case 27: return "Hardtstrasse";
-	case 29: return "Rintheimer_Strasse";
-	case 31: return "Wolfartsweierer_Strasse";
-	case 32: return "Nordendstrasse";
-	case 34: return "Lorenzstrasse";
-	case 37: return "Kuehler_Krug";
-	case 39: return "Europaplatz";
-	default: return "Unbekannte_Strasse";
-	}
+	return _boardarr[i].name;
 }
 
-int getPreisStrasse(int i, int AnzahlGekGebObj) {
-	switch (i) {
-	case 1:  return int(60*pow(1.02, AnzahlGekGebObj));
-	case 3:  return int(60 * pow(1.02, AnzahlGekGebObj));
-	case 6:  return int(100 * pow(1.02, AnzahlGekGebObj));
-	case 8:  return int(100 * pow(1.02, AnzahlGekGebObj));
-	case 9:  return int(120 * pow(1.02, AnzahlGekGebObj));
-	case 11: return int(140 * pow(1.02, AnzahlGekGebObj));
-	case 13: return int(140 * pow(1.02, AnzahlGekGebObj));
-	case 14: return int(160 * pow(1.02, AnzahlGekGebObj));
-	case 16: return int(180 * pow(1.02, AnzahlGekGebObj));
-	case 18: return int(180 * pow(1.02, AnzahlGekGebObj));
-	case 19: return int(200 * pow(1.02, AnzahlGekGebObj));
-	case 21: return int(220 * pow(1.02, AnzahlGekGebObj));
-	case 23: return int(220 * pow(1.02, AnzahlGekGebObj));
-	case 24: return int(240 * pow(1.02, AnzahlGekGebObj));
-	case 26: return int(260 * pow(1.02, AnzahlGekGebObj));
-	case 27: return int(260 * pow(1.02, AnzahlGekGebObj));
-	case 29: return int(280 * pow(1.02, AnzahlGekGebObj));
-	case 31: return int(300 * pow(1.02, AnzahlGekGebObj));
-	case 32: return int(300 * pow(1.02, AnzahlGekGebObj));
-	case 34: return int(320 * pow(1.02, AnzahlGekGebObj));
-	case 37: return int(350 * pow(1.02, AnzahlGekGebObj));
-	case 39: return int(400 * pow(1.02, AnzahlGekGebObj));
-	default: return 0;
-	}
+int getPreisStrasse(int i) {
+	return _boardarr[i].price;
 }
-int getPreisHaus(int i, int AnzahlGekGebObj) {
-	return 0;
+
+int getPreisHaus(int i) {
+	return _boardarr[i].houseCost;
 }
 
 
