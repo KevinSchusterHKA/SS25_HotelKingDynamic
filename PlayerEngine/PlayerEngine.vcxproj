@@ -131,6 +131,7 @@
     <ClCompile Include="..\Unit_test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\map.h" />
     <ClInclude Include="..\Player.h" />
     <ClInclude Include="..\Unit_test.h" />
   </ItemGroup>

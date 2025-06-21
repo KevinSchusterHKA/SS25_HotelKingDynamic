@@ -140,27 +140,35 @@ void UNITTEST_cpu() {
 		players.push_back(new cpu_player1());
 		players.back()->setID(i + 2);
 		players.back()->setHuman(CPU1);
-		players.back()->setBudget(1000);
+		players.back()->setBudget(10000000);
 		players.back()->setPosition(i);
 	
 	} 
-	players[2]->addStrasse(13); //strasse handel test 
-	players[2]->addStrasse(14);
-	players[3]->addStrasse(16);
+	players[2]->addStrasse(1); //strasse handel test und farbe set 
+	players[2]->addStrasse(3);
+	players[2]->addStrasse(6);
 	players[3]->addStrasse(18);
 	players[4]->addStrasse(19);
 	players[4]->addStrasse(21);
 	players[5]->addStrasse(23);
 	players[5]->addStrasse(24);
+	Map map;//map 
 	int testPositions[40] = {};
 	for (size_t i = 0; i < 40; i++)
 	{
 		 testPositions[i] = i;
 	}
 
+
 	for (size_t i = 0; i < players.size(); ++i) {
 		if (players[i]->getHuman() == CPU1) {
 			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
+			//build house test
+			for (int build = 0; build < 6; ++build) {
+				bool built = cpu->tryBuildHouse(players, map);
+				std::cout << "try " << build + 1 << ": CPU" << cpu->getID()
+					<< (built ? " built a house." : " did not build a house.") << std::endl;
+			}
 
 			//street buy
 			bool bought = cpu->tryBuyStreet(players);
