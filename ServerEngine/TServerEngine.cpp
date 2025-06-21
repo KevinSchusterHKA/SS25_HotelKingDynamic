@@ -194,7 +194,7 @@ void TServer::UnitTest() {
 
                     ConfigEngineLogging.newGame();
                     ControlEngine.AusgabeAuswahlSpieler(option, x/7, y / 7, Farbe::Gelb, AnzahlSpieler,AnzahlCpuGegner, SpielerNamen);
-                    for (size_t i = 0; i < 4; i++)
+                    for (size_t i = 0; i < AnzahlSpieler; i++)
                     {
                         player[i].setName(SpielerNamen[i]);
                     }
