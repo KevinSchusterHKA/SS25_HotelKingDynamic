@@ -134,6 +134,12 @@ void player::geheZu(int feld) {
 }
 
 void player::addStrasse(int strasse) {
+
+	if (_boardarr[strasse].Type != TypeStreet) {
+		cout << "Feld " << LUT(strasse) << " ist keine Straße und kann nicht gekauft werden.\n";
+		return;
+	}
+
 	if (this->GekaufteStrassen.size() == 0) {
 		GekaufteStrassen.push_back(strasse);
 	}
