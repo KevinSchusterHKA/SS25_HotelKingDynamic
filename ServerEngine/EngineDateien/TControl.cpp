@@ -738,7 +738,8 @@ void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStraße,int& Angebo
 	this->ShowCursor();
     std::cin >> WelcheStraße;
 	this->HideCursor();
-
+    std::cin.clear();
+    std::cin.ignore(1000, '\n');
 
 	//EINGABE DES ANGEBOTS
     Ueberschrift = "Gebe einen Betrag ein.";
@@ -790,9 +791,11 @@ void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStraße,int& Angebo
     this->coord.Y = tempy;
     SetConsoleCursorPosition(this->hConsole, this->coord);
     this->ShowCursor();
-    std::cin >> WelcheStraße;
+    std::cin >> Angebot;
     this->HideCursor();
     this->SetFarbe(Farbe::Zuruecksetzen);
+    std::cin.clear();
+    std::cin.ignore(1000, '\n');
 }
 void TControl::AusgabeAuswahlSpieler(int& option, int x, int y, Farbe f, int& AnzahlSpieler,int& AnzahlCpuGegner,std::vector<std::string>& SpielerNamen) {
     this->SetFarbe(f);
@@ -1033,7 +1036,6 @@ void TControl::AusgabeAuswahlSpieler(int& option, int x, int y, Farbe f, int& An
     this->SetConsoleFontSize(8);
 
 }
-
 void TControl::AusgabeTestFeld(int x, int y) {
     //Außen MAP :   Hoehe = 8*11 , Breite = 20*11 
 

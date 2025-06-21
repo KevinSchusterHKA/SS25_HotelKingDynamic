@@ -13,10 +13,11 @@ public:
 	TServer();
 	~TServer();
 	void UnitTest();
+	int GetLongestStringVector(std::vector<std::string> s);
 private:
 	TControl ControlEngine;
 	cpu_player1 cpu[2]; 
-	player player[4];
+	TPlayer player[4];
 	Logger ConfigEngineLogging;
 	Map MapEngine;
 

@@ -10,7 +10,7 @@
 
 using namespace std;
 enum PlayerType { HUMAN, CPU1, CPU2, }; // human player ,level 1,level 2
-class player
+class TPlayer
 {
 private:
 	int ID;
@@ -29,10 +29,10 @@ private:
 
 
 public:
-	player();
-	player(int id, int budget, int position);
-	player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
-	~player();
+	TPlayer();
+	TPlayer(int id, int budget, int position);
+	TPlayer(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
+	~TPlayer();
 
 	int Score();
 	void getData();
@@ -50,7 +50,7 @@ public:
 	void setPosition(int p);
 	void incPosition(int p);
 
-	// Würfeln und Pasch
+	// WÃ¼rfeln und Pasch
 	int getWurfel(int index);
 	void setWurfel(int w, int index);
 	int wurfeln();
@@ -63,7 +63,7 @@ public:
 	void setPaschCounter(int p);
 	void incPaschCounter();
 
-	// Gefängnis
+	// GefÃ¤ngnis
 	void insGefaengnis();
 	void decGefaengnisRunden();
 	bool imGefaengnis();
@@ -78,8 +78,8 @@ public:
 	bool besitztStrasse(int strasse);
 	bool besitztStrassenSet();
 	int handel(int request, int preowner);
-	bool kaufeStrasseVon(player* von, int strasse, int betrag);
-	bool verkaufeStrasseAn(player* zielspieler, int strasse, int betrag);
+	bool kaufeStrasseVon(TPlayer* von, int strasse, int betrag);
+	bool verkaufeStrasseAn(TPlayer* zielspieler, int strasse, int betrag);
 
 	void baueHaus(int strasse);
 	void verkaufeHaus(int strasse);
@@ -92,11 +92,12 @@ public:
 	int getGebObjAnz();
 };
 
-class cpu_player1 : public player {
+
+class cpu_player1 : public TPlayer {
 public:
 	cpu_player1();
 
-	int handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<player*>& p);
+	int handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<TPlayer*>& p);
 	bool acceptTrade(Map& gameMap, int spaceIndex, int offer);
-	bool tryBuyStreet(Map& gameMap, std::vector<player*>& p);
+	bool tryBuyStreet(Map& gameMap, std::vector<TPlayer*>& p);
 };

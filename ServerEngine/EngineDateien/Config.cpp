@@ -1,10 +1,8 @@
 // mit Vector
 //Config.cpp
 
-#include "config.h"
-#include <fstream>
-#include <sstream>
-#include <algorithm>
+
+#include "Config.h"
 
 // Konfiguration laden
 bool load_config(const std::string& filename, GameRules& rules) 
