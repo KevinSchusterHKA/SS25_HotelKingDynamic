@@ -31,15 +31,14 @@ void TServer::UnitTest() {
         Spieler,
         Optionen,
         Handel,
-        BahnFahren,
-        Bauen
+        BahnFahren
     };
 
     std::vector<std::string> Spielregeln = { "Regel 1", "Regel 2", "Regel 3", "Regel 4", "Regel 5555555555555555555555555555555555555555555555555555555555555" };
 
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
-    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner=2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden=0;
+    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner=2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden=0,StrasseBauen=-1;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
@@ -304,11 +303,15 @@ void TServer::UnitTest() {
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
                     {
+                        ControlEngine.AusgabeGebaeudeBauen(option, StrasseBauen, x / 2 - 213, y / 2 - 20, MomentanerSpielerFarbe);
+                        //TODO: Player und Map Bauen auf Straße implementieren
                         int space = MRobj[MomentanerSpieler].SpaceNr;// Bug
+                        space = StrasseBauen;
                         player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget()));
                         //player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
                         player[MomentanerSpieler].baueHaus(player[MomentanerSpieler].getPosition());
-					              ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
+                        ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
+                        StrasseBauen = -1;
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
@@ -489,11 +492,6 @@ void TServer::UnitTest() {
                     ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
                     ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
                     ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
-                    break;
-            
-                case Menues::Bauen:
-                    int StrasseBauen = -1;
-                    ControlEngine.AusgabeGebaeudeBauen(option, StrasseBauen, x / 2 - 211, y / 2 - 20, MomentanerSpielerFarbe);
                     break;
                 default:
                     break;
