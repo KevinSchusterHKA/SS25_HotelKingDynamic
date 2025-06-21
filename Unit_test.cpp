@@ -144,8 +144,8 @@ void UNITTEST_cpu() {
 		players.back()->setPosition(i);
 	
 	} 
-	players[2]->addStrasse(1); //strasse handel test und farbe set 
-	players[2]->addStrasse(3);
+	players[2]->addStrasse(3); //strasse handel test und farbe set 
+	players[2]->addStrasse(1);
 	players[3]->addStrasse(11);
 	players[3]->addStrasse(13);
 	players[3]->addStrasse(14);
