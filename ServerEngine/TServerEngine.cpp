@@ -31,7 +31,8 @@ void TServer::UnitTest() {
         Spieler,
         Optionen,
         Handel,
-        BahnFahren
+        BahnFahren,
+        Bauen
     };
 
     std::vector<std::string> Spielregeln = { "Regel 1", "Regel 2", "Regel 3", "Regel 4", "Regel 5555555555555555555555555555555555555555555555555555555555555" };
@@ -185,316 +186,321 @@ void TServer::UnitTest() {
         case KEY_SPACE:
             switch (MenueAuswahl)
             {
-            case Menues::Start:
-                system("cls");
-                if (option == MenueOptionen::Start) {
-                    MenueAuswahl = Menues::Spieler;
-                    RundeVorhanden = TRUE;
-                    UpdateSpielfeld = TRUE;
-
-                    ConfigEngineLogging.newGame();
-                    ControlEngine.AusgabeAuswahlSpieler(option, x/7, y / 7, Farbe::Gelb, AnzahlSpieler,AnzahlCpuGegner, SpielerNamen);
-                    for (size_t i = 0; i < AnzahlSpieler; i++)
-                    {
-                        player[i].setName(SpielerNamen[i]);
-                    }
-                    MapEngine.SetPlayerNumber(AnzahlSpieler);
-                }
-				if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
-					std::vector<HighscoreEntry> player;
-					load_highscores("highscores.txt", player);
-                    std::vector<std::string> playerNames;
-                    std::vector<int> playerScore;
-                    for (size_t i = 0; i < player.size(); i++)
-                    {
-                        playerNames.push_back(player[i].playerName);
-                        playerScore.push_back(player[i].score);
-                    }
-
-                    ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - this->GetLongestStringVector(playerNames) / 2 - 6, y / 2 + ControlEngine.GetAnzMenuepunkteStartOptionen() + 2);
-                }
-                if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
-                if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
-                break;
-            case Menues::Spieler:
-                CursorPos = { short(x / 2 - 160), short(y / 2 - 40 + ControlEngine.GetAnzMenuepunkteSpielerOptionen()) };
-                ControlEngine.UpdateCursorPosition(CursorPos);
-                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln )
-                {
-                    if (!HatGewuerfelt)
-                    {
-                        //PLAYERENGINE
-                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler "+to_string(MomentanerSpieler+1)+" : wirft den Wuerfel!";
-
-                        player[MomentanerSpieler].Wurfelmechn();
-                        int wuerfel1 = player[MomentanerSpieler].getWurfel(0);
-                        int wuerfel2 = player[MomentanerSpieler].getWurfel(1);
-                        HatGewuerfelt = true;
-
-                        ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe);  
-                        ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe);  
-                        ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
-
-                        if (player[MomentanerSpieler].paschcheck()) {
-                            HatGewuerfelt = FALSE;
-                            player[MomentanerSpieler].incPaschCounter();
-                        }
-                        else {
-                            player[MomentanerSpieler].setPaschCounter(0);
-                        }
-                        if (player[MomentanerSpieler].getPaschCounter() == 3) {
-                            MapEngine.setPlayer(MomentanerSpieler, 10, -1);//TODO:mit Map absprechen wegen dem Gefaegnis
-                            player[MomentanerSpieler].setPaschCounter(0);
-                            break;
-                        }
-
-                        //MAPENGINE - Bug Bahnfahren erst nächste Runde nach Würfeln
-                        if (MRobj[MomentanerSpieler].Type == 1)
-                        {
-                            MenueAuswahl = Menues::BahnFahren;
-                        }
-                        else {
-                            player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
-                            MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);
-                            if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 1) && (MRobj[MomentanerSpieler].Type != 7))
-                            {
-                                player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
-                            }
-                            if (MRobj[MomentanerSpieler].Type == 7)
-                            {
-                                player[MomentanerSpieler].erhalte(MRobj[MomentanerSpieler].Rent);
-                            }
-                            if (MRobj[MomentanerSpieler].Owner != -1)
-                            {
-                                player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
-                            }
-
-                            ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
-                            ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
-                            ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
-                        }
-                    }
-                    else {
-                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
-                    }
-                }
-                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
-                {
-                    //player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                    //player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
-                    //ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
-
-                    // Prüfen ob die Straße schon jemand besitzt
-                    bool istFrei = true;
-
-                    for (int i = 0; i < AnzahlSpieler; i++) {
-                        if (player[i].besitztStrasse(player[MomentanerSpieler].getPosition())) {
-                            istFrei = false;
-                            break;
-                        }
-                    }
-
-                    // Wenn Straße frei ist: kaufen
-                    if (istFrei) {
-                        player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                        player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
-                        ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); // TODO: String von MapEngine holen
-                    }
-                }
-                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
-                {
-                    int space = MRobj[MomentanerSpieler].SpaceNr;// Bug
-                    player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget()));
-                    //player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                    player[MomentanerSpieler].baueHaus(player[MomentanerSpieler].getPosition());
-					          ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
-                }
-                if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
-                {
-                    std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
-					int Angebot = -1;
-					int Strasse = -1;
-                    ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, Farbe::BG_Rot);
-					MenueAuswahl = Menues::Handel;
-                    //Code zum Handeln von Objekten
-                    //player[MomentanerSpieler].handel(board.(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-					//TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
-                }
-                if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
-                {
-                    if (HatGewuerfelt)
-                    {
-                        ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
-                        MomentanerSpieler++;
-                        HatGewuerfelt = false;
-                        system("cls");
-                        ConfigEngineLogging.newRound();
-                        ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
-                    }
-                    else
-                    {
-						std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spieler " + to_string(MomentanerSpieler + 1) + " hat noch nicht gewuerfelt!" << std::endl;
-                    }
-                }
-                UpdateSpielfeld = TRUE;
-                
-                break;
-            case Menues::Optionen:
-                system("cls");
-
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Fortfahren) {
-                    if (RundeVorhanden) {
-                        UpdateSpielfeld = TRUE;
+                case Menues::Start:
+                    system("cls");
+                    if (option == MenueOptionen::Start) {
                         MenueAuswahl = Menues::Spieler;
-                    }
-                }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
-                    if (RundeVorhanden) {
-                        GameState GsTemp;
-                        PlayerState PlTemp;
-                        GsTemp.currentPlayerIndex = MomentanerSpieler;
+                        RundeVorhanden = TRUE;
+                        UpdateSpielfeld = TRUE;
+
+                        ConfigEngineLogging.newGame();
+                        ControlEngine.AusgabeAuswahlSpieler(option, x/7, y / 7, Farbe::Gelb, AnzahlSpieler,AnzahlCpuGegner, SpielerNamen);
                         for (size_t i = 0; i < AnzahlSpieler; i++)
                         {
-                            PlTemp.budget = player[i].getBudget();
-                            //PlTemp.builtObjects = player[i].GetGebObjVector();
-                            //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);
-                            PlTemp.inJail = player[i].imGefaengnis();
-                            PlTemp.name = player[i].getName();
-                            //PlTemp.ownedObjects = player[i].GetGekObjVector(); 
-                            PlTemp.position = player[i].getPosition();
-                            GsTemp.players.push_back(PlTemp);
+                            player[i].setName(SpielerNamen[i]);
                         }
-                        for (size_t i = 0; i < AnzahlCpuGegner; i++)
+                        MapEngine.SetPlayerNumber(AnzahlSpieler);
+                    }
+				    if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
+					    std::vector<HighscoreEntry> player;
+					    load_highscores("highscores.txt", player);
+                        std::vector<std::string> playerNames;
+                        std::vector<int> playerScore;
+                        for (size_t i = 0; i < player.size(); i++)
                         {
-                            //PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
-                            //PlTemp.builtObjects = player[i].GetGebObjVector;      //TODO:CPU GEGNER
-                            //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);      //TODO:CPU GEGNER
-                            //PlTemp.inJail = player[i].imGefaengnis();             //TODO:CPU GEGNER
-                            //PlTemp.name = player[i].getName();                    //TODO:CPU GEGNER
-                            //PlTemp.ownedObjects = player[i].GetGekObjVector();    //TODO:CPU GEGNER
-                            //PlTemp.position = player[i].getPosition();            //TODO:CPU GEGNER
-                            //GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
+                            playerNames.push_back(player[i].playerName);
+                            playerScore.push_back(player[i].score);
                         }
-                        GsTemp.roundCount=AnzahlRunden;
-                        CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
-                        ControlEngine.UpdateCursorPosition(CursorPos);
-                        save_config("Config.txt",{});       //TODO: implementieren und auf Funktionalität testen
-						save_game("Spielstand.txt", GsTemp);    //TODO: implementieren und auf Funktionalität testen
-                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
+
+                        ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - this->GetLongestStringVector(playerNames) / 2 - 6, y / 2 + ControlEngine.GetAnzMenuepunkteStartOptionen() + 2);
                     }
-                    else
+                    if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
+                    if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
+                    break;
+                case Menues::Spieler:
+                    CursorPos = { short(x / 2 - 160), short(y / 2 - 40 + ControlEngine.GetAnzMenuepunkteSpielerOptionen()) };
+                    ControlEngine.UpdateCursorPosition(CursorPos);
+                    if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln )
                     {
-                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Es gibt keine Runde zum speichern!";
+                        if (!HatGewuerfelt)
+                        {
+                            //PLAYERENGINE
+                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler "+to_string(MomentanerSpieler+1)+" : wirft den Wuerfel!";
+
+                            player[MomentanerSpieler].Wurfelmechn();
+                            int wuerfel1 = player[MomentanerSpieler].getWurfel(0);
+                            int wuerfel2 = player[MomentanerSpieler].getWurfel(1);
+                            HatGewuerfelt = true;
+
+                            ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe);  
+                            ControlEngine.AusgabeWuerfel(wuerfel2, x / 2 - 150, y / 2 - 30, MomentanerSpielerFarbe);  
+                            ConfigEngineLogging.playerRollingDice(wuerfel1, wuerfel2);
+
+                            if (player[MomentanerSpieler].paschcheck()) {
+                                HatGewuerfelt = FALSE;
+                                player[MomentanerSpieler].incPaschCounter();
+                            }
+                            else {
+                                player[MomentanerSpieler].setPaschCounter(0);
+                            }
+                            if (player[MomentanerSpieler].getPaschCounter() == 3) {
+                                MapEngine.setPlayer(MomentanerSpieler, 10, -1);//TODO:mit Map absprechen wegen dem Gefaegnis
+                                player[MomentanerSpieler].setPaschCounter(0);
+                                break;
+                            }
+
+                            //MAPENGINE - Bug Bahnfahren erst nächste Runde nach Würfeln
+                            if (MRobj[MomentanerSpieler].Type == 1)
+                            {
+                                MenueAuswahl = Menues::BahnFahren;
+                            }
+                            else {
+                                player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
+                                MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);
+                                if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 1) && (MRobj[MomentanerSpieler].Type != 7))
+                                {
+                                    player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                                }
+                                if (MRobj[MomentanerSpieler].Type == 7)
+                                {
+                                    player[MomentanerSpieler].erhalte(MRobj[MomentanerSpieler].Rent);
+                                }
+                                if (MRobj[MomentanerSpieler].Owner != -1)
+                                {
+                                    player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
+                                }
+
+                                ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
+                                ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
+                                ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
+                            }
+                        }
+                        else {
+                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
+                        }
                     }
-                }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
-                    GameState GsTemp;
-                    std::ifstream file("Spielstand.txt");
-                    if (file.is_open())
+                    if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                     {
+                        //player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                        //player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
+                        //ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
+
+                        // Prüfen ob die Straße schon jemand besitzt
+                        bool istFrei = true;
+
+                        for (int i = 0; i < AnzahlSpieler; i++) {
+                            if (player[i].besitztStrasse(player[MomentanerSpieler].getPosition())) {
+                                istFrei = false;
+                                break;
+                            }
+                        }
+
+                        // Wenn Straße frei ist: kaufen
+                        if (istFrei) {
+                            player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                            player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
+                            ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); // TODO: String von MapEngine holen
+                        }
+                    }
+                    if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
+                    {
+                        int space = MRobj[MomentanerSpieler].SpaceNr;// Bug
+                        player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget()));
+                        //player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                        player[MomentanerSpieler].baueHaus(player[MomentanerSpieler].getPosition());
+					              ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
+                    }
+                    if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
+                    {
+                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
+					    int Angebot = -1;
+					    int Strasse = -1;
+                        ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, Farbe::BG_Rot);
+					    MenueAuswahl = Menues::Handel;
+                        //Code zum Handeln von Objekten
+                        //player[MomentanerSpieler].handel(board.(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
+                    }
+                    if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
+                    {
+                        if (HatGewuerfelt)
+                        {
+                            ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
+                            MomentanerSpieler++;
+                            HatGewuerfelt = false;
+                            system("cls");
+                            ConfigEngineLogging.newRound();
+                            ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
+                        }
+                        else
+                        {
+						    std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spieler " + to_string(MomentanerSpieler + 1) + " hat noch nicht gewuerfelt!" << std::endl;
+                        }
+                    }
+                    UpdateSpielfeld = TRUE;
+                
+                    break;
+                case Menues::Optionen:
+                    system("cls");
+
+                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Fortfahren) {
+                        if (RundeVorhanden) {
+                            UpdateSpielfeld = TRUE;
+                            MenueAuswahl = Menues::Spieler;
+                        }
+                    }
+                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
+                        if (RundeVorhanden) {
+                            GameState GsTemp;
+                            PlayerState PlTemp;
+                            GsTemp.currentPlayerIndex = MomentanerSpieler;
+                            for (size_t i = 0; i < AnzahlSpieler; i++)
+                            {
+                                PlTemp.budget = player[i].getBudget();
+                                //PlTemp.builtObjects = player[i].GetGebObjVector();
+                                //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);
+                                PlTemp.inJail = player[i].imGefaengnis();
+                                PlTemp.name = player[i].getName();
+                                //PlTemp.ownedObjects = player[i].GetGekObjVector(); 
+                                PlTemp.position = player[i].getPosition();
+                                GsTemp.players.push_back(PlTemp);
+                            }
+                            for (size_t i = 0; i < AnzahlCpuGegner; i++)
+                            {
+                                //PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
+                                //PlTemp.builtObjects = player[i].GetGebObjVector;      //TODO:CPU GEGNER
+                                //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);      //TODO:CPU GEGNER
+                                //PlTemp.inJail = player[i].imGefaengnis();             //TODO:CPU GEGNER
+                                //PlTemp.name = player[i].getName();                    //TODO:CPU GEGNER
+                                //PlTemp.ownedObjects = player[i].GetGekObjVector();    //TODO:CPU GEGNER
+                                //PlTemp.position = player[i].getPosition();            //TODO:CPU GEGNER
+                                //GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
+                            }
+                            GsTemp.roundCount=AnzahlRunden;
                             CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
-                        ControlEngine.UpdateCursorPosition(CursorPos);
-                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
-                        //load_config("Config.txt", {}); //TODO: implementieren und auf Funktionalität testen
-                        load_game("Spielstand.txt", GsTemp);//TODO: implementieren und auf Funktionalität testen
-                        //AnzahlSpieler = GsTemp.AnzSpieler;   //int
-                            //AnzahlCpuGegner = GsTemp.AnzCpuGegner; //int
-                        for (int i = 0; i < 2; i++)
-                        {
-                            TPlayer temp(i, i+1/*GsTemp.players[i].name*/, GsTemp.players[i].budget, GsTemp.players[i].position, GsTemp.players[i].inJail, GsTemp.players[i].inJail, GsTemp.players[i].ownedObjects, GsTemp.players[i].builtObjects);
-                            player[i] = temp;
+                            ControlEngine.UpdateCursorPosition(CursorPos);
+                            save_config("Config.txt",{});       //TODO: implementieren und auf Funktionalität testen
+						    save_game("Spielstand.txt", GsTemp);    //TODO: implementieren und auf Funktionalität testen
+                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
                         }
-                        RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
+                        else
+                        {
+                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Es gibt keine Runde zum speichern!";
+                        }
+                    }
+                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
+                        GameState GsTemp;
+                        std::ifstream file("Spielstand.txt");
+                        if (file.is_open())
+                        {
+                                CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
+                            ControlEngine.UpdateCursorPosition(CursorPos);
+                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
+                            //load_config("Config.txt", {}); //TODO: implementieren und auf Funktionalität testen
+                            load_game("Spielstand.txt", GsTemp);//TODO: implementieren und auf Funktionalität testen
+                            //AnzahlSpieler = GsTemp.AnzSpieler;   //int
+                                //AnzahlCpuGegner = GsTemp.AnzCpuGegner; //int
+                            for (int i = 0; i < 2; i++)
+                            {
+                                TPlayer temp(i, i+1/*GsTemp.players[i].name*/, GsTemp.players[i].budget, GsTemp.players[i].position, GsTemp.players[i].inJail, GsTemp.players[i].inJail, GsTemp.players[i].ownedObjects, GsTemp.players[i].builtObjects);
+                                player[i] = temp;
+                            }
+                            RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
+                        }
+                        else
+                        {
+                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Es gibt keinen Spielstand!";
+                        }
+                    }
+                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { 
+                        ControlEngine.AusgabeSpielRegeln(Spielregeln, x / 2 - this->GetLongestStringVector(Spielregeln)/ 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2); 
+                    }
+                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 10) { Spiellaueft = FALSE; }
+                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 13) { 
+                        std::vector<HighscoreEntry> player;
+                        load_highscores("highscores.txt", player);
+                        std::vector<std::string> playerNames;
+                        std::vector<int> playerScore;
+                        for (size_t i = 0; i < player.size(); i++)
+                        {
+                            playerNames.push_back(player[i].playerName);
+                            playerScore.push_back(player[i].score);
+                        }
+
+                        ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - this->GetLongestStringVector(playerNames) / 2 - 6, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2);
+                    }
+                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) {
+                        MenueAuswahl = MenueLetztes;
+                        if (MenueAuswahl == Menues::Start)
+                        {
+
+                        }
+                        else if (MenueAuswahl == Menues::Spieler)
+                        {
+                            UpdateSpielfeld = TRUE;
+                        }
+
+                    }
+                    break;
+                case Menues::Handel:
+				
+                    MenueAuswahl = Menues::Spieler;
+                    UpdateSpielfeld = TRUE;
+				    system("cls");
+                    if (option == 0) //Akzeptieren
+                    {
+					    //Code zum Akzeptieren des Handels
                     }
                     else
                     {
-                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Es gibt keinen Spielstand!";
+                        //Code zum Ablehnen des Handels
                     }
-                }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { 
-                    ControlEngine.AusgabeSpielRegeln(Spielregeln, x / 2 - this->GetLongestStringVector(Spielregeln)/ 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2); 
-                }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 10) { Spiellaueft = FALSE; }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 13) { 
-                    std::vector<HighscoreEntry> player;
-                    load_highscores("highscores.txt", player);
-                    std::vector<std::string> playerNames;
-                    std::vector<int> playerScore;
-                    for (size_t i = 0; i < player.size(); i++)
+                case Menues::BahnFahren:
+                    //TODO:Position spieler wird beim Bahnhof nicht richtig aktualisiert
+                    MenueAuswahl = Menues::Spieler;
+                    UpdateSpielfeld = TRUE;
+                    std::cout << player[MomentanerSpieler].getPosition();
+
+                    system("cls");
+
+                    if (!option)
                     {
-                        playerNames.push_back(player[i].playerName);
-                        playerScore.push_back(player[i].score);
+                        player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, player[MomentanerSpieler].getAugenzahl(), 1));
+                        player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                    }
+                    else {
+                        player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, player[MomentanerSpieler].getAugenzahl(), 0));
                     }
 
-                    ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - this->GetLongestStringVector(playerNames) / 2 - 6, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2);
-                }
-                if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Zurueck + 2) {
-                    MenueAuswahl = MenueLetztes;
-                    if (MenueAuswahl == Menues::Start)
+                    MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);
+                    if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 1) && (MRobj[MomentanerSpieler].Type != 7))
                     {
-
+                        player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
                     }
-                    else if (MenueAuswahl == Menues::Spieler)
+                    if (MRobj[MomentanerSpieler].Type == 7)
                     {
-                        UpdateSpielfeld = TRUE;
+                        player[MomentanerSpieler].erhalte(MRobj[MomentanerSpieler].Rent);
+                    }
+                    if (MRobj[MomentanerSpieler].Owner != -1)
+                    {
+                        player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
                     }
 
-                }
-                break;
-            case Menues::Handel:
-				
-                MenueAuswahl = Menues::Spieler;
-                UpdateSpielfeld = TRUE;
-				system("cls");
-                if (option == 0) //Akzeptieren
-                {
-					//Code zum Akzeptieren des Handels
-                }
-                else
-                {
-                    //Code zum Ablehnen des Handels
-                }
-            case Menues::BahnFahren:
-                //TODO:Position spieler wird beim Bahnhof nicht richtig aktualisiert
-                MenueAuswahl = Menues::Spieler;
-                UpdateSpielfeld = TRUE;
-                std::cout << player[MomentanerSpieler].getPosition();
-
-                system("cls");
-
-                if (!option)
-                {
-                    player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, player[MomentanerSpieler].getAugenzahl(), 1));
-                    player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
-                }
-                else {
-                    player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, player[MomentanerSpieler].getAugenzahl(), 0));
-                }
-
-                MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);
-                if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 1) && (MRobj[MomentanerSpieler].Type != 7))
-                {
-                    player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
-                }
-                if (MRobj[MomentanerSpieler].Type == 7)
-                {
-                    player[MomentanerSpieler].erhalte(MRobj[MomentanerSpieler].Rent);
-                }
-                if (MRobj[MomentanerSpieler].Owner != -1)
-                {
-                    player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
-                }
-
-                ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
-                ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
-                ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
-                break;
-            default:
-                break;
+                    ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
+                    ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
+                    ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
+                    break;
+            
+                case Menues::Bauen:
+                    int StrasseBauen = -1;
+                    ControlEngine.AusgabeGebaeudeBauen(option, StrasseBauen, x / 2 - 211, y / 2 - 20, MomentanerSpielerFarbe);
+                    break;
+                default:
+                    break;
             }
-
             option = Reset + 1;
             break;
+            
         default:
             break;
         }
@@ -583,13 +589,6 @@ int TServer::GetLongestStringVector(std::vector<std::string> s) {
     }
     return temp;
 }
-
-
-
-
-
-
-
 
 int main() {
     TServer server;

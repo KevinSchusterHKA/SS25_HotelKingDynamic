@@ -138,7 +138,8 @@ public:
     void AusgabeStartMenu(int& option, int x, int y);
 	
     void AusgabeJaNeinOption(int& option, int x, int y, Farbe f, std::string Ueberschrift);
-    void AusgabeStrasseHandeln(int& option,int& WelcheStraße, int& Angebot, int x, int y, Farbe f);
+    void AusgabeStrasseHandeln(int& option,int& WelcheStrasse, int& Angebot, int x, int y, Farbe f);
+    void AusgabeGebaeudeBauen(int& option, int& WelcheStrasse, int x, int y, Farbe f);
 	void AusgabeAuswahlSpieler(int& option, int x, int y, Farbe f, int& AnzahlSpieler, int& AnzahlCpuGegner, std::vector<std::string>& SpielerNamen);
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
