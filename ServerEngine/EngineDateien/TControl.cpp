@@ -678,7 +678,7 @@ void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::strin
     std::cout << _symbolcharsControl[LRC];
     this->SetFarbe(Farbe::Zuruecksetzen);
 }
-void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStraße,int& Angebot, int x, int y, Farbe f) {
+void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStrasse,int& Angebot, int x, int y, Farbe f) {
     this->SetFarbe(f);
     this->SetFarbe(Farbe::Schwarz);
 
@@ -739,7 +739,7 @@ void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStraße,int& Angebo
 	this->coord.Y = tempy;
     SetConsoleCursorPosition(this->hConsole, this->coord);
 	this->ShowCursor();
-    std::cin >> WelcheStraße;
+    std::cin >> WelcheStrasse;
 	this->HideCursor();
     std::cin.clear();
     std::cin.ignore(1000, '\n');
@@ -799,6 +799,75 @@ void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStraße,int& Angebo
     this->SetFarbe(Farbe::Zuruecksetzen);
     std::cin.clear();
     std::cin.ignore(1000, '\n');
+}
+void TControl::AusgabeGebaeudeBauen(int& option, int& WelcheStrasse, int x, int y, Farbe f) {
+    this->SetFarbe(f);
+    this->SetFarbe(Farbe::Schwarz);
+
+    std::string Ueberschrift = "Auf welche Strasse moechten Sie bauen? (Geben sie die Nummer unter der Strasse ein)";
+    int BreiteMenue = Ueberschrift.size() + 20;
+    int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
+    this->coord.X = x;
+    this->coord.Y = y;
+    int tempy = 0;
+
+    //EINGABE DER STRASSE
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << _symbolcharsControl[ULC];
+    for (size_t i = 1; i < BreiteMenue - 1; i++)
+    {
+        std::cout << _symbolcharsControl[HL];
+    }
+    std::cout << _symbolcharsControl[URC];
+
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText) << " " << std::left << Ueberschrift << std::setw(linkerRandText + 1) << std::right << _symbolcharsControl[VL];
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue / 2 - 11) << " " << std::left << "Bestaetige mit Enter" << std::setw(BreiteMenue / 2 - 10 + 1) << std::right << _symbolcharsControl[VL];
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    std::cout << _symbolcharsControl[LT];
+    for (size_t i = 1; i < BreiteMenue - 1; i++)
+    {
+        std::cout << _symbolcharsControl[HL];
+    }
+    std::cout << _symbolcharsControl[RT];
+
+    this->coord.Y++;
+    tempy = this->coord.Y;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << _symbolcharsControl[VL];
+    for (size_t i = 1; i < BreiteMenue - 1; i++)
+    {
+        std::cout << _symbolcharsControl[SP];
+    }
+    std::cout << _symbolcharsControl[VL];
+
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+
+    std::cout << _symbolcharsControl[LLC];
+    for (size_t i = 1; i < BreiteMenue - 1; i++)
+    {
+        std::cout << _symbolcharsControl[HL];
+    }
+    std::cout << _symbolcharsControl[LRC];
+    this->coord.X++;
+    this->coord.Y = tempy;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    this->ShowCursor();
+    std::cin >> WelcheStrasse;
+    this->HideCursor();
+    std::cin.clear();
+    std::cin.ignore(1000, '\n');
+
+    this->HideCursor();
+    this->SetFarbe(Farbe::Zuruecksetzen);
 }
 void TControl::AusgabeAuswahlSpieler(int& option, int x, int y, Farbe f, int& AnzahlSpieler,int& AnzahlCpuGegner,std::vector<std::string>& SpielerNamen) {
     this->SetFarbe(f);
