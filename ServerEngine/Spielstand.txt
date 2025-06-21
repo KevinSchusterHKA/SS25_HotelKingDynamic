@@ -1,3 +1,9 @@
 roundCount=0
 currentPlayerIndex=0
 diceOrder=
+Player=sdfg,1380,9,0,0
+Owned=
+Built=
+Player=ertdfbtbhertdfgber,1500,5,0,0
+Owned=
+Built=

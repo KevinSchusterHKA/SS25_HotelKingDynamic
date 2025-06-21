@@ -38,7 +38,7 @@ void TServer::UnitTest() {
 
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
-    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner=2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0;
+    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner=2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden=0;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
@@ -194,7 +194,7 @@ void TServer::UnitTest() {
 
                     ConfigEngineLogging.newGame();
                     ControlEngine.AusgabeAuswahlSpieler(option, x/7, y / 7, Farbe::Gelb, AnzahlSpieler,AnzahlCpuGegner, SpielerNamen);
-                    for (size_t i = 0; i < 4; i++)
+                    for (size_t i = 0; i < AnzahlSpieler; i++)
                     {
                         player[i].setName(SpielerNamen[i]);
                     }
@@ -348,10 +348,36 @@ void TServer::UnitTest() {
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielSpeichern) {
                     if (RundeVorhanden) {
+                        GameState GsTemp;
+                        PlayerState PlTemp;
+                        GsTemp.currentPlayerIndex = MomentanerSpieler;
+                        for (size_t i = 0; i < AnzahlSpieler; i++)
+                        {
+                            PlTemp.budget = player[i].getBudget();
+                            //PlTemp.builtObjects = player[i].GetGebObjVector();
+                            //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);
+                            PlTemp.inJail = player[i].imGefaengnis();
+                            PlTemp.name = player[i].getName();
+                            //PlTemp.ownedObjects = player[i].GetGekObjVector(); 
+                            PlTemp.position = player[i].getPosition();
+                            GsTemp.players.push_back(PlTemp);
+                        }
+                        for (size_t i = 0; i < AnzahlCpuGegner; i++)
+                        {
+                            //PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
+                            //PlTemp.builtObjects = player[i].GetGebObjVector;      //TODO:CPU GEGNER
+                            //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);      //TODO:CPU GEGNER
+                            //PlTemp.inJail = player[i].imGefaengnis();             //TODO:CPU GEGNER
+                            //PlTemp.name = player[i].getName();                    //TODO:CPU GEGNER
+                            //PlTemp.ownedObjects = player[i].GetGekObjVector();    //TODO:CPU GEGNER
+                            //PlTemp.position = player[i].getPosition();            //TODO:CPU GEGNER
+                            //GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
+                        }
+                        GsTemp.roundCount=AnzahlRunden;
                         CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                         ControlEngine.UpdateCursorPosition(CursorPos);
                         save_config("Config.txt",{});       //TODO: implementieren und auf Funktionalität testen
-						save_game("Spielstand.txt", {});    //TODO: implementieren und auf Funktionalität testen
+						save_game("Spielstand.txt", GsTemp);    //TODO: implementieren und auf Funktionalität testen
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
                     }
                     else
@@ -360,12 +386,28 @@ void TServer::UnitTest() {
                     }
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielLaden) {
-                    CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
-                    ControlEngine.UpdateCursorPosition(CursorPos);
-                    std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
-                    //load_config("Config.txt", {}); //TODO: implementieren und auf Funktionalität testen
-                    //load_game("Spielstand.txt", {});//TODO: implementieren und auf Funktionalität testen
-                    RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
+                    GameState GsTemp;
+                    std::ifstream file("Spielstand.txt");
+                    if (file.is_open())
+                    {
+                            CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
+                        ControlEngine.UpdateCursorPosition(CursorPos);
+                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
+                        //load_config("Config.txt", {}); //TODO: implementieren und auf Funktionalität testen
+                        load_game("Spielstand.txt", GsTemp);//TODO: implementieren und auf Funktionalität testen
+                        //AnzahlSpieler = GsTemp.AnzSpieler;   //int
+                            //AnzahlCpuGegner = GsTemp.AnzCpuGegner; //int
+                        for (int i = 0; i < 2; i++)
+                        {
+                            TPlayer temp(i, i+1/*GsTemp.players[i].name*/, GsTemp.players[i].budget, GsTemp.players[i].position, GsTemp.players[i].inJail, GsTemp.players[i].inJail, GsTemp.players[i].ownedObjects, GsTemp.players[i].builtObjects);
+                            player[i] = temp;
+                        }
+                        RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
+                    }
+                    else
+                    {
+                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Es gibt keinen Spielstand!";
+                    }
                 }
                 if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { 
                     ControlEngine.AusgabeSpielRegeln(Spielregeln, x / 2 - this->GetLongestStringVector(Spielregeln)/ 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2); 

@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="highscores.txt" />
+    <Text Include="Spielstand.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="KonsolenEinstellungenUmstellen.png" />
