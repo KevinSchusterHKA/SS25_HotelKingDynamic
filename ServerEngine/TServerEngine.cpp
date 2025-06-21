@@ -223,6 +223,7 @@ void TServer::UnitTest() {
                 {
                     if (!HatGewuerfelt)
                     {
+                        //PLAYERENGINE
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler "+to_string(MomentanerSpieler+1)+" : wirft den Wuerfel!";
 
                         player[MomentanerSpieler].Wurfelmechn();
@@ -246,13 +247,14 @@ void TServer::UnitTest() {
                             player[MomentanerSpieler].setPaschCounter(0);
                             break;
                         }
+
+                        //MAPENGINE - Bug Bahnfahren erst nächste Runde nach Würfeln
                         if (MRobj[MomentanerSpieler].Type == 1)
                         {
                             MenueAuswahl = Menues::BahnFahren;
                         }
                         else {
                             player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, wuerfel1 + wuerfel2, 0));
-
                             MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);
                             if ((MRobj[MomentanerSpieler].Rent != -1) && (MRobj[MomentanerSpieler].Type != 1) && (MRobj[MomentanerSpieler].Type != 7))
                             {
@@ -453,8 +455,11 @@ void TServer::UnitTest() {
                     //Code zum Ablehnen des Handels
                 }
             case Menues::BahnFahren:
+                //TODO:Position spieler wird beim Bahnhof nicht richtig aktualisiert
                 MenueAuswahl = Menues::Spieler;
                 UpdateSpielfeld = TRUE;
+                std::cout << player[MomentanerSpieler].getPosition();
+
                 system("cls");
 
                 if (!option)
@@ -510,8 +515,8 @@ void TServer::UnitTest() {
             ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         case Menues::Handel:
-            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Schwarz,"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
-
+            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss,"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
+            break;
         case Menues::BahnFahren:
             ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, MomentanerSpielerFarbe, "Bahn fahren?"); // Bug
             break;

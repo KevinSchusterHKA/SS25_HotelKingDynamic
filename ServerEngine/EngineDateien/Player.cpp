@@ -144,7 +144,7 @@ void TPlayer::addStrasse(int strasse) {
 	}
 	cout << "Spieler " << this->ID+1 << " hat " << _boardarr[strasse].Name << " gekauft.\n";
 } 
-void player::deleteStrasse(int strasse) {
+void TPlayer::deleteStrasse(int strasse) {
 
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {

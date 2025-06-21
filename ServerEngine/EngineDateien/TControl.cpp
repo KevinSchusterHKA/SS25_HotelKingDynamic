@@ -618,6 +618,7 @@ void TControl::AusgabeHandelsMenu(int& option, int x, int y, Farbe f) {//TODO: H
 }
 void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::string Ueberschrift) {
     this->SetFarbe(f);
+    this->SetFarbe(Farbe::Schwarz);
     int BreiteMenue = Ueberschrift.size()+20;
     int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
     this->coord.X = x;
@@ -679,6 +680,8 @@ void TControl::AusgabeJaNeinOption(int& option, int x, int y, Farbe f,std::strin
 }
 void TControl::AusgabeStrasseHandeln(int& option, int& WelcheStraße,int& Angebot, int x, int y, Farbe f) {
     this->SetFarbe(f);
+    this->SetFarbe(Farbe::Schwarz);
+
     std::string Ueberschrift = "Welche Strasse moechten Sie handeln? (Geben sie die Nummer unter der Strasse ein)";
     int BreiteMenue = Ueberschrift.size() + 20;
     int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
