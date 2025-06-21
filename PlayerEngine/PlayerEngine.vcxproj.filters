@@ -29,5 +29,8 @@
     <ClInclude Include="..\Unit_test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
 #include "Player.h"
-#include "Unit_test.h"
+//#include "Unit_test.h"
+#include "map.h"
+
 using namespace std;
 player::player() {};
 player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
@@ -403,7 +405,42 @@ bool cpu_player1::tryBuyStreet(std::vector<player*>& p) {
 		//std::cout << "CPU" << getID() << " hat nicht genug Geld für die Strasse auf Position " << getPosition() << ".\n";
 		return false;
 	}
+	
+
 }
+//buildhouse for cpu
+
+bool cpu_player1::tryBuildHouse(std::vector<player*>& p, Map& map) {
+	int myID = getID();
+	std::vector<int> myProperties = p[myID]->getGekaufteStrassen();
+    
+	for (size_t i = 0; i < myProperties.size(); i++) {
+		int propIndex = myProperties[i];
+		int colorGroup = map.ownsStreets(myID, propIndex);
+		if (colorGroup == -1) continue;
+
+		for (int i = 0; i < 3; ++i) {
+			int groupProp = map._streetarr[colorGroup][i];
+			if (groupProp == -1) continue;
+
+			int houseCount = map.getHouseCount(groupProp);
+			if (houseCount >= 5) continue;  
+
+			int price = map.getHousePrice(groupProp);
+			int maxPrice = static_cast<int>(getBudget() * (30 + rand() % 11) / 100.0); // 30-40%
+
+			if (price <= maxPrice) {
+				bezahle(price);
+				map.addHouse(groupProp);
+				std::cout << "CPU " << myID << " builds a house on " << map.getPropertyName(groupProp) << "\n";
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 
 
 

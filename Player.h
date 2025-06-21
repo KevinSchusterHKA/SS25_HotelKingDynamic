@@ -1,4 +1,5 @@
 #pragma once
+#include "map.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -103,4 +104,6 @@ public:
 	int handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut);
 	bool acceptTrade(int spaceIndex, int offer);
 	bool tryBuyStreet(std::vector<player*>& p);
+	bool tryBuildHouse(std::vector<player*>& p, Map& map);
+
 };
