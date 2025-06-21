@@ -11,30 +11,6 @@ void UNITTEST() {
 		p[i]->setHuman(HUMAN);
 		p[i]->setBudget(1000);
 	}
-
-	for (int i = 0; i < 10; ++i) {
-		players.push_back(new cpu_player1());
-		players.back()->setID(i + 2);
-		players.back()->setHuman(CPU1);
-		players.back()->setBudget(10000000);
-		players.back()->setPosition(i);
-	
-	} 
-	players[2]->addStrasse(3); //strasse handel test und farbe set 
-	players[2]->addStrasse(1);
-	players[3]->addStrasse(11);
-	players[3]->addStrasse(13);
-	players[3]->addStrasse(14);
-	players[4]->addStrasse(21);
-	players[5]->addStrasse(23);
-	players[5]->addStrasse(24);
-	Map map;//map 
-	int testPositions[40] = {};
-	for (size_t i = 0; i < 40; i++)
-	{
-		 testPositions[i] = i;
-	}
-
 	// Testwerte zuweisen: Budget und Strassen
 	p[0]->addStrasse(0);
 	p[0]->addStrasse(1);
@@ -170,85 +146,85 @@ void UNITTEST() {
 		if (current_player == 0) runde++;
 	}
 }
-//void UNITTEST_cpu() {
-//	std::srand(std::time(nullptr));  // random seed 
-//	std::vector<player*> players;
-//
-//	for (int i = 0; i < 2; ++i) {
-//		players.push_back(new player());
-//		players.back()->setID(i);
-//		players.back()->setHuman(HUMAN);
-//		players.back()->setBudget(1000);
-//		players.back()->setPosition(i);
-//	}
-//
-//	for (int i = 0; i < 10; ++i) {
-//		players.push_back(new cpu_player1());
-//		players.back()->setID(i + 2);
-//		players.back()->setHuman(CPU1);
-//		players.back()->setBudget(10000000);
-//		players.back()->setPosition(i);
-//	
-//	} 
-//	players[2]->addStrasse(1); //strasse handel test und farbe set 
-//	players[2]->addStrasse(3);
-//	players[3]->addStrasse(11);
-//	players[3]->addStrasse(13);
-//	players[3]->addStrasse(14);
-//	players[4]->addStrasse(21);
-//	players[5]->addStrasse(23);
-//	players[5]->addStrasse(24);
-//	Map map;//map 
-//	int testPositions[40] = {};
-//	for (size_t i = 0; i < 40; i++)
-//	{
-//		 testPositions[i] = i;
-//	}
-//
-//
-//	for (size_t i = 0; i < players.size(); ++i) {
-//		if (players[i]->getHuman() == CPU1) {
-//			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
-//			//build house test
-//			for (int build = 0; build < 6; ++build) {
-//				bool built = cpu->tryBuildHouse(players, map);
-//				std::cout << "try " << build + 1 << ": CPU" << cpu->getID()
-//					<< (built ? " built a house." : " did not build a house.") << std::endl;
-//			}
-//
-//			//street buy
-//			bool bought = cpu->tryBuyStreet(players, map);
-//			std::cout << "CPU" << cpu->getID() << (bought ? " bought a street." : " did not buy a street.") << std::endl;
-//
-//			//Handel cpu to player
-//			int targetPlayer = -1;
-//			int propertyIndex = -1;
-//			int offer = cpu->handel(cpu->getID(), players.size(), players, targetPlayer, propertyIndex, map);
-//			if (offer != -1 && targetPlayer != -1 && propertyIndex != -1) {
-//				std::cout << "CPU" << cpu->getID() << " offers " << offer << " for property "
-//					<< propertyIndex << " from player " << targetPlayer << std::endl;
-//				//player to cpu 
-//				if (players[targetPlayer]->getHuman() == CPU1) {
-//					cpu_player1* targetCPU = static_cast<cpu_player1*>(players[targetPlayer]);
-//					bool accepted = targetCPU->acceptTrade(propertyIndex, offer, map);
-//					std::cout << "CPU" << targetCPU->getID() << (accepted ? " accepted the trade." : " rejected the trade.") << std::endl;
-//				}
-//				else {
-//					std::cout << "Human player " << targetPlayer << " needs to decide on the offer." << std::endl;
-//				}
-//			}
-//			else {
-//				std::cout << "CPU" << cpu->getID() << " did not make a trade offer." << std::endl;
-//			}
-//
-//			std::cout << "##############" << std::endl;
-//		}
-//	}
-//}
+void UNITTEST_cpu() {
+	std::srand(std::time(nullptr));  // random seed 
+	std::vector<player*> players;
+
+	for (int i = 0; i < 2; ++i) {
+		players.push_back(new player());
+		players.back()->setID(i);
+		players.back()->setHuman(HUMAN);
+		players.back()->setBudget(1000);
+		players.back()->setPosition(i);
+	}
+
+	for (int i = 0; i < 10; ++i) {
+		players.push_back(new cpu_player1());
+		players.back()->setID(i + 2);
+		players.back()->setHuman(CPU1);
+		players.back()->setBudget(10000000);
+		players.back()->setPosition(i);
+	
+	} 
+	players[2]->addStrasse(1); //strasse handel test und farbe set 
+	players[2]->addStrasse(3);
+	players[3]->addStrasse(11);
+	players[3]->addStrasse(13);
+	players[3]->addStrasse(14);
+	players[4]->addStrasse(21);
+	players[5]->addStrasse(23);
+	players[5]->addStrasse(24);
+	Map map;//map 
+	int testPositions[40] = {};
+	for (size_t i = 0; i < 40; i++)
+	{
+		 testPositions[i] = i;
+	}
+
+
+	for (size_t i = 0; i < players.size(); ++i) {
+		if (players[i]->getHuman() == CPU1) {
+			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
+			//build house test
+			for (int build = 0; build < 6; ++build) {
+				bool built = cpu->tryBuildHouse(players, map);
+				std::cout << "try " << build + 1 << ": CPU" << cpu->getID()
+					<< (built ? " built a house." : " did not build a house.") << std::endl;
+			}
+
+			//street buy
+			bool bought = cpu->tryBuyStreet(players, map);
+			std::cout << "CPU" << cpu->getID() << (bought ? " bought a street." : " did not buy a street.") << std::endl;
+
+			//Handel cpu to player
+			int targetPlayer = -1;
+			int propertyIndex = -1;
+			int offer = cpu->handel(cpu->getID(), players.size(), players, targetPlayer, propertyIndex, map);
+			if (offer != -1 && targetPlayer != -1 && propertyIndex != -1) {
+				std::cout << "CPU" << cpu->getID() << " offers " << offer << " for property "
+					<< propertyIndex << " from player " << targetPlayer << std::endl;
+				//player to cpu 
+				if (players[targetPlayer]->getHuman() == CPU1) {
+					cpu_player1* targetCPU = static_cast<cpu_player1*>(players[targetPlayer]);
+					bool accepted = targetCPU->acceptTrade(propertyIndex, offer, map);
+					std::cout << "CPU" << targetCPU->getID() << (accepted ? " accepted the trade." : " rejected the trade.") << std::endl;
+				}
+				else {
+					std::cout << "Human player " << targetPlayer << " needs to decide on the offer." << std::endl;
+				}
+			}
+			else {
+				std::cout << "CPU" << cpu->getID() << " did not make a trade offer." << std::endl;
+			}
+
+			std::cout << "##############" << std::endl;
+		}
+	}
+}
 
 
 int main() {
-	//UNITTEST_cpu();
+	UNITTEST_cpu();
 	UNITTEST();
 	return 0;
 }
