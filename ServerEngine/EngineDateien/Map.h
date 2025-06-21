@@ -249,7 +249,7 @@ public:
 			return -1;
 		}
 		int out = Spaces[space].getHousePrice();
-		if (player == Spaces[space].getOwner() && out < funds)//&&RemainingSpaces==0 // Bug
+		if (ownsStreets(player,space) != -1 && out < funds)//&&RemainingSpaces==0 // Bug
 		{
 			Spaces[space].buyHouse();
 			return out;
