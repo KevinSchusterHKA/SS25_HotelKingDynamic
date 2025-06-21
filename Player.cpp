@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Unit_test.h"
 using namespace std;
 player::player() {};
 player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
@@ -353,7 +354,7 @@ int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, in
 	int minPercent = 5;
 	int maxPercent = 15;
 	int offerPercent = minPercent + rand() % (maxPercent - minPercent + 1);
-	int offer = (1 + offerPercent / 100.0) * getPreisStrasse(propIndex,0);
+	int offer = (1 + offerPercent / 100.0) * getPropertyPrice(propIndex);
 
 	if (offer > p[cpuID]->getBudget()) {
 		/*  std::cout << "CPU Kann sich das Angebot von " << offer
@@ -371,7 +372,7 @@ int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, in
 // player to cpu 
 bool cpu_player1::acceptTrade(int spaceIndex, int offer) {
 	int id = getID();
-	int propPrice = getPreisStrasse(spaceIndex,0);
+	int propPrice = getPropertyPrice(spaceIndex);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 	int bud = getBudget();
 	if ((offer >= propPrice * (acceptThresholdPercent / 100.0))) {
@@ -386,7 +387,7 @@ bool cpu_player1::acceptTrade(int spaceIndex, int offer) {
 
 // buy street
 bool cpu_player1::tryBuyStreet(std::vector<player*>& p) {
-	int price = getPreisStrasse(getPosition(),0);
+	int price = getPropertyPrice(getPosition());
 	int id = getID();
 	int pos = getPosition();
 	if (price <= 0) {
@@ -463,6 +464,7 @@ int getPreisStrasse(int i, int AnzahlGekGebObj) {
 	}
 }
 int getPreisHaus(int i, int AnzahlGekGebObj) {
+	return 0;
 }
 
 
