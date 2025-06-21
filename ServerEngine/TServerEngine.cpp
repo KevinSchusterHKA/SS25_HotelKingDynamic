@@ -120,11 +120,15 @@ void TServer::UnitTest() {
     while (Spiellaueft)
     {
         DWORD start_time = GetTickCount64();
-        ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
+        
         if (player[MomentanerSpieler].imGefaengnis())
         {
+            ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
+            ConfigEngineLogging.playerInPrison();
             player[MomentanerSpieler].decGefaengnisRunden();
             MomentanerSpieler++;
+            ConfigEngineLogging.newRound();
+            ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
             HatGewuerfelt = false;
         }
         if (MomentanerSpieler >= AnzahlSpieler) {
@@ -200,6 +204,10 @@ void TServer::UnitTest() {
 
                     ConfigEngineLogging.newGame();
                     ControlEngine.AusgabeAuswahlSpieler(option, x/7, y / 7, Farbe::Gelb, AnzahlSpieler,AnzahlCpuGegner, SpielerNamen);
+                    for (size_t i = 0; i < 4; i++)
+                    {
+                        player[i].setName(SpielerNamen[i]);
+                    }
                     MapEngine.SetPlayerNumber(AnzahlSpieler);
                 }
 				if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
@@ -333,11 +341,12 @@ void TServer::UnitTest() {
                 {
                     if (HatGewuerfelt)
                     {
+                        ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
                         MomentanerSpieler++;
                         HatGewuerfelt = false;
                         system("cls");
-                        ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
                         ConfigEngineLogging.newRound();
+                        ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
                     }
                     else
                     {
