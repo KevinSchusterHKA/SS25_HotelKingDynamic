@@ -1,10 +1,13 @@
 #pragma once
-#include "map.h"
+//#include "map.h"
 #include <iostream>
 #include <string>
 #include <vector>
 #include <random>
 #include <cstdlib> // rand()
+#include "Map.h"
+#include "SpaceConfig.h"
+
 
 using namespace std;
 enum PlayerType { HUMAN, CPU1, CPU2, }; // human player ,level 1,level 2
@@ -32,7 +35,7 @@ public:
 	player(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
 	~player();
 
-	int Score(int runde, int anzGekGebObj);
+	int Score(int runde, int anzGekGebObj, Map& map);
 	void getData();
 	void setID(int id);
 	int getID();
@@ -74,11 +77,10 @@ public:
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
 	bool besitztStrasse(int strasse);
-	bool besitztStrassenSet();
-	bool istStrassenSetHandelbar(vector<player*>& spielerListe, int feld);
+	bool istStrassenSetHandelbar(int feld, vector<player*>& spielerListe);
 	bool Handeln(vector<player*>& spielerListe, int feld, int angebot);
 
-	void baueHaus(int strasse);
+	void baueHaus(int strasse, Map& map);
 	void verkaufeHaus(int strasse);
 	int anzahlHaeuserAuf(int strasse);
 
@@ -93,16 +95,16 @@ public:
 
 
 string LUT(int i);
-int getPreisStrasse(int feld, int Anz);
-int getPreisHaus(int feld, int Anz);
+int getPreisStrasse(int feld, Map& map);
+int getPreisHaus(int feld, Map& map);
 
 class cpu_player1 : public player {
 public:
 	cpu_player1();
 
-	int handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut);
-	bool acceptTrade(int spaceIndex, int offer);
-	bool tryBuyStreet(std::vector<player*>& p);
+	int handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map);
+	bool acceptTrade(int spaceIndex, int offer, Map& map);
+	bool tryBuyStreet(std::vector<player*>& p, Map& map);
 	bool tryBuildHouse(std::vector<player*>& p, Map& map);
 
 };

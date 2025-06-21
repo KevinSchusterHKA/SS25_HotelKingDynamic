@@ -127,12 +127,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Config.cpp" />
+    <ClCompile Include="..\Map.cpp" />
+    <ClCompile Include="..\MapReturnObj.cpp" />
     <ClCompile Include="..\Player.cpp" />
+    <ClCompile Include="..\SpaceConfig.cpp" />
     <ClCompile Include="..\Unit_test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\map.h" />
+    <ClInclude Include="..\Config.h" />
+    <ClInclude Include="..\LookUp.h" />
+    <ClInclude Include="..\Map.h" />
+    <ClInclude Include="..\MapReturnObj.h" />
     <ClInclude Include="..\Player.h" />
+    <ClInclude Include="..\Space.h" />
+    <ClInclude Include="..\SpaceConfig.h" />
     <ClInclude Include="..\Unit_test.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,209 +1,209 @@
 #include "Player.h"
-void UNITTEST() {
-	int number_cpu_level_1 = 2, number_human_players = 2;
-	vector<player*> p;
-
-	// Spieler anlegen
-	for (int i = 0; i < number_human_players; ++i) {
-		p.push_back(new player());
-		p[i]->setID(i);
-		p[i]->setHuman(HUMAN);
-	}
-
-	for (int i = 0; i < number_cpu_level_1; ++i) {
-		p.push_back(new cpu_player1());
-		p[number_human_players + i]->setID(number_human_players + i);
-		p[number_human_players + i]->setHuman(CPU1);
-	}
-
-	// Testwerte zuweisen: Budget und Strassen
-	p[0]->setBudget(1000);
-	p[0]->addStrasse(1);
-	p[0]->addStrasse(3);
-
-	p[1]->setBudget(1000);
-	p[1]->addStrasse(6);
-
-	p[2]->setBudget(1000);
-	p[2]->addStrasse(8);
-
-	p[3]->setBudget(1000);
-	p[3]->addStrasse(9);
-
-	// Spielstart
-	int current_player = 0;
-	int runde = 1;
-
-	while (true) {
-		char k;
-		cout << "\n\n####################################################################################################\n";
-		cout << "Runde " << runde << " , Spieler " << current_player << " Menue" << endl;
-
-
-		if (p[current_player]->imGefaengnis()) {
-			cout << "Sie sind im Gefaengnis und koennen nicht wuerfeln.\n";
-			p[current_player]->decGefaengnisRunden();
-		}
-		else {
-			bool hatGewuerfelt = false;
-			while (!hatGewuerfelt) {
-				cout << "\n1:\t zufaelliges Wuerfeln\n";
-				cout << "2:\t pasch Wuerfeln\n";
-				cout << "3:\t Strasse an anderen Spieler verkaufen\n";
-				cout << "4:\t Strasse von anderem Spieler kaufen\n";
-				cin >> k;
-
-				switch (k) {
-
-				case '1': {
-					do {
-						p[current_player]->Wurfelmechn();
-						for (int i = 0; i < 2; i++) { cout << "Wuerfel " << i + 1 << ":\t " << p[current_player]->getWurfel(i) << endl; }
-						cout << "Gesamtaugenzahl:\t" << p[current_player]->getAugenzahl() << endl;
-						if (p[current_player]->paschcheck()) {
-							cout << "PASCH!\n";
-							p[current_player]->incPaschCounter();
-							if (p[current_player]->getPaschCounter() >= 3) {
-								p[current_player]->insGefaengnis();
-								cout << "Sie sind im Gefaengnis!\n";
-								p[current_player]->setPaschCounter(0);
-								break;
-							}
-							else {
-								cout << "Sie duerfen nochmal wuerfeln!\n";
-							}
-						}
-						else {
-							p[current_player]->setPaschCounter(0);
-							break;
-						}
-					} while (true);
-					hatGewuerfelt = true;
-					break;
-				}
-
-				case '2': {
-					do {
-						p[current_player]->Paschwurf();
-						for (int i = 0; i < 2; i++) { cout << "Wuerfel " << i + 1 << ":\t " << p[current_player]->getWurfel(i) << endl; }
-						cout << "Gesamtaugenzahl:\t" << p[current_player]->getAugenzahl() << endl;
-						if (p[current_player]->paschcheck()) {
-							cout << "PASCH!\n";
-							p[current_player]->incPaschCounter();
-							if (p[current_player]->getPaschCounter() >= 3) {
-								p[current_player]->insGefaengnis();
-								cout << "Sie sind im Gefaengnis!\n";
-								p[current_player]->setPaschCounter(0);
-								break;
-							}
-							else {
-								cout << "Sie duerfen nochmal wuerfeln!\n";
-							}
-						}
-						else {
-							p[current_player]->setPaschCounter(0);
-							break;
-						}
-					} while (true);
-					hatGewuerfelt = true;
-					break;
-				}
-
-				default:
-					cout << "Wollen Sie keine Aufgabe durchfuehren?" << endl << endl;
-					break;
-				}
-				cout << endl;
-				p[current_player]->getData();
-				cout << "####################################################################################################\n";
-
-			}
-
-		}
-		current_player = (current_player + 1) % p.size();
-		if (current_player == 0) runde++;
-	}
-}
-void UNITTEST_cpu() {
-	std::srand(std::time(nullptr));  // random seed 
-	std::vector<player*> players;
-
-	for (int i = 0; i < 2; ++i) {
-		players.push_back(new player());
-		players.back()->setID(i);
-		players.back()->setHuman(HUMAN);
-		players.back()->setBudget(1000);
-		players.back()->setPosition(i);
-	}
-
-	for (int i = 0; i < 10; ++i) {
-		players.push_back(new cpu_player1());
-		players.back()->setID(i + 2);
-		players.back()->setHuman(CPU1);
-		players.back()->setBudget(10000000);
-		players.back()->setPosition(i);
-	
-	} 
-	players[2]->addStrasse(1); //strasse handel test und farbe set 
-	players[2]->addStrasse(3);
-	players[2]->addStrasse(6);
-	players[3]->addStrasse(18);
-	players[4]->addStrasse(19);
-	players[4]->addStrasse(21);
-	players[5]->addStrasse(23);
-	players[5]->addStrasse(24);
-	Map map;//map 
-	int testPositions[40] = {};
-	for (size_t i = 0; i < 40; i++)
-	{
-		 testPositions[i] = i;
-	}
-
-
-	for (size_t i = 0; i < players.size(); ++i) {
-		if (players[i]->getHuman() == CPU1) {
-			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
-			//build house test
-			for (int build = 0; build < 6; ++build) {
-				bool built = cpu->tryBuildHouse(players, map);
-				std::cout << "try " << build + 1 << ": CPU" << cpu->getID()
-					<< (built ? " built a house." : " did not build a house.") << std::endl;
-			}
-
-			//street buy
-			bool bought = cpu->tryBuyStreet(players);
-			std::cout << "CPU" << cpu->getID() << (bought ? " bought a street." : " did not buy a street.") << std::endl;
-
-			//Handel cpu to player
-			int targetPlayer = -1;
-			int propertyIndex = -1;
-			int offer = cpu->handel(cpu->getID(), players.size(), players, targetPlayer, propertyIndex);
-			if (offer != -1 && targetPlayer != -1 && propertyIndex != -1) {
-				std::cout << "CPU" << cpu->getID() << " offers " << offer << " for property "
-					<< propertyIndex << " from player " << targetPlayer << std::endl;
-				//player to cpu 
-				if (players[targetPlayer]->getHuman() == CPU1) {
-					cpu_player1* targetCPU = static_cast<cpu_player1*>(players[targetPlayer]);
-					bool accepted = targetCPU->acceptTrade(propertyIndex, offer);
-					std::cout << "CPU" << targetCPU->getID() << (accepted ? " accepted the trade." : " rejected the trade.") << std::endl;
-				}
-				else {
-					std::cout << "Human player " << targetPlayer << " needs to decide on the offer." << std::endl;
-				}
-			}
-			else {
-				std::cout << "CPU" << cpu->getID() << " did not make a trade offer." << std::endl;
-			}
-
-			std::cout << "##############" << std::endl;
-		}
-	}
-}
-
-
-int main() {
-	UNITTEST_cpu();
-	UNITTEST();
-	return 0;
-}
-
+//void UNITTEST() {
+//	int number_cpu_level_1 = 2, number_human_players = 2;
+//	vector<player*> p;
+//
+//	// Spieler anlegen
+//	for (int i = 0; i < number_human_players; ++i) {
+//		p.push_back(new player());
+//		p[i]->setID(i);
+//		p[i]->setHuman(HUMAN);
+//	}
+//
+//	for (int i = 0; i < number_cpu_level_1; ++i) {
+//		p.push_back(new cpu_player1());
+//		p[number_human_players + i]->setID(number_human_players + i);
+//		p[number_human_players + i]->setHuman(CPU1);
+//	}
+//
+//	// Testwerte zuweisen: Budget und Strassen
+//	p[0]->setBudget(1000);
+//	p[0]->addStrasse(1);
+//	p[0]->addStrasse(3);
+//
+//	p[1]->setBudget(1000);
+//	p[1]->addStrasse(6);
+//
+//	p[2]->setBudget(1000);
+//	p[2]->addStrasse(8);
+//
+//	p[3]->setBudget(1000);
+//	p[3]->addStrasse(9);
+//
+//	// Spielstart
+//	int current_player = 0;
+//	int runde = 1;
+//
+//	while (true) {
+//		char k;
+//		cout << "\n\n####################################################################################################\n";
+//		cout << "Runde " << runde << " , Spieler " << current_player << " Menue" << endl;
+//
+//
+//		if (p[current_player]->imGefaengnis()) {
+//			cout << "Sie sind im Gefaengnis und koennen nicht wuerfeln.\n";
+//			p[current_player]->decGefaengnisRunden();
+//		}
+//		else {
+//			bool hatGewuerfelt = false;
+//			while (!hatGewuerfelt) {
+//				cout << "\n1:\t zufaelliges Wuerfeln\n";
+//				cout << "2:\t pasch Wuerfeln\n";
+//				cout << "3:\t Strasse an anderen Spieler verkaufen\n";
+//				cout << "4:\t Strasse von anderem Spieler kaufen\n";
+//				cin >> k;
+//
+//				switch (k) {
+//
+//				case '1': {
+//					do {
+//						p[current_player]->Wurfelmechn();
+//						for (int i = 0; i < 2; i++) { cout << "Wuerfel " << i + 1 << ":\t " << p[current_player]->getWurfel(i) << endl; }
+//						cout << "Gesamtaugenzahl:\t" << p[current_player]->getAugenzahl() << endl;
+//						if (p[current_player]->paschcheck()) {
+//							cout << "PASCH!\n";
+//							p[current_player]->incPaschCounter();
+//							if (p[current_player]->getPaschCounter() >= 3) {
+//								p[current_player]->insGefaengnis();
+//								cout << "Sie sind im Gefaengnis!\n";
+//								p[current_player]->setPaschCounter(0);
+//								break;
+//							}
+//							else {
+//								cout << "Sie duerfen nochmal wuerfeln!\n";
+//							}
+//						}
+//						else {
+//							p[current_player]->setPaschCounter(0);
+//							break;
+//						}
+//					} while (true);
+//					hatGewuerfelt = true;
+//					break;
+//				}
+//
+//				case '2': {
+//					do {
+//						p[current_player]->Paschwurf();
+//						for (int i = 0; i < 2; i++) { cout << "Wuerfel " << i + 1 << ":\t " << p[current_player]->getWurfel(i) << endl; }
+//						cout << "Gesamtaugenzahl:\t" << p[current_player]->getAugenzahl() << endl;
+//						if (p[current_player]->paschcheck()) {
+//							cout << "PASCH!\n";
+//							p[current_player]->incPaschCounter();
+//							if (p[current_player]->getPaschCounter() >= 3) {
+//								p[current_player]->insGefaengnis();
+//								cout << "Sie sind im Gefaengnis!\n";
+//								p[current_player]->setPaschCounter(0);
+//								break;
+//							}
+//							else {
+//								cout << "Sie duerfen nochmal wuerfeln!\n";
+//							}
+//						}
+//						else {
+//							p[current_player]->setPaschCounter(0);
+//							break;
+//						}
+//					} while (true);
+//					hatGewuerfelt = true;
+//					break;
+//				}
+//
+//				default:
+//					cout << "Wollen Sie keine Aufgabe durchfuehren?" << endl << endl;
+//					break;
+//				}
+//				cout << endl;
+//				p[current_player]->getData();
+//				cout << "####################################################################################################\n";
+//
+//			}
+//
+//		}
+//		current_player = (current_player + 1) % p.size();
+//		if (current_player == 0) runde++;
+//	}
+//}
+//void UNITTEST_cpu() {
+//	std::srand(std::time(nullptr));  // random seed 
+//	std::vector<player*> players;
+//
+//	for (int i = 0; i < 2; ++i) {
+//		players.push_back(new player());
+//		players.back()->setID(i);
+//		players.back()->setHuman(HUMAN);
+//		players.back()->setBudget(1000);
+//		players.back()->setPosition(i);
+//	}
+//
+//	for (int i = 0; i < 10; ++i) {
+//		players.push_back(new cpu_player1());
+//		players.back()->setID(i + 2);
+//		players.back()->setHuman(CPU1);
+//		players.back()->setBudget(10000000);
+//		players.back()->setPosition(i);
+//	
+//	} 
+//	players[2]->addStrasse(1); //strasse handel test und farbe set 
+//	players[2]->addStrasse(3);
+//	players[2]->addStrasse(6);
+//	players[3]->addStrasse(18);
+//	players[4]->addStrasse(19);
+//	players[4]->addStrasse(21);
+//	players[5]->addStrasse(23);
+//	players[5]->addStrasse(24);
+//	Map map;//map 
+//	int testPositions[40] = {};
+//	for (size_t i = 0; i < 40; i++)
+//	{
+//		 testPositions[i] = i;
+//	}
+//
+//
+//	for (size_t i = 0; i < players.size(); ++i) {
+//		if (players[i]->getHuman() == CPU1) {
+//			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
+//			//build house test
+//			for (int build = 0; build < 6; ++build) {
+//				bool built = cpu->tryBuildHouse(players, map);
+//				std::cout << "try " << build + 1 << ": CPU" << cpu->getID()
+//					<< (built ? " built a house." : " did not build a house.") << std::endl;
+//			}
+//
+//			//street buy
+//			bool bought = cpu->tryBuyStreet(players);
+//			std::cout << "CPU" << cpu->getID() << (bought ? " bought a street." : " did not buy a street.") << std::endl;
+//
+//			//Handel cpu to player
+//			int targetPlayer = -1;
+//			int propertyIndex = -1;
+//			int offer = cpu->handel(cpu->getID(), players.size(), players, targetPlayer, propertyIndex);
+//			if (offer != -1 && targetPlayer != -1 && propertyIndex != -1) {
+//				std::cout << "CPU" << cpu->getID() << " offers " << offer << " for property "
+//					<< propertyIndex << " from player " << targetPlayer << std::endl;
+//				//player to cpu 
+//				if (players[targetPlayer]->getHuman() == CPU1) {
+//					cpu_player1* targetCPU = static_cast<cpu_player1*>(players[targetPlayer]);
+//					bool accepted = targetCPU->acceptTrade(propertyIndex, offer);
+//					std::cout << "CPU" << targetCPU->getID() << (accepted ? " accepted the trade." : " rejected the trade.") << std::endl;
+//				}
+//				else {
+//					std::cout << "Human player " << targetPlayer << " needs to decide on the offer." << std::endl;
+//				}
+//			}
+//			else {
+//				std::cout << "CPU" << cpu->getID() << " did not make a trade offer." << std::endl;
+//			}
+//
+//			std::cout << "##############" << std::endl;
+//		}
+//	}
+//}
+//
+//
+//int main() {
+//	UNITTEST_cpu();
+//	UNITTEST();
+//	return 0;
+//}
+//

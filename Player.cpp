@@ -1,6 +1,5 @@
 #include "Player.h"
 #include "Unit_test.h"
-#include "LUT.h"
 using namespace std;
 player::player() {};
 player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
@@ -8,19 +7,19 @@ player::player(int id, string name, int budget, int position, bool imgefaengnis,
 
 player::~player() {};
 
-int player::Score(int runde, int anzGekGebObj) {
+int player::Score(int runde, int anzGekGebObj, Map& map) {
 	int score = this->getBudget();
 
 	// Wert aller gekauften Straßen / Felder
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		int feldNr = this->GekaufteStrassen[i];
-		score += getPreisStrasse(feldNr, anzGekGebObj);
+		score += getPreisStrasse(feldNr, map);
 	}
 
 	// Wert aller gebauten Häuser (Hauspreis des Feldes)
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		int feldNr = this->GebauteHaeuser[i];
-		score += getPreisHaus(feldNr, anzGekGebObj);
+		score += getPreisHaus(feldNr, map);
 	}
 
 	return score;
@@ -169,66 +168,21 @@ bool player::besitztStrasse(int strasse) {
 	}
 	return false;
 }
-bool player::besitztStrassenSet() {
-	// Sets als Array von Vektoren definieren
-	vector<int> set1 = { 1, 3 };
-	vector<int> set2 = { 6, 8, 9 };
-	vector<int> set3 = { 11, 13, 14 };
-	vector<int> set4 = { 16, 18, 19 };
-	vector<int> set5 = { 21, 23, 24 };
-	vector<int> set6 = { 26, 27, 29 };
-	vector<int> set7 = { 31, 32, 34 };
-	vector<int> set8 = { 37, 39 };
 
-	// Liste mit allen Sets
-	vector<vector<int>> sets;
-	sets.push_back(set1);
-	sets.push_back(set2);
-	sets.push_back(set3);
-	sets.push_back(set4);
-	sets.push_back(set5);
-	sets.push_back(set6);
-	sets.push_back(set7);
-	sets.push_back(set8);
-
-	// Überprüfen ob Spieler ein Set vollständig hat
-	for (int i = 0; i < sets.size(); i++) {
-		int zaehler = 0;
-
-		for (int j = 0; j < sets[i].size(); j++) {
-			// Prüfen ob die Straße in GekaufteStrassen ist
-			for (int k = 0; k < this->GekaufteStrassen.size(); k++) {
-				if (this->GekaufteStrassen[k] == sets[i][j]) {
-					zaehler++;
-					break; // weiter zur nächsten Straße im Set
-				}
-			}
-		}
-
-		// Wenn Anzahl gefundener Straßen gleich der Anzahl im Set ist
-		if (zaehler == sets[i].size()) {
-			return true;
-		}
-	}
-
-	// Wenn kein vollständiges Set gefunden wurde
-	return false;
-}
-bool player::istStrassenSetHandelbar(vector<player*>& spielerListe, int feld) {
-	string farbe = _boardarr[feld].color;
-
+bool player::istStrassenSetHandelbar(int feld, vector<player*>& spielerListe) {
+	int farbe = _boardarr[feld].Color;
 	for (int i = 0; i < 40; ++i) {
-		if (_boardarr[i].type == TypeStreet && _boardarr[i].color == farbe) {
-			// Prüfen ob auf irgendeiner Straße in der Gruppe Häuser stehen
+		if (_boardarr[i].Type == TypeStreet && _boardarr[i].Color == farbe) {
 			for (player* p : spielerListe) {
 				if (p->anzahlHaeuserAuf(i) > 0) {
-					return false; // Set ist nicht handelbar
+					return false;
 				}
 			}
 		}
 	}
 	return true;
 }
+
 bool player::Handeln(vector<player*>& spielerListe, int feld, int angebot) {
 	// Prüfen ob Käufer genug Budget hat
 	if (this->getBudget() < angebot) {
@@ -241,7 +195,7 @@ bool player::Handeln(vector<player*>& spielerListe, int feld, int angebot) {
 		if (verkaufer->getID() != this->getID() && verkaufer->besitztStrasse(feld)) {
 
 			// Prüfen ob in der Farbgruppe Häuser stehen
-			if (!istStrassenSetHandelbar(spielerListe, feld)) {
+			if (!istStrassenSetHandelbar(feld, spielerListe)) {
 				cout << "Handel abgelehnt: In der Farbgruppe von " << LUT(feld)
 					<< " stehen noch Haeuser." << endl;
 				return false;
@@ -268,8 +222,8 @@ bool player::Handeln(vector<player*>& spielerListe, int feld, int angebot) {
 	return false;
 }
 
-void player::baueHaus(int strasse) {
-	if (this->besitztStrassenSet()) {
+void player::baueHaus(int strasse, Map& map) {
+	if (map.ownsStreets(this->getID(), strasse)) {
 		this->GebauteHaeuser.push_back(strasse);
 		cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
 	}
@@ -323,7 +277,7 @@ vector<int> player::getGebObjVector() {
 	return this->GebauteHaeuser;
 }
 // cpu to player
-int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut) {
+int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {
 	if ((rand() % 101) > 15) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
 		targetPlayerOut = -1;
@@ -349,7 +303,7 @@ int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, in
 	int minPercent = 5;
 	int maxPercent = 15;
 	int offerPercent = minPercent + rand() % (maxPercent - minPercent + 1);
-	int offer = (1 + offerPercent / 100.0) * getPropertyPrice(propIndex);
+	int offer = (1 + offerPercent / 100.0) * map.getPropertyPrice(propIndex);
 
 	if (offer > p[cpuID]->getBudget()) {
 		/*  std::cout << "CPU Kann sich das Angebot von " << offer
@@ -365,9 +319,9 @@ int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, in
 }
 
 // player to cpu 
-bool cpu_player1::acceptTrade(int spaceIndex, int offer) {
+bool cpu_player1::acceptTrade(int spaceIndex, int offer, Map& map) {
 	int id = getID();
-	int propPrice = getPropertyPrice(spaceIndex);
+	int propPrice = map.getPropertyPrice(spaceIndex);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 	int bud = getBudget();
 	if ((offer >= propPrice * (acceptThresholdPercent / 100.0))) {
@@ -381,8 +335,8 @@ bool cpu_player1::acceptTrade(int spaceIndex, int offer) {
 }
 
 // buy street
-bool cpu_player1::tryBuyStreet(std::vector<player*>& p) {
-	int price = getPropertyPrice(getPosition());
+bool cpu_player1::tryBuyStreet(std::vector<player*>& p, Map& map) {
+	int price = map.getPropertyPrice(getPosition());
 	int id = getID();
 	int pos = getPosition();
 	if (price <= 0) {
@@ -401,31 +355,32 @@ bool cpu_player1::tryBuyStreet(std::vector<player*>& p) {
 	
 
 }
-//buildhouse for cpu
 
+//buildhouse for cpu
 bool cpu_player1::tryBuildHouse(std::vector<player*>& p, Map& map) {
 	int myID = getID();
-	std::vector<int> myProperties = p[myID]->getGekaufteStrassen();
-    
+	std::vector<int> myProperties = p[myID]->getGekObjVector();
+
 	for (size_t i = 0; i < myProperties.size(); i++) {
 		int propIndex = myProperties[i];
 		int colorGroup = map.ownsStreets(myID, propIndex);
 		if (colorGroup == -1) continue;
 
 		for (int i = 0; i < 3; ++i) {
-			int groupProp = map._streetarr[colorGroup][i];
+			int groupProp = _streetarr[colorGroup][i];
 			if (groupProp == -1) continue;
 
-			int houseCount = map.getHouseCount(groupProp);
-			if (houseCount >= 5) continue;  
+			//int houseCount = map.getHouseCount(groupProp);
+			int houseCount = 0;
+			if (houseCount >= 5) continue;
 
 			int price = map.getHousePrice(groupProp);
-			int maxPrice = static_cast<int>(getBudget() * (30 + rand() % 11) / 100.0); // 30-40%
+			int maxPrice = int(this->getBudget() * ((30 + rand() % 11) / 100.0)); // 30-40%
 
 			if (price <= maxPrice) {
 				bezahle(price);
-				map.addHouse(groupProp);
-				std::cout << "CPU " << myID << " builds a house on " << map.getPropertyName(groupProp) << "\n";
+				this->baueHaus(groupProp, map);
+				std::cout << "CPU " << myID << " builds a house on " << LUT(this->getPosition()) << "\n";
 				return true;
 			}
 		}
@@ -437,19 +392,14 @@ bool cpu_player1::tryBuildHouse(std::vector<player*>& p, Map& map) {
 
 
 
-
 string LUT(int i) {
-	return _boardarr[i].name;
+	return _boardarr[i].Name;
 }
 
-int getPreisStrasse(int i) {
-	return _boardarr[i].price;
+int getPreisStrasse(int i, Map& map) {
+	return map.getPropertyPrice(i);
 }
 
-int getPreisHaus(int i) {
-	return _boardarr[i].houseCost;
+int getPreisHaus(int i, Map& map) {
+	return map.getHousePrice(i); 
 }
-
-
-
-
