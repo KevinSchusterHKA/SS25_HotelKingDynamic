@@ -1,12 +1,12 @@
 #include "Player.h"
 using namespace std;
-player::player() {};
-player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
-player::player(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
+TPlayer::TPlayer() {};
+TPlayer::TPlayer(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
+TPlayer::TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
 
-player::~player() {};
+TPlayer::~TPlayer() {};
 
-int player::Score(int runde, int anzGekGebObj, Map& map) {
+int TPlayer::Score(int runde, int anzGekGebObj, Map& map) {
 	int score = this->getBudget();
 
 	// Wert aller gekauften Straßen / Felder
@@ -23,7 +23,7 @@ int player::Score(int runde, int anzGekGebObj, Map& map) {
 
 	return score;
 }
-void player::getData() {
+void TPlayer::getData() {
 	cout << "Spieler-ID: " << this->ID << endl;
 	cout << "Budget: " << this->Budget << endl;
 	cout << "Position: " << this->Position << endl;
@@ -37,20 +37,20 @@ void player::getData() {
 	}
 	cout << endl << endl;
 }
-void player::setID(int id) { this->ID = id; }
-int player::getID() { return this->ID; }
-string player::getName() { return this->Name; }
-void player::setName(string name) { this->Name = name; }
+void TPlayer::setID(int id) { this->ID = id; }
+int TPlayer::getID() { return this->ID; }
+string TPlayer::getName() { return this->Name; }
+void TPlayer::setName(string name) { this->Name = name; }
 
-void player::setHuman(int h) { this->Human = h; }
-int player::getHuman() { return this->Human; }
+void TPlayer::setHuman(int h) { this->Human = h; }
+int TPlayer::getHuman() { return this->Human; }
 
-int player::getBudget() { return this->Budget; }
-void player::setBudget(int b) { this->Budget = b; }
+int TPlayer::getBudget() { return this->Budget; }
+void TPlayer::setBudget(int b) { this->Budget = b; }
 
-int player::getPosition() { return this->Position; }
-void player::setPosition(int p) { this->Position = p; }
-void player::incPosition(int p) {
+int TPlayer::getPosition() { return this->Position; }
+void TPlayer::setPosition(int p) { this->Position = p; }
+void TPlayer::incPosition(int p) {
 	this->Position += p;
 	if (this->Position == 30) { // Ins Gefängnis gehen
 		this->insGefaengnis();
@@ -60,39 +60,39 @@ void player::incPosition(int p) {
 	}
 }
 
-int player::getWurfel(int index) { return this->Wurfelzahl[index]; }
-void player::setWurfel(int w, int index) { this->Wurfelzahl[index] = w; }
-void player::Wurfelmechn() {
+int TPlayer::getWurfel(int index) { return this->Wurfelzahl[index]; }
+void TPlayer::setWurfel(int w, int index) { this->Wurfelzahl[index] = w; }
+void TPlayer::Wurfelmechn() {
 	for (int i = 0; i < 2; i++) {
 		this->setWurfel(this->wurfeln(), i);
 	}
 	this->setAugenzahl(this->getWurfel(0) + this->getWurfel(1));
 	this->incPosition(this->getAugenzahl());
 }
-void player::Paschwurf() {
+void TPlayer::Paschwurf() {
 	for (int i = 0; i < 2; i++) {
 		this->setWurfel(1, i);
 	}
 	this->setAugenzahl(this->getWurfel(0) + this->getWurfel(1));
 	this->incPosition(this->getAugenzahl());
 }
-int player::getAugenzahl() { return this->Wurfelzahl[0]+ this->Wurfelzahl[1]; }
-void player::setAugenzahl(int a) { this->Augenzahl = a; }
-int player::getPaschCounter() { return this->PaschCounter; }
-void player::setPaschCounter(int p) { this->PaschCounter = p; }
-void player::incPaschCounter() {
+int TPlayer::getAugenzahl() { return this->Wurfelzahl[0]+ this->Wurfelzahl[1]; }
+void TPlayer::setAugenzahl(int a) { this->Augenzahl = a; }
+int TPlayer::getPaschCounter() { return this->PaschCounter; }
+void TPlayer::setPaschCounter(int p) { this->PaschCounter = p; }
+void TPlayer::incPaschCounter() {
 	this->PaschCounter++;
 	if (this->PaschCounter >= 3) {
 		this->insGefaengnis();
 	}
 }
 
-void player::insGefaengnis() {
+void TPlayer::insGefaengnis() {
 	this->ImGefaengnis = true;
 	this->GefaengnisRunden = 1;
 	this->Position = 10; // Gefängnisfeld
 }
-void player::decGefaengnisRunden() {
+void TPlayer::decGefaengnisRunden() {
 	if (this->GefaengnisRunden > 0) {
 		this->GefaengnisRunden--;
 	}
@@ -100,21 +100,21 @@ void player::decGefaengnisRunden() {
 		this->ImGefaengnis = false;
 	}
 }
-bool player::imGefaengnis() { return this->ImGefaengnis; }
+bool TPlayer::imGefaengnis() { return this->ImGefaengnis; }
 
 mt19937 Zufall(time(nullptr));
-int player::wurfeln() {
+int TPlayer::wurfeln() {
 	int Zufallszahl;
 	Zufallszahl = (Zufall() % 6) + 1;
 	return Zufallszahl;
 }
 
-bool player::paschcheck() {
+bool TPlayer::paschcheck() {
 	if (this->Wurfelzahl[0] == this->Wurfelzahl[1]) { return true; }
 	return false;
 }
 
-void player::bezahle(int betrag) {
+void TPlayer::bezahle(int betrag) {
 	if (betrag >= 0) {
 		if (this->Budget - betrag >= 0) {
 			this->Budget -= betrag;
@@ -124,16 +124,16 @@ void player::bezahle(int betrag) {
 		}
 	}
 }
-void player::erhalte(int betrag) { this->Budget += betrag; }
-bool player::istPleite() { if (this->Budget <= 0) { return true; } return false; }
-void player::geheZu(int feld) {
+void TPlayer::erhalte(int betrag) { this->Budget += betrag; }
+bool TPlayer::istPleite() { if (this->Budget <= 0) { return true; } return false; }
+void TPlayer::geheZu(int feld) {
 	if (feld < 0 || feld >= 40) {
 		return;					// Ungültiges Feld, nichts tun	
 	}
 	this->Position = feld;
 }
 
-void player::addStrasse(int strasse) {
+void TPlayer::addStrasse(int strasse) {
 
 	// Prüfen ob das Feld eine Straße ist
 	if (_boardarr[strasse].Type != TypeStreet) {
@@ -154,7 +154,7 @@ void player::addStrasse(int strasse) {
 	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
 
-void player::deleteStrasse(int strasse) {
+void TPlayer::deleteStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
@@ -164,7 +164,7 @@ void player::deleteStrasse(int strasse) {
 	}
 	cout << "Diese Strasse besitzen Sie nicht.\n";
 }
-bool player::besitztStrasse(int strasse) {
+bool TPlayer::besitztStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			return true;
@@ -173,11 +173,11 @@ bool player::besitztStrasse(int strasse) {
 	return false;
 }
 
-bool player::istStrassenSetHandelbar(int feld, vector<player*>& spielerListe) {
+bool TPlayer::istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe) {
 	int farbe = _boardarr[feld].Color;
 	for (int i = 0; i < 40; ++i) {
 		if (_boardarr[i].Type == TypeStreet && _boardarr[i].Color == farbe) {
-			for (player* p : spielerListe) {
+			for (TPlayer* p : spielerListe) {
 				if (p->anzahlHaeuserAuf(i) > 0) {
 					return false;
 				}
@@ -187,7 +187,7 @@ bool player::istStrassenSetHandelbar(int feld, vector<player*>& spielerListe) {
 	return true;
 }
 
-bool player::Handeln(vector<player*>& spielerListe, int feld, int angebot) {
+bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 	// Prüfen ob Käufer genug Budget hat
 	if (this->getBudget() < angebot) {
 		cout << "Du hast nicht genug Budget fuer dieses Angebot." << endl;
@@ -199,7 +199,7 @@ bool player::Handeln(vector<player*>& spielerListe, int feld, int angebot) {
 		return false;
 	}
 	// Verkäufer suchen
-	for (player* verkaufer : spielerListe) {
+	for (TPlayer* verkaufer : spielerListe) {
 		if (verkaufer->getID() != this->getID() && verkaufer->besitztStrasse(feld)) {
 
 			// Prüfen ob in der Farbgruppe Häuser stehen
@@ -227,7 +227,7 @@ bool player::Handeln(vector<player*>& spielerListe, int feld, int angebot) {
 	return false;
 }
 
-void player::baueHaus(int strasse, Map& map) {
+void TPlayer::baueHaus(int strasse, Map& map) {
 	if (map.ownsStreets(this->getID(), strasse)) {
 		this->GebauteHaeuser.push_back(strasse);
 		cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
@@ -236,7 +236,7 @@ void player::baueHaus(int strasse, Map& map) {
 		cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
 	}
 }
-void player::verkaufeHaus(int strasse) {
+void TPlayer::verkaufeHaus(int strasse) {
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		if (this->GebauteHaeuser[i] == strasse) {
 			this->GebauteHaeuser.erase(this->GebauteHaeuser.begin() + i);
@@ -246,7 +246,7 @@ void player::verkaufeHaus(int strasse) {
 	}
 	cout << "Sie besitzen kein Haus auf " << strasse << ".\n";
 }
-int player::anzahlHaeuserAuf(int strasse) {
+int TPlayer::anzahlHaeuserAuf(int strasse) {
 	int count = 0;
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		if (this->GebauteHaeuser[i] == strasse) {
@@ -256,14 +256,14 @@ int player::anzahlHaeuserAuf(int strasse) {
 	return count;
 }
 
-vector<string> player::getGekObjNamen() {
+vector<string> TPlayer::getGekObjNamen() {
 	vector<string> temp;
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		temp.push_back(LUT(this->GekaufteStrassen[i]));
 	}
 	return temp;
 }
-vector<string> player::getGebObjNamen() {
+vector<string> TPlayer::getGebObjNamen() {
 	vector<string> temp;
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		temp.push_back(LUT(this->GebauteHaeuser[i]));
@@ -271,18 +271,18 @@ vector<string> player::getGebObjNamen() {
 	return temp;
 }
 
-int player::getGekObjAnz() { return this->GekaufteStrassen.size(); }
-int player::getGebObjAnz() { return this->GebauteHaeuser.size(); }
+int TPlayer::getGekObjAnz() { return this->GekaufteStrassen.size(); }
+int TPlayer::getGebObjAnz() { return this->GebauteHaeuser.size(); }
 
-cpu_player1::cpu_player1() : player() {}
-vector<int> player::getGekObjVector() {
+cpu_player1::cpu_player1() : TPlayer() {}
+vector<int> TPlayer::getGekObjVector() {
 	return this->GekaufteStrassen;
 }
-vector<int> player::getGebObjVector() {
+vector<int> TPlayer::getGebObjVector() {
 	return this->GebauteHaeuser;
 }
 // cpu to player
-int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {
+int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {
 	if ((rand() % 101) > 15) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
 		targetPlayerOut = -1;
@@ -340,7 +340,7 @@ bool cpu_player1::acceptTrade(int spaceIndex, int offer, Map& map) {
 }
 
 // buy street
-bool cpu_player1::tryBuyStreet(std::vector<player*>& p, Map& map) {
+bool cpu_player1::tryBuyStreet(std::vector<TPlayer*>& p, Map& map) {
 	int price = map.getPropertyPrice(getPosition());
 	int id = getID();
 	int pos = getPosition();
@@ -362,7 +362,7 @@ bool cpu_player1::tryBuyStreet(std::vector<player*>& p, Map& map) {
 }
 
 //buildhouse for cpu
-bool cpu_player1::tryBuildHouse(std::vector<player*>& p, Map& map) {
+bool cpu_player1::tryBuildHouse(std::vector<TPlayer*>& p, Map& map) {
 	int myID = getID();
 	std::vector<int> myProperties = p[myID]->getGekObjVector();
 

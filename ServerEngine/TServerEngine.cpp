@@ -309,7 +309,7 @@ void TServer::UnitTest() {
                         space = StrasseBauen;
                         player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget()));
                         //player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                        player[MomentanerSpieler].baueHaus(player[MomentanerSpieler].getPosition());
+                        player[MomentanerSpieler].baueHaus(player[MomentanerSpieler].getPosition(),MapEngine);
                         ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                         StrasseBauen = -1;
                     }
@@ -405,7 +405,7 @@ void TServer::UnitTest() {
                                 //AnzahlCpuGegner = GsTemp.AnzCpuGegner; //int
                             for (int i = 0; i < 2; i++)
                             {
-                                TPlayer temp(i, i+1/*GsTemp.players[i].name*/, GsTemp.players[i].budget, GsTemp.players[i].position, GsTemp.players[i].inJail, GsTemp.players[i].inJail, GsTemp.players[i].ownedObjects, GsTemp.players[i].builtObjects);
+                                TPlayer temp(i, GsTemp.players[i].name, GsTemp.players[i].budget, GsTemp.players[i].position, GsTemp.players[i].inJail, GsTemp.players[i].inJail, GsTemp.players[i].ownedObjects, GsTemp.players[i].builtObjects);
                                 player[i] = temp;
                             }
                             RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
