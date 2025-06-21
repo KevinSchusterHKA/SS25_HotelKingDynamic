@@ -6,14 +6,21 @@ player::player(int id, int name, int budget, int position, bool imgefaengnis, in
 
 player::~player() {};
 
-int player::Score() {
+int player::Score(int runde, int anzGekGebObj) {
 	int score = this->getBudget();
+
+	// Wert aller gekauften Straßen / Felder
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
-		score += getPreisStrasse(i);
+		int feldNr = this->GekaufteStrassen[i];
+		score += getPreisStrasse(feldNr, anzGekGebObj);
 	}
+
+	// Wert aller gebauten Häuser (Hauspreis des Feldes)
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
-		score += 50;
+		int feldNr = this->GebauteHaeuser[i];
+		score += getPreisHaus(feldNr, anzGekGebObj);
 	}
+
 	return score;
 }
 void player::getData() {
@@ -69,7 +76,7 @@ void player::Paschwurf() {
 	this->setAugenzahl(this->getWurfel(0) + this->getWurfel(1));
 	this->incPosition(this->getAugenzahl());
 }
-int player::getAugenzahl() { return this->Augenzahl; }
+int player::getAugenzahl() { return this->Wurfelzahl[0]+ this->Wurfelzahl[1]; }
 void player::setAugenzahl(int a) { this->Augenzahl = a; }
 int player::getPaschCounter() { return this->PaschCounter; }
 void player::setPaschCounter(int p) { this->PaschCounter = p; }
@@ -127,7 +134,19 @@ void player::geheZu(int feld) {
 }
 
 void player::addStrasse(int strasse) {
-	GekaufteStrassen.push_back(strasse);
+	if (this->GekaufteStrassen.size() == 0) {
+		GekaufteStrassen.push_back(strasse);
+	}
+	else
+	{
+		for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
+			if (this->GekaufteStrassen[i] == strasse) {
+			}
+			else {
+				GekaufteStrassen.push_back(strasse);
+			}
+		}
+	}
 	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
 void player::deleteStrasse(int strasse) {
@@ -146,6 +165,51 @@ bool player::besitztStrasse(int strasse) {
 			return true;
 		}
 	}
+	return false;
+}
+bool player::besitztStrassenSet() {
+	// Sets als Array von Vektoren definieren
+	vector<int> set1 = { 1, 3 };
+	vector<int> set2 = { 6, 8, 9 };
+	vector<int> set3 = { 11, 13, 14 };
+	vector<int> set4 = { 16, 18, 19 };
+	vector<int> set5 = { 21, 23, 24 };
+	vector<int> set6 = { 26, 27, 29 };
+	vector<int> set7 = { 31, 32, 34 };
+	vector<int> set8 = { 37, 39 };
+
+	// Liste mit allen Sets
+	vector<vector<int>> sets;
+	sets.push_back(set1);
+	sets.push_back(set2);
+	sets.push_back(set3);
+	sets.push_back(set4);
+	sets.push_back(set5);
+	sets.push_back(set6);
+	sets.push_back(set7);
+	sets.push_back(set8);
+
+	// Überprüfen ob Spieler ein Set vollständig hat
+	for (int i = 0; i < sets.size(); i++) {
+		int zaehler = 0;
+
+		for (int j = 0; j < sets[i].size(); j++) {
+			// Prüfen ob die Straße in GekaufteStrassen ist
+			for (int k = 0; k < this->GekaufteStrassen.size(); k++) {
+				if (this->GekaufteStrassen[k] == sets[i][j]) {
+					zaehler++;
+					break; // weiter zur nächsten Straße im Set
+				}
+			}
+		}
+
+		// Wenn Anzahl gefundener Straßen gleich der Anzahl im Set ist
+		if (zaehler == sets[i].size()) {
+			return true;
+		}
+	}
+
+	// Wenn kein vollständiges Set gefunden wurde
 	return false;
 }
 int player::handel(int r, int preowner) {
@@ -209,19 +273,19 @@ bool player::verkaufeStrasseAn(player* zielspieler, int strasse, int betrag) {
 }
 
 void player::baueHaus(int strasse) {
-	if (this->besitztStrasse(strasse)) {
+	if (this->besitztStrassenSet()) {
 		this->GebauteHaeuser.push_back(strasse);
-		cout << "Ein Haus wurde auf " << strasse << " gebaut.\n";
+		cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
 	}
 	else {
-		cout << "Sie besitzen die Strasse " << strasse << " nicht.\n";
+		cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
 	}
 }
 void player::verkaufeHaus(int strasse) {
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		if (this->GebauteHaeuser[i] == strasse) {
 			this->GebauteHaeuser.erase(this->GebauteHaeuser.begin() + i);
-			cout << "Ein Haus auf " << strasse << " wurde verkauft.\n";
+			cout << "Ein Haus auf " << LUT(strasse) << " wurde verkauft.\n";
 			return;
 		}
 	}
@@ -289,7 +353,7 @@ int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, in
 	int minPercent = 5;
 	int maxPercent = 15;
 	int offerPercent = minPercent + rand() % (maxPercent - minPercent + 1);
-	int offer = (1 + offerPercent / 100.0) * getPreisStrasse(propIndex);
+	int offer = (1 + offerPercent / 100.0) * getPreisStrasse(propIndex,0);
 
 	if (offer > p[cpuID]->getBudget()) {
 		/*  std::cout << "CPU Kann sich das Angebot von " << offer
@@ -307,7 +371,7 @@ int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<player*>& p, in
 // player to cpu 
 bool cpu_player1::acceptTrade(int spaceIndex, int offer) {
 	int id = getID();
-	int propPrice = getPreisStrasse(spaceIndex);
+	int propPrice = getPreisStrasse(spaceIndex,0);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 	int bud = getBudget();
 	if ((offer >= propPrice * (acceptThresholdPercent / 100.0))) {
@@ -322,7 +386,7 @@ bool cpu_player1::acceptTrade(int spaceIndex, int offer) {
 
 // buy street
 bool cpu_player1::tryBuyStreet(std::vector<player*>& p) {
-	int price = getPreisStrasse(getPosition());
+	int price = getPreisStrasse(getPosition(),0);
 	int id = getID();
 	int pos = getPosition();
 	if (price <= 0) {
@@ -371,33 +435,36 @@ string LUT(int i) {
 	}
 }
 
-int getPreisStrasse(int i) {
+int getPreisStrasse(int i, int AnzahlGekGebObj) {
 	switch (i) {
-	case 1:  return 60;
-	case 3:  return 60;
-	case 6:  return 100;
-	case 8:  return 100;
-	case 9:  return 120;
-	case 11: return 140;
-	case 13: return 140;
-	case 14: return 160;
-	case 16: return 180;
-	case 18: return 180;
-	case 19: return 200;
-	case 21: return 220;
-	case 23: return 220;
-	case 24: return 240;
-	case 26: return 260;
-	case 27: return 260;
-	case 29: return 280;
-	case 31: return 300;
-	case 32: return 300;
-	case 34: return 320;
-	case 37: return 350;
-	case 39: return 400;
+	case 1:  return int(60*pow(1.02, AnzahlGekGebObj));
+	case 3:  return int(60 * pow(1.02, AnzahlGekGebObj));
+	case 6:  return int(100 * pow(1.02, AnzahlGekGebObj));
+	case 8:  return int(100 * pow(1.02, AnzahlGekGebObj));
+	case 9:  return int(120 * pow(1.02, AnzahlGekGebObj));
+	case 11: return int(140 * pow(1.02, AnzahlGekGebObj));
+	case 13: return int(140 * pow(1.02, AnzahlGekGebObj));
+	case 14: return int(160 * pow(1.02, AnzahlGekGebObj));
+	case 16: return int(180 * pow(1.02, AnzahlGekGebObj));
+	case 18: return int(180 * pow(1.02, AnzahlGekGebObj));
+	case 19: return int(200 * pow(1.02, AnzahlGekGebObj));
+	case 21: return int(220 * pow(1.02, AnzahlGekGebObj));
+	case 23: return int(220 * pow(1.02, AnzahlGekGebObj));
+	case 24: return int(240 * pow(1.02, AnzahlGekGebObj));
+	case 26: return int(260 * pow(1.02, AnzahlGekGebObj));
+	case 27: return int(260 * pow(1.02, AnzahlGekGebObj));
+	case 29: return int(280 * pow(1.02, AnzahlGekGebObj));
+	case 31: return int(300 * pow(1.02, AnzahlGekGebObj));
+	case 32: return int(300 * pow(1.02, AnzahlGekGebObj));
+	case 34: return int(320 * pow(1.02, AnzahlGekGebObj));
+	case 37: return int(350 * pow(1.02, AnzahlGekGebObj));
+	case 39: return int(400 * pow(1.02, AnzahlGekGebObj));
 	default: return 0;
 	}
 }
+int getPreisHaus(int i, int AnzahlGekGebObj) {
+}
+
 
 
 

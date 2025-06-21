@@ -31,7 +31,7 @@ public:
 	player(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
 	~player();
 
-	int Score();
+	int Score(int runde, int anzGekGebObj);
 	void getData();
 	void setID(int id);
 	int getID();
@@ -73,6 +73,7 @@ public:
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
 	bool besitztStrasse(int strasse);
+	bool besitztStrassenSet();
 	int handel(int request, int preowner);
 	bool kaufeStrasseVon(player* von, int strasse, int betrag);
 	bool verkaufeStrasseAn(player* zielspieler, int strasse, int betrag);
@@ -92,7 +93,8 @@ public:
 
 
 string LUT(int i);
-int getPreisStrasse(int i);
+int getPreisStrasse(int feld, int Anz);
+int getPreisHaus(int feld, int Anz);
 
 class cpu_player1 : public player {
 public:
