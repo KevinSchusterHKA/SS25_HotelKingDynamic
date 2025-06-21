@@ -1,5 +1,5 @@
 #include "Player.h"
-//#include "Unit_test.h"
+#include "Unit_test.h"
 #include "map.h"
 
 using namespace std;
