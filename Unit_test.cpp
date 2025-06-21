@@ -12,6 +12,29 @@ void UNITTEST() {
 		p[i]->setBudget(1000);
 	}
 
+	for (int i = 0; i < 10; ++i) {
+		players.push_back(new cpu_player1());
+		players.back()->setID(i + 2);
+		players.back()->setHuman(CPU1);
+		players.back()->setBudget(10000000);
+		players.back()->setPosition(i);
+	
+	} 
+	players[2]->addStrasse(3); //strasse handel test und farbe set 
+	players[2]->addStrasse(1);
+	players[3]->addStrasse(11);
+	players[3]->addStrasse(13);
+	players[3]->addStrasse(14);
+	players[4]->addStrasse(21);
+	players[5]->addStrasse(23);
+	players[5]->addStrasse(24);
+	Map map;//map 
+	int testPositions[40] = {};
+	for (size_t i = 0; i < 40; i++)
+	{
+		 testPositions[i] = i;
+	}
+
 	// Testwerte zuweisen: Budget und Strassen
 	p[0]->addStrasse(0);
 	p[0]->addStrasse(1);

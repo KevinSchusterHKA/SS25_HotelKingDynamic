@@ -371,39 +371,39 @@ bool cpu_player1::tryBuildHouse(std::vector<player*>& p, Map& map) {
 		int colorGroup = colorcheck(myID, propIndex, myProperties);
 		if (colorGroup == -1) continue;
 
-		for (int i = 0; i < 3 && _streetarr[colorGroup][i] != -1; ++i) {
-			int groupProp = _streetarr[colorGroup][i];
+		std::vector<int> built = p[myID]->getGebObjVector();
+
+		int minHouses = 6; // max 6-1
+		int bestProp = -1;
+
+		for (int j = 0; j < 3 && _streetarr[colorGroup][j] != -1; ++j) {
+			int groupProp = _streetarr[colorGroup][j];
 			if (groupProp == -1) continue;
-			std::vector<int> built = p[myID]->getGebObjVector();
 
-			for (int i = 0; i < 3; ++i) {
-				int prop = _streetarr[colorGroup][i];
-				if (prop == -1) continue;
-
-				int count = std::count(built.begin(), built.end(), prop);
-				//std::cout << "Property " << prop << ": " << count << " house(s)\n";
-			}
-
-			//int houseCount = map.getHouseCount(groupProp);
-			int houseCount = 0;
-			if (houseCount >= 5) continue;
-
-			int price = map.getHousePrice(groupProp);
-			int maxPrice = this->getBudget() * ((30 + rand() % 11) / 100); // 30-40%
-
-			if (price <= maxPrice) {
-				bezahle(price);
-				this->baueHaus(groupProp, map);
-				//std::cout << "CPU " << myID << " builds a house on " << LUT(this->getPosition()) << "\n";
-				return true;
-
+			int houseCount = std::count(built.begin(), built.end(), groupProp);
+			if (houseCount < minHouses && houseCount < 5) {
+				minHouses = houseCount;
+				bestProp = groupProp;
 			}
 		}
 
+		if (bestProp == -1) continue; 
+
+		int price = map.getHousePrice(bestProp);
+		int maxPrice = this->getBudget() * ((30 + rand() % 11) / 100.0); // 30-40%
+
+		if (price <= maxPrice) {
+			bezahle(price);
+			this->baueHaus(bestProp, map);
+			//std::cout << "CPU " << myID << " builds a house on " << LUT(this->getPosition()) << "\n";
+			return true;
+		}
 	}
 
 	return false;
 }
+
+
 //test ob man  haus bauen darf
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties) {
 	int colorGroup = -1;
@@ -416,8 +416,6 @@ int colorcheck(int playerID, int space, std::vector<int>& ownedProperties) {
 		}
 		if (colorGroup != -1) break;
 	}
-
-	if (colorGroup == -1) return -1; 
 
 	for (int i = 0; i < 3; ++i) {
 		int prop = _streetarr[colorGroup][i];
