@@ -1,5 +1,4 @@
 #pragma once
-//#include "map.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -7,6 +6,7 @@
 #include <cstdlib> // rand()
 #include "Map.h"
 #include "SpaceConfig.h"
+
 
 
 using namespace std;
@@ -106,5 +106,5 @@ public:
 	bool acceptTrade(int spaceIndex, int offer, Map& map);
 	bool tryBuyStreet(std::vector<player*>& p, Map& map);
 	bool tryBuildHouse(std::vector<player*>& p, Map& map);
-
 };
+int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);

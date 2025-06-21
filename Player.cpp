@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "Unit_test.h"
 using namespace std;
 player::player() {};
 player::player(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
@@ -363,34 +362,67 @@ bool cpu_player1::tryBuildHouse(std::vector<player*>& p, Map& map) {
 
 	for (size_t i = 0; i < myProperties.size(); i++) {
 		int propIndex = myProperties[i];
-		int colorGroup = map.ownsStreets(myID, propIndex);
+		int colorGroup = colorcheck(myID, propIndex, myProperties);
 		if (colorGroup == -1) continue;
 
-		for (int i = 0; i < 3; ++i) {
+		for (int i = 0; i < 3 && _streetarr[colorGroup][i] != -1; ++i) {
 			int groupProp = _streetarr[colorGroup][i];
 			if (groupProp == -1) continue;
+			std::vector<int> built = p[myID]->getGebObjVector();
+
+			for (int i = 0; i < 3; ++i) {
+				int prop = _streetarr[colorGroup][i];
+				if (prop == -1) continue;
+
+				int count = std::count(built.begin(), built.end(), prop);
+				//std::cout << "Property " << prop << ": " << count << " house(s)\n";
+			}
 
 			//int houseCount = map.getHouseCount(groupProp);
 			int houseCount = 0;
 			if (houseCount >= 5) continue;
 
 			int price = map.getHousePrice(groupProp);
-			int maxPrice = int(this->getBudget() * ((30 + rand() % 11) / 100.0)); // 30-40%
+			int maxPrice = this->getBudget() * ((30 + rand() % 11) / 100); // 30-40%
 
 			if (price <= maxPrice) {
 				bezahle(price);
 				this->baueHaus(groupProp, map);
-				std::cout << "CPU " << myID << " builds a house on " << LUT(this->getPosition()) << "\n";
+				//std::cout << "CPU " << myID << " builds a house on " << LUT(this->getPosition()) << "\n";
 				return true;
+
 			}
 		}
+
 	}
 
 	return false;
 }
+//test ob man  haus bauen darf
+int colorcheck(int playerID, int space, std::vector<int>& ownedProperties) {
+	int colorGroup = -1;
+	for (int i = 0; i < 8; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			if (_streetarr[i][j] == space) {
+				colorGroup = i;
+				break;
+			}
+		}
+		if (colorGroup != -1) break;
+	}
 
+	if (colorGroup == -1) return -1; 
 
+	for (int i = 0; i < 3; ++i) {
+		int prop = _streetarr[colorGroup][i];
+		if (prop == -1) continue;
+		if (std::find(ownedProperties.begin(), ownedProperties.end(), prop) == ownedProperties.end()) {
+			return -1;
+		}
+	}
 
+	return colorGroup;  
+}
 
 string LUT(int i) {
 	return _boardarr[i].Name;
