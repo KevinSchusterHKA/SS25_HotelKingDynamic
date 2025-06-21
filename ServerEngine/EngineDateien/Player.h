@@ -5,6 +5,7 @@
 #include <random>
 #include <cstdlib> // rand()
 #include "map.h"
+
 //#include "Unit_test.h"
 
 using namespace std;
@@ -49,7 +50,7 @@ public:
 	void setPosition(int p);
 	void incPosition(int p);
 
-	// Würfeln und Pasch
+	// WÃ¼rfeln und Pasch
 	int getWurfel(int index);
 	void setWurfel(int w, int index);
 	int wurfeln();
@@ -62,7 +63,7 @@ public:
 	void setPaschCounter(int p);
 	void incPaschCounter();
 
-	// Gefängnis
+	// GefÃ¤ngnis
 	void insGefaengnis();
 	void decGefaengnisRunden();
 	bool imGefaengnis();
@@ -91,9 +92,6 @@ public:
 	int getGebObjAnz();
 };
 
-
-string LUT(int i);
-int getPreisStrasse(int i);
 
 class cpu_player1 : public TPlayer {
 public:

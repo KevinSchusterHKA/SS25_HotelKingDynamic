@@ -1,4 +1,5 @@
 #include "Player.h"
+
 using namespace std;
 TPlayer::TPlayer() {};
 TPlayer::TPlayer(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
@@ -13,7 +14,7 @@ TPlayer::~TPlayer() {};
 int TPlayer::Score() {
 	int score = this->getBudget();
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
-		score += getPreisStrasse(i);
+		score += _boardarr[i].Price;
 	}
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		score += 50;
@@ -141,14 +142,14 @@ void TPlayer::addStrasse(int strasse) {
 	if (!owned) {
 		GekaufteStrassen.push_back(strasse);
 	}
-	cout << "Spieler " << this->ID+1 << " hat " << LUT(strasse) << " gekauft.\n";
-	//cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
-}
-void TPlayer::deleteStrasse(int strasse) {
+	cout << "Spieler " << this->ID+1 << " hat " << _boardarr[strasse].Name << " gekauft.\n";
+} 
+void player::deleteStrasse(int strasse) {
+
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
-			cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " verkauft.\n";
+			cout << "Strasse " << _boardarr[strasse].Name<< " wurde von Spieler " << this->ID << " verkauft.\n";
 			return;
 		}
 	}
@@ -300,14 +301,14 @@ int TPlayer::anzahlHaeuserAuf(int strasse) {
 vector<string> TPlayer::getGekObjNamen() {
 	vector<string> temp;
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
-		temp.push_back(LUT(this->GekaufteStrassen[i]));
+		temp.push_back(_boardarr[this->GekaufteStrassen[i]].Name);
 	}
 	return temp;
 }
 vector<string> TPlayer::getGebObjNamen() {
 	vector<string> temp;
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
-		temp.push_back(LUT(this->GebauteHaeuser[i]));
+		temp.push_back(_boardarr[this->GebauteHaeuser[i]].Name);
 	}
 	return temp;
 }
@@ -396,84 +397,3 @@ bool cpu_player1::tryBuyStreet(Map& gameMap, std::vector<TPlayer*>& p) {
 	}
 	return false;
 }
-
-
-
-
-string LUT(int i) {
-	switch (i) {
-	case 0:  return "LOS";
-	case 1:  return "Badstrasse";
-	case 2:  return "Gemeinschaftsfeld";
-	case 3:  return "Turmstrasse";
-	case 4:  return "Einkommensteuer";
-	case 5:  return "Suedbahnhof";
-	case 6:  return "Chausseestrasse";
-	case 7:  return "Ereignisfeld";
-	case 8:  return "Elisenstrasse";
-	case 9:  return "Poststrasse";
-	case 10: return "Gefaengnis";
-	case 11: return "Seestrasse";
-	case 12: return "Elektrizitaetswerk";
-	case 13: return "Hafenstrasse";
-	case 14: return "Neue Strasse";
-	case 15: return "Westbahnhof";
-	case 16: return "Muenchener Strasse";
-	case 17: return "Gemeinschaftsfeld";
-	case 18: return "Wiener Strasse";
-	case 19: return "Berliner Strasse";
-	case 20: return "Freies Parken";
-	case 21: return "Theaterstrasse";
-	case 22: return "Ereignisfeld";
-	case 23: return "Museumstrasse";
-	case 24: return "Opernplatz";
-	case 25: return "Nordbahnhof";
-	case 26: return "Lessingstrasse";
-	case 27: return "Schillerstrasse";
-	case 28: return "Wasserwerk";
-	case 29: return "Goethestrasse";
-	case 30: return "Gehen Sie in das Gefaengnis";
-	case 31: return "Rathausplatz";
-	case 32: return "Hauptstrasse";
-	case 33: return "Gemeinschaftsfeld";
-	case 34: return "Bahnhofstrasse";
-	case 35: return "Hauptbahnhof";
-	case 36: return "Ereignisfeld";
-	case 37: return "Parkstrasse";
-	case 38: return "Zusatzsteuer";
-	case 39: return "Schlossallee";
-	default: return "Unbekanntes Feld";
-	}
-}
-
-
-int getPreisStrasse(int i) {
-	switch (i) {
-	case 1:  return 60;
-	case 3:  return 60;
-	case 6:  return 100;
-	case 8:  return 100;
-	case 9:  return 120;
-	case 11: return 140;
-	case 13: return 140;
-	case 14: return 160;
-	case 16: return 180;
-	case 18: return 180;
-	case 19: return 200;
-	case 21: return 220;
-	case 23: return 220;
-	case 24: return 240;
-	case 26: return 260;
-	case 27: return 260;
-	case 29: return 280;
-	case 31: return 300;
-	case 32: return 300;
-	case 34: return 320;
-	case 37: return 350;
-	case 39: return 400;
-	default: return 0;
-	}
-}
-
-
-
