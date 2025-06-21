@@ -33,7 +33,7 @@ void player::getData() {
 	cout << "Gefaengnis Runden: " << this->GefaengnisRunden << endl;
 	cout << "Gekaufte Strassen: ";
 	for (const auto& strasse : GekaufteStrassen) {
-		cout << strasse << ", ";
+		cout << LUT(strasse) << ", ";
 	}
 	cout << endl << endl;
 }
@@ -135,26 +135,25 @@ void player::geheZu(int feld) {
 
 void player::addStrasse(int strasse) {
 
+	// Prüfen ob das Feld eine Straße ist
 	if (_boardarr[strasse].Type != TypeStreet) {
-		cout << "Feld " << LUT(strasse) << " ist keine Straße und kann nicht gekauft werden.\n";
+		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
 		return;
 	}
 
-	if (this->GekaufteStrassen.size() == 0) {
-		GekaufteStrassen.push_back(strasse);
-	}
-	else
-	{
-		for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
-			if (this->GekaufteStrassen[i] == strasse) {
-			}
-			else {
-				GekaufteStrassen.push_back(strasse);
-			}
+	// Prüfen ob Spieler die Straße bereits besitzt
+	for (int s = 0; s < this->GekaufteStrassen.size(); s++) {
+		if (s == strasse) {
+			cout << "Strasse " << LUT(strasse) << " gehoert dir bereits.\n";
+			return;
 		}
 	}
+
+	// Falls nicht, hinzufügen
+	GekaufteStrassen.push_back(strasse);
 	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
+
 void player::deleteStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
@@ -191,10 +190,14 @@ bool player::istStrassenSetHandelbar(int feld, vector<player*>& spielerListe) {
 bool player::Handeln(vector<player*>& spielerListe, int feld, int angebot) {
 	// Prüfen ob Käufer genug Budget hat
 	if (this->getBudget() < angebot) {
-		cout << "Du hast nicht genug Budget für dieses Angebot." << endl;
+		cout << "Du hast nicht genug Budget fuer dieses Angebot." << endl;
 		return false;
 	}
-
+	// Prüfen ob Käufer die Straße bereits besitzt
+	if (this->besitztStrasse(feld)) {
+		cout << "Du besitzt diese Strasse bereits!" << endl;
+		return false;
+	}
 	// Verkäufer suchen
 	for (player* verkaufer : spielerListe) {
 		if (verkaufer->getID() != this->getID() && verkaufer->besitztStrasse(feld)) {
@@ -215,15 +218,12 @@ bool player::Handeln(vector<player*>& spielerListe, int feld, int angebot) {
 			verkaufer->deleteStrasse(feld);
 			this->addStrasse(feld);
 
-			cout << "Handel erfolgreich: Strasse " << LUT(feld)
-				<< " von Spieler " << verkaufer->getID()
-				<< " gekauft fuer " << angebot << ".\n";
-
+			cout << "Handel erfolgreich: Strasse " << LUT(feld)	<< " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
 			return true;
 		}
 	}
 
-	cout << "Kein Verkauufer für diese Strasse gefunden." << endl;
+	cout << "Kein Verkaeufer fuer diese Strasse gefunden." << endl;
 	return false;
 }
 
