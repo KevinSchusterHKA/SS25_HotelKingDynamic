@@ -4,13 +4,14 @@
 #include <vector>
 #include <random>
 #include <cstdlib> // rand()
-#include "map.h"
+#include "Map.h"
+#include "SpaceConfig.h"
 
-//#include "Unit_test.h"
+
 
 using namespace std;
 enum PlayerType { HUMAN, CPU1, CPU2, }; // human player ,level 1,level 2
-class TPlayer
+class player
 {
 private:
 	int ID;
@@ -29,12 +30,12 @@ private:
 
 
 public:
-	TPlayer();
-	TPlayer(int id, int budget, int position);
-	TPlayer(int id, int name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
-	~TPlayer();
+	player();
+	player(int id, int budget, int position);
+	player(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
+	~player();
 
-	int Score();
+	int Score(int runde, int anzGekGebObj, Map& map);
 	void getData();
 	void setID(int id);
 	int getID();
@@ -50,7 +51,7 @@ public:
 	void setPosition(int p);
 	void incPosition(int p);
 
-	// WÃ¼rfeln und Pasch
+	// Würfeln und Pasch
 	int getWurfel(int index);
 	void setWurfel(int w, int index);
 	int wurfeln();
@@ -63,7 +64,7 @@ public:
 	void setPaschCounter(int p);
 	void incPaschCounter();
 
-	// GefÃ¤ngnis
+	// Gefängnis
 	void insGefaengnis();
 	void decGefaengnisRunden();
 	bool imGefaengnis();
@@ -76,12 +77,10 @@ public:
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
 	bool besitztStrasse(int strasse);
-	bool besitztStrassenSet();
-	int handel(int request, int preowner);
-	bool kaufeStrasseVon(TPlayer* von, int strasse, int betrag);
-	bool verkaufeStrasseAn(TPlayer* zielspieler, int strasse, int betrag);
+	bool istStrassenSetHandelbar(int feld, vector<player*>& spielerListe);
+	bool Handeln(vector<player*>& spielerListe, int feld, int angebot);
 
-	void baueHaus(int strasse);
+	void baueHaus(int strasse, Map& map);
 	void verkaufeHaus(int strasse);
 	int anzahlHaeuserAuf(int strasse);
 
@@ -90,14 +89,22 @@ public:
 
 	int getGekObjAnz();
 	int getGebObjAnz();
+	vector<int> getGekObjVector();
+	vector<int> getGebObjVector();
 };
 
 
-class cpu_player1 : public TPlayer {
+string LUT(int i);
+int getPreisStrasse(int feld, Map& map);
+int getPreisHaus(int feld, Map& map);
+
+class cpu_player1 : public player {
 public:
 	cpu_player1();
 
-	int handel(Map& gameMap, int cpuID, int totalPlayers, std::vector<TPlayer*>& p);
-	bool acceptTrade(Map& gameMap, int spaceIndex, int offer);
-	bool tryBuyStreet(Map& gameMap, std::vector<TPlayer*>& p);
+	int handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map);
+	bool acceptTrade(int spaceIndex, int offer, Map& map);
+	bool tryBuyStreet(std::vector<player*>& p, Map& map);
+	bool tryBuildHouse(std::vector<player*>& p, Map& map);
 };
+int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);
