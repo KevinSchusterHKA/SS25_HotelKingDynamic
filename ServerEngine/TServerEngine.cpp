@@ -38,7 +38,7 @@ void TServer::UnitTest() {
 
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
-    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner=2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden=0,StrasseBauen=-1;
+    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner = 2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
@@ -332,12 +332,8 @@ void TServer::UnitTest() {
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
-					    int Angebot = -1;
-					    int Strasse = -1;
                         ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, Farbe::BG_Rot);
 					    MenueAuswahl = Menues::Handel;
-                        //Code zum Handeln von Objekten
-                        //player[MomentanerSpieler].handel(board.(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
@@ -468,7 +464,12 @@ void TServer::UnitTest() {
 				    system("cls");
                     if (option == 0) //Akzeptieren
                     {
-					    //Code zum Akzeptieren des Handels
+                        std::vector<TPlayer*> playerRefs;
+                        for (int i = 0; i < 4; ++i) {
+                            playerRefs.push_back(&player[i]);
+                        }
+                        player[MomentanerSpieler].Handeln(playerRefs, Strasse, Angebot);
+
                     }
                     else
                     {

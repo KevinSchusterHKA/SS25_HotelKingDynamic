@@ -200,7 +200,7 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 	}
 	// Verkäufer suchen
 	for (TPlayer* verkaufer : spielerListe) {
-		if (verkaufer->getID() != this->getID() && verkaufer->besitztStrasse(feld)) {
+		if (verkaufer->besitztStrasse(feld)) {
 
 			// Prüfen ob in der Farbgruppe Häuser stehen
 			if (!istStrassenSetHandelbar(feld, spielerListe)) {
@@ -231,6 +231,23 @@ void TPlayer::baueHaus(int strasse, Map& map) {
 	if (map.ownsStreets(this->getID(), strasse)) {
 		this->GebauteHaeuser.push_back(strasse);
 		cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
+	}
+	else {
+		cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
+	}
+}
+void TPlayer::baueHausTEMP(int strasse, Map& map) {
+
+	std::vector<int> myProperties = this->getGekObjVector();
+	if (colorcheck(this->getID(), strasse, myProperties)) {
+		if (getPreisHaus(strasse, map) - this->getBudget() >= 0) {
+			this->GebauteHaeuser.push_back(strasse);
+			this->bezahle(getPreisHaus(strasse, map));
+			cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
+		}
+		else {
+			cout << "Sie haben nicht genug Geld, um ein Haus auf " << LUT(strasse) << " zu bauen.\n";
+		}
 	}
 	else {
 		cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
@@ -279,6 +296,14 @@ vector<int> TPlayer::getGekObjVector() {
 }
 vector<int> TPlayer::getGebObjVector() {
 	return this->GebauteHaeuser;
+}
+vector<int> TPlayer::getHaueser() {
+	vector<int> TEMPHaueser(40, 0);
+	for (int i = 0; i < this->getGebObjVector().size(); i++) {
+		int feldNummer = this->getGebObjVector()[i];
+		TEMPHaueser[feldNummer]++;
+	}
+	return TEMPHaueser;
 }
 // cpu to player
 int TPlayer::handelcpu(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {

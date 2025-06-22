@@ -81,6 +81,7 @@ public:
 	bool Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot);
 
 	void baueHaus(int strasse, Map& map);
+	void baueHausTEMP(int strasse, Map& map);
 	void verkaufeHaus(int strasse);
 	int anzahlHaeuserAuf(int strasse);
 
@@ -91,6 +92,7 @@ public:
 	int getGebObjAnz();
 	vector<int> getGekObjVector();
 	vector<int> getGebObjVector();
+	vector<int> getHaueser();
 
 //cpu logic 
 	int handelcpu(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map);
