@@ -1,10 +1,8 @@
 // mit Vector
 //Config.cpp
 
-#include "config2.h"
-#include <fstream>
-#include <sstream>
-#include <algorithm>
+#include "Config.h"
+
 
 // Konfiguration laden
 bool load_config(const std::string& filename, GameRules& rules) 
@@ -106,6 +104,7 @@ bool save_game(const std::string& filename, const GameState& state) {
     std::ofstream file(filename);
     if (!file.is_open()) return false;
 
+    
     // Allgemeine Spielinformationen schreiben
     file << "roundCount=" << state.roundCount << "\n";
     file << "currentPlayerIndex=" << state.currentPlayerIndex << "\n";
@@ -119,9 +118,10 @@ bool save_game(const std::string& filename, const GameState& state) {
         if (i < state.diceOrder.size() - 1) file << ",";
     }
     file << "\n";
-
+    
     // Spielzustand jedes Spielers speichern
     for (const auto& player : state.players) {
+        
         file << "Player=" << player.name << "," << player.budget << "," << player.position
             << "," << player.inJail << "," << player.hasFreeJailCard << "," << player.isHuman <<"\n";
 
@@ -164,6 +164,14 @@ bool load_game(const std::string& filename, GameState& state) {
         {
             state.currentPlayerIndex = std::stoi(line.substr(19));
         }
+        else if (line.find("playerCount=") == 0)
+        {
+            state.playerCount = std::stoi(line.substr(12));
+        }
+        else if (line.find("cpuCount=") == 0)
+        {
+            state.cpuCount = std::stoi(line.substr(9));
+        }
         else if (line.find("diceOrder=") == 0) 
         {
             state.diceOrder.clear();
@@ -199,12 +207,18 @@ bool load_game(const std::string& filename, GameState& state) {
         }
         else if (line.find("Built=") == 0) 
         {
+            int temp = 0;
+
             std::istringstream iss(line.substr(6));
             std::string token;
             auto& built = state.players.back().builtObjects;
             while (std::getline(iss, token, ',')) 
             {
-                if (!token.empty()) built.push_back(std::stoi(token));
+                if (std::stoi(token)!=0)
+                {
+                    built.at(temp) = std::stoi(token)+1;
+                }
+                temp++;
             }
         }
     }

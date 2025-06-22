@@ -6,6 +6,9 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
 
 // Maximale Werte
 constexpr int MAX_HIGHSCORES = 10;   // Max Highscores
@@ -35,7 +38,7 @@ struct PlayerState {
     bool inJail = false;
     bool hasFreeJailCard = false;
     std::vector<int> ownedObjects;
-    std::vector<int> builtObjects;
+    std::vector<int> builtObjects = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
     bool isHuman;                   // ist der Spieler ein Mensch
 };
 

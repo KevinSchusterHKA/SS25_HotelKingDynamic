@@ -72,7 +72,7 @@ void TServer::UnitTest() {
     ControlEngine.UpdateCursorPosition({ short(10),short(31) });
     std::cout << "Irgendeine Taste druecken um fortzufahren!" << std::endl;
     option = _getch();
-    
+
 	system("cls");
     ControlEngine.SetConsoleFontSize(8);
 	Sleep(100); 
@@ -114,14 +114,14 @@ void TServer::UnitTest() {
             ConfigEngineLogging.playerInPrison();
             player[MomentanerSpieler].decGefaengnisRunden();
             MomentanerSpieler++;
+            AnzahlRunden++;
             ConfigEngineLogging.newRound();
             ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
             HatGewuerfelt = false;
         }
-        if (MomentanerSpieler >= AnzahlSpieler) {
+        if (MomentanerSpieler >= AnzahlCpuGegner + AnzahlSpieler) {
             MomentanerSpieler = 0;
         }
-
         switch (MomentanerSpieler)
         {
         case 0:
@@ -330,6 +330,7 @@ void TServer::UnitTest() {
                         {
                             ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
                             MomentanerSpieler++;
+                            AnzahlRunden++;
                             HatGewuerfelt = false;
                             system("cls");
                             ConfigEngineLogging.newRound();
@@ -360,15 +361,15 @@ void TServer::UnitTest() {
                             for (size_t i = 0; i < AnzahlSpieler; i++)
                             {
                                 PlTemp.budget = player[i].getBudget();
-                                //PlTemp.builtObjects = player[i].GetGebObjVector();
-                                //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);
+                                PlTemp.builtObjects = player[i].getGebObjVector(); // TODO: getGebObjVector Rückgabewert 40 std::vector  mit nuller aufgefüllt außer an den Positionen der Straßen Anzahl Gebaute Gebaude. kontrollieren
+                                //PlTemp.hasFreeJailCard = player[i].GetFreeJailCard();
                                 PlTemp.inJail = player[i].imGefaengnis();
                                 PlTemp.name = player[i].getName();
-                                //PlTemp.ownedObjects = player[i].GetGekObjVector(); 
+                                PlTemp.ownedObjects = player[i].getGekObjVector();
                                 PlTemp.position = player[i].getPosition();
                                 GsTemp.players.push_back(PlTemp);
                             }
-                            for (size_t i = 0; i < AnzahlCpuGegner; i++)
+                            for (size_t i = AnzahlSpieler; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 //PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
                                 //PlTemp.builtObjects = player[i].GetGebObjVector;      //TODO:CPU GEGNER
@@ -380,6 +381,9 @@ void TServer::UnitTest() {
                                 //GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
                             }
                             GsTemp.roundCount=AnzahlRunden;
+                            GsTemp.cpuCount = AnzahlCpuGegner;
+                            GsTemp.playerCount = AnzahlSpieler;
+                            GsTemp.roundCount = AnzahlRunden;
                             CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                             ControlEngine.UpdateCursorPosition(CursorPos);
                             save_config("Config.txt",{});       //TODO: implementieren und auf Funktionalität testen
@@ -396,18 +400,19 @@ void TServer::UnitTest() {
                         std::ifstream file("Spielstand.txt");
                         if (file.is_open())
                         {
-                                CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
+                            CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                             ControlEngine.UpdateCursorPosition(CursorPos);
                             std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird geladen!";
                             //load_config("Config.txt", {}); //TODO: implementieren und auf Funktionalität testen
                             load_game("Spielstand.txt", GsTemp);//TODO: implementieren und auf Funktionalität testen
-                            //AnzahlSpieler = GsTemp.AnzSpieler;   //int
-                                //AnzahlCpuGegner = GsTemp.AnzCpuGegner; //int
-                            for (int i = 0; i < 2; i++)
+                            AnzahlSpieler = GsTemp.playerCount;
+                            AnzahlCpuGegner = GsTemp.cpuCount;
+                            for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 TPlayer temp(i, GsTemp.players[i].name, GsTemp.players[i].budget, GsTemp.players[i].position, GsTemp.players[i].inJail, GsTemp.players[i].inJail, GsTemp.players[i].ownedObjects, GsTemp.players[i].builtObjects);
                                 player[i] = temp;
                             }
+                            MapEngine.loadGame(GsTemp.players);
                             RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                         }
                         else
@@ -530,7 +535,6 @@ void TServer::UnitTest() {
 
         if (UpdateSpielfeld)
         {
-            //TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
             while (MRobj[MomentanerSpieler].flag)
             {
                 MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);
@@ -542,7 +546,6 @@ void TServer::UnitTest() {
                 {
                     player[MRobj[MomentanerSpieler].Owner].erhalte(MRobj[MomentanerSpieler].Rent);
                 }
-                //TestControl.AusgabeFeld(board.toStr(), x / 2 - 110, y / 2 - 44);
             }
             ControlEngine.AusgabeFeld(MapEngine.toStr(), x / 2 - 110, y / 2 - 44);
             std::vector<std::vector<std::string>> gekObjNamen;
@@ -551,15 +554,16 @@ void TServer::UnitTest() {
             std::vector<int> gekObjAnz;
             std::vector<int> gebObjAnz;               
             std::cout << MRobj[MomentanerSpieler].Msg << "\n";
-            for (size_t i = 0; i < 4; i++)
+            for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
             {
-                gekObjNamen.push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
-                gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
+                SpielerNamen.push_back(player[i].getName());
                 tempBudgets.push_back(player[i].getBudget());
-                gekObjAnz.push_back(player[i].getGekObjAnz());          // Hier wird angenommen, dass getGekObjAnz() eine int zurückgibt
-                gebObjAnz.push_back(player[i].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurückgibt
+                gekObjAnz.push_back(player[i].getGekObjAnz());          
+                gebObjAnz.push_back(player[i].getGebObjAnz());         
+                gekObjNamen.push_back(player[i].getGekObjNamen()); 
+                gebObjNamen.push_back(player[i].getGebObjNamen());     
             }
-            ControlEngine.AusgabeSpielerInformationen(SpielerNamen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
+            ControlEngine.AusgabeSpielerInformationen(SpielerNamen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler+AnzahlCpuGegner, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
         }
 
 
@@ -574,19 +578,15 @@ void TServer::UnitTest() {
         }
     }
     if (GameFinished) {
-		save_highscores("highscores.txt",{}); //TODO: implementieren und auf Funktionalität testen
-    }
-}
-int TServer::GetLongestStringVector(std::vector<std::string> s) {
-    int temp = 0;
-    for (std::string var : s) {
-        if (var.size()>temp)
+        std::vector<HighscoreEntry> temp;
+        for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
         {
-            temp = var.size();
+            temp.push_back({ player[i].getName(),player[i].getBudget() });
         }
+		save_highscores("highscores.txt", temp); //TODO: Funktionalität testen
     }
-    return temp;
 }
+
 
 int main() {
     TServer server;
