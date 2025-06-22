@@ -11,7 +11,7 @@
 
 using namespace std;
 enum PlayerType { HUMAN, CPU1, CPU2, }; // human player ,level 1,level 2
-class player
+class TPlayer
 {
 private:
 	int ID;
@@ -30,10 +30,10 @@ private:
 
 
 public:
-	player();
-	player(int id, int budget, int position);
-	player(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
-	~player();
+	TPlayer();
+	TPlayer(int id, int budget, int position);
+	TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
+	~TPlayer();
 
 	int Score(int runde, int anzGekGebObj, Map& map);
 	void getData();
@@ -77,8 +77,8 @@ public:
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
 	bool besitztStrasse(int strasse);
-	bool istStrassenSetHandelbar(int feld, vector<player*>& spielerListe);
-	bool Handeln(vector<player*>& spielerListe, int feld, int angebot);
+	bool istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe);
+	bool Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot);
 
 	void baueHaus(int strasse, Map& map);
 	void verkaufeHaus(int strasse);
@@ -91,6 +91,12 @@ public:
 	int getGebObjAnz();
 	vector<int> getGekObjVector();
 	vector<int> getGebObjVector();
+
+//cpu logic 
+	int handelcpu(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map);
+	bool acceptTradecpu(int spaceIndex, int offer, Map& map);
+	bool tryBuyStreetcpu(std::vector<TPlayer*>& p, Map& map);
+	bool tryBuildHousecpu(std::vector<TPlayer*>& p, Map& map);
 };
 
 
@@ -98,13 +104,4 @@ string LUT(int i);
 int getPreisStrasse(int feld, Map& map);
 int getPreisHaus(int feld, Map& map);
 
-class cpu_player1 : public player {
-public:
-	cpu_player1();
-
-	int handel(int cpuID, int totalPlayers, std::vector<player*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map);
-	bool acceptTrade(int spaceIndex, int offer, Map& map);
-	bool tryBuyStreet(std::vector<player*>& p, Map& map);
-	bool tryBuildHouse(std::vector<player*>& p, Map& map);
-};
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);

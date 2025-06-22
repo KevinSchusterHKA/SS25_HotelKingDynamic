@@ -1,12 +1,12 @@
 #include "Player.h"
 void UNITTEST() {
 	int AnzPlayer = 4;
-	vector<player*> p;
+	vector<TPlayer*> p;
 	Map map; // Temporäre Map-Instanz, um die Funktionalität zu testen
 
 	// Spieler anlegen
 	for (int i = 0; i < AnzPlayer; ++i) {
-		p.push_back(new player());
+		p.push_back(new TPlayer());
 		p[i]->setID(i);
 		p[i]->setHuman(HUMAN);
 		p[i]->setBudget(1000);
@@ -148,10 +148,10 @@ void UNITTEST() {
 }
 void UNITTEST_cpu() {
 	std::srand(std::time(nullptr));  // random seed 
-	std::vector<player*> players;
+	std::vector<TPlayer*> players;
 
 	for (int i = 0; i < 2; ++i) {
-		players.push_back(new player());
+		players.push_back(new TPlayer());
 		players.back()->setID(i);
 		players.back()->setHuman(HUMAN);
 		players.back()->setBudget(1000);
@@ -159,7 +159,7 @@ void UNITTEST_cpu() {
 	}
 
 	for (int i = 0; i < 10; ++i) {
-		players.push_back(new cpu_player1());
+		players.push_back(new TPlayer());
 		players.back()->setID(i + 2);
 		players.back()->setHuman(CPU1);
 		players.back()->setBudget(10000000);
@@ -184,37 +184,35 @@ void UNITTEST_cpu() {
 
 	for (size_t i = 0; i < players.size(); ++i) {
 		if (players[i]->getHuman() == CPU1) {
-			cpu_player1* cpu = static_cast<cpu_player1*>(players[i]);
 			//build house test
 			for (int build = 0; build < 6; ++build) {
-				bool built = cpu->tryBuildHouse(players, map);
-				std::cout << "try " << build + 1 << ": CPU" << cpu->getID()
+				bool built = players[i]->tryBuildHousecpu(players, map);
+				std::cout << "try " << build + 1 << ": CPU" << players[i]->getID()
 					<< (built ? " built a house." : " did not build a house.") << std::endl;
 			}
 
 			//street buy
-			bool bought = cpu->tryBuyStreet(players, map);
-			std::cout << "CPU" << cpu->getID() << (bought ? " bought a street." : " did not buy a street.") << std::endl;
+			bool bought = players[i]->tryBuyStreetcpu(players, map);
+			std::cout << "CPU" << players[i]->getID() << (bought ? " bought a street." : " did not buy a street.") << std::endl;
 
 			//Handel cpu to player
 			int targetPlayer = -1;
 			int propertyIndex = -1;
-			int offer = cpu->handel(cpu->getID(), players.size(), players, targetPlayer, propertyIndex, map);
+			int offer = players[i]->handelcpu(players[i]->getID(), players.size(), players, targetPlayer, propertyIndex, map);
 			if (offer != -1 && targetPlayer != -1 && propertyIndex != -1) {
-				std::cout << "CPU" << cpu->getID() << " offers " << offer << " for property "
+				std::cout << "CPU" << players[i]->getID() << " offers " << offer << " for property "
 					<< propertyIndex << " from player " << targetPlayer << std::endl;
 				//player to cpu 
 				if (players[targetPlayer]->getHuman() == CPU1) {
-					cpu_player1* targetCPU = static_cast<cpu_player1*>(players[targetPlayer]);
-					bool accepted = targetCPU->acceptTrade(propertyIndex, offer, map);
-					std::cout << "CPU" << targetCPU->getID() << (accepted ? " accepted the trade." : " rejected the trade.") << std::endl;
+					bool accepted = players[i]->acceptTradecpu(propertyIndex, offer, map);
+					std::cout << "CPU" << players[i]->getID() << (accepted ? " accepted the trade." : " rejected the trade.") << std::endl;
 				}
 				else {
 					std::cout << "Human player " << targetPlayer << " needs to decide on the offer." << std::endl;
 				}
 			}
 			else {
-				std::cout << "CPU" << cpu->getID() << " did not make a trade offer." << std::endl;
+				std::cout << "CPU" << players[i]->getID() << " did not make a trade offer." << std::endl;
 			}
 
 			std::cout << "##############" << std::endl;
