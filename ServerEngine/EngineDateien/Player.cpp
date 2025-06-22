@@ -76,7 +76,7 @@ void TPlayer::Paschwurf() {
 	this->setAugenzahl(this->getWurfel(0) + this->getWurfel(1));
 	this->incPosition(this->getAugenzahl());
 }
-int TPlayer::getAugenzahl() { return this->Wurfelzahl[0]+ this->Wurfelzahl[1]; }
+int TPlayer::getAugenzahl() { return this->Wurfelzahl[0] + this->Wurfelzahl[1]; }
 void TPlayer::setAugenzahl(int a) { this->Augenzahl = a; }
 int TPlayer::getPaschCounter() { return this->PaschCounter; }
 void TPlayer::setPaschCounter(int p) { this->PaschCounter = p; }
@@ -218,7 +218,7 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 			verkaufer->deleteStrasse(feld);
 			this->addStrasse(feld);
 
-			cout << "Handel erfolgreich: Strasse " << LUT(feld)	<< " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
+			cout << "Handel erfolgreich: Strasse " << LUT(feld) << " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
 			return true;
 		}
 	}
@@ -274,7 +274,6 @@ vector<string> TPlayer::getGebObjNamen() {
 int TPlayer::getGekObjAnz() { return this->GekaufteStrassen.size(); }
 int TPlayer::getGebObjAnz() { return this->GebauteHaeuser.size(); }
 
-cpu_player1::cpu_player1() : TPlayer() {}
 vector<int> TPlayer::getGekObjVector() {
 	return this->GekaufteStrassen;
 }
@@ -282,7 +281,7 @@ vector<int> TPlayer::getGebObjVector() {
 	return this->GebauteHaeuser;
 }
 // cpu to player
-int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {
+int TPlayer::handelcpu(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {
 	if ((rand() % 101) > 15) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
 		targetPlayerOut = -1;
@@ -324,7 +323,7 @@ int cpu_player1::handel(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, i
 }
 
 // player to cpu 
-bool cpu_player1::acceptTrade(int spaceIndex, int offer, Map& map) {
+bool TPlayer::acceptTradecpu(int spaceIndex, int offer, Map& map) {
 	int id = getID();
 	int propPrice = map.getPropertyPrice(spaceIndex);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
@@ -340,7 +339,7 @@ bool cpu_player1::acceptTrade(int spaceIndex, int offer, Map& map) {
 }
 
 // buy street
-bool cpu_player1::tryBuyStreet(std::vector<TPlayer*>& p, Map& map) {
+bool TPlayer::tryBuyStreetcpu(std::vector<TPlayer*>& p, Map& map) {
 	int price = map.getPropertyPrice(getPosition());
 	int id = getID();
 	int pos = getPosition();
@@ -357,12 +356,12 @@ bool cpu_player1::tryBuyStreet(std::vector<TPlayer*>& p, Map& map) {
 		//std::cout << "CPU" << getID() << " hat nicht genug Geld für die Strasse auf Position " << getPosition() << ".\n";
 		return false;
 	}
-	
+
 
 }
 
 //buildhouse for cpu
-bool cpu_player1::tryBuildHouse(std::vector<TPlayer*>& p, Map& map) {
+bool TPlayer::tryBuildHousecpu(std::vector<TPlayer*>& p, Map& map) {
 	int myID = getID();
 	std::vector<int> myProperties = p[myID]->getGekObjVector();
 
@@ -387,7 +386,7 @@ bool cpu_player1::tryBuildHouse(std::vector<TPlayer*>& p, Map& map) {
 			}
 		}
 
-		if (bestProp == -1) continue; 
+		if (bestProp == -1) continue;
 
 		int price = map.getHousePrice(bestProp);
 		int maxPrice = this->getBudget() * ((30 + rand() % 11) / 100.0); // 30-40%
@@ -425,7 +424,7 @@ int colorcheck(int playerID, int space, std::vector<int>& ownedProperties) {
 		}
 	}
 
-	return colorGroup;  
+	return colorGroup;
 }
 
 string LUT(int i) {
@@ -437,5 +436,5 @@ int getPreisStrasse(int i, Map& map) {
 }
 
 int getPreisHaus(int i, Map& map) {
-	return map.getHousePrice(i); 
+	return map.getHousePrice(i);
 }

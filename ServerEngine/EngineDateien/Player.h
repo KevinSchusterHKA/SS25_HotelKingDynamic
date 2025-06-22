@@ -91,6 +91,12 @@ public:
 	int getGebObjAnz();
 	vector<int> getGekObjVector();
 	vector<int> getGebObjVector();
+
+//cpu logic 
+	int handelcpu(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map);
+	bool acceptTradecpu(int spaceIndex, int offer, Map& map);
+	bool tryBuyStreetcpu(std::vector<TPlayer*>& p, Map& map);
+	bool tryBuildHousecpu(std::vector<TPlayer*>& p, Map& map);
 };
 
 
@@ -98,13 +104,4 @@ string LUT(int i);
 int getPreisStrasse(int feld, Map& map);
 int getPreisHaus(int feld, Map& map);
 
-class cpu_player1 : public TPlayer {
-public:
-	cpu_player1();
-
-	int handel(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map);
-	bool acceptTrade(int spaceIndex, int offer, Map& map);
-	bool tryBuyStreet(std::vector<TPlayer*>& p, Map& map);
-	bool tryBuildHouse(std::vector<TPlayer*>& p, Map& map);
-};
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);

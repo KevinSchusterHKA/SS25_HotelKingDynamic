@@ -118,7 +118,7 @@ void TServer::UnitTest() {
             ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
             HatGewuerfelt = false;
         }
-        if (MomentanerSpieler >= AnzahlSpieler) {
+        if (MomentanerSpieler >= AnzahlSpieler+AnzahlCpuGegner) {
             MomentanerSpieler = 0;
         }
 
@@ -143,6 +143,11 @@ void TServer::UnitTest() {
         EingabeCh = MenueOptionen::Reset;
         if (_kbhit()) {
             EingabeCh = _getch();
+        }
+        else { //logic for cpu auto wurfel
+            if (player[MomentanerSpieler].getHuman() == CPU1 && !HatGewuerfelt) {
+                EingabeCh = '\r';   
+            }
         }
         UpdateSpielfeld = FALSE;
 
@@ -183,6 +188,7 @@ void TServer::UnitTest() {
             break;
         case KEY_ENTER:
         case KEY_SPACE:
+
             switch (MenueAuswahl)
             {
                 case Menues::Start:
@@ -197,10 +203,15 @@ void TServer::UnitTest() {
                         for (size_t i = 0; i < AnzahlSpieler; i++)
                         {
                             player[i].setName(SpielerNamen[i]);
+                            player[i].setHuman(HUMAN);
                         }
                         MapEngine.SetPlayerNumber(AnzahlSpieler);
                     }
-				    if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
+                    for (size_t i = AnzahlSpieler; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
+                        player[i].setName(SpielerNamen[i]);
+                        player[i].setHuman(CPU1);  
+                    }
+             		    if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
 					    std::vector<HighscoreEntry> player;
 					    load_highscores("highscores.txt", player);
                         std::vector<std::string> playerNames;
@@ -216,6 +227,8 @@ void TServer::UnitTest() {
                     if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                     if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
                     break;
+                 
+
                 case Menues::Spieler:
                     CursorPos = { short(x / 2 - 160), short(y / 2 - 40 + ControlEngine.GetAnzMenuepunkteSpielerOptionen()) };
                     ControlEngine.UpdateCursorPosition(CursorPos);
@@ -278,8 +291,11 @@ void TServer::UnitTest() {
                             std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
                         }
                     }
+                   
+
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                     {
+                 
                         //player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
                         //player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
                         //ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
@@ -370,14 +386,14 @@ void TServer::UnitTest() {
                             }
                             for (size_t i = 0; i < AnzahlCpuGegner; i++)
                             {
-                                //PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
+                                PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
                                 //PlTemp.builtObjects = player[i].GetGebObjVector;      //TODO:CPU GEGNER
                                 //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);      //TODO:CPU GEGNER
-                                //PlTemp.inJail = player[i].imGefaengnis();             //TODO:CPU GEGNER
-                                //PlTemp.name = player[i].getName();                    //TODO:CPU GEGNER
+                                PlTemp.inJail = player[i].imGefaengnis();             //TODO:CPU GEGNER
+                                PlTemp.name = player[i].getName();                    //TODO:CPU GEGNER
                                 //PlTemp.ownedObjects = player[i].GetGekObjVector();    //TODO:CPU GEGNER
-                                //PlTemp.position = player[i].getPosition();            //TODO:CPU GEGNER
-                                //GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
+                                PlTemp.position = player[i].getPosition();            //TODO:CPU GEGNER
+                                GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
                             }
                             GsTemp.roundCount=AnzahlRunden;
                             CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
