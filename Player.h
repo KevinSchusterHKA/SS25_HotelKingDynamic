@@ -92,11 +92,11 @@ public:
 	vector<int> getGekObjVector();
 	vector<int> getGebObjVector();
 
-//cpu logic 
-	int handelcpu(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map);
+	//cpu logic 
+	int handelcpu(int cpuID, int totalPlayers, TPlayer player[], int& targetPlayerOut, int& propertyIndexOut, Map& map);
 	bool acceptTradecpu(int spaceIndex, int offer, Map& map);
-	bool tryBuyStreetcpu(std::vector<TPlayer*>& p, Map& map);
-	bool tryBuildHousecpu(std::vector<TPlayer*>& p, Map& map);
+	bool tryBuyStreetcpu(Map& map);
+	bool tryBuildHousecpu(TPlayer player[], Map& map);
 };
 
 
