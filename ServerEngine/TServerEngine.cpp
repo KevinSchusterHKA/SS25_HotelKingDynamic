@@ -291,6 +291,28 @@ void TServer::UnitTest() {
                             std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(MomentanerSpieler + 1) + " hat schon gewuerfelt!";
                         }
                     }
+                    if (player[MomentanerSpieler].getHuman() ==CPU1 )//cpu buy street
+                    {
+                        bool istFrei = true;
+
+                        for (int i = 0; i < AnzahlSpieler; i++) {
+                            if (player[i].besitztStrasse(player[MomentanerSpieler].getPosition())) {
+                                istFrei = false;
+                                break;
+                            }
+                        }
+
+                        if (istFrei) {
+
+                                if (player[MomentanerSpieler].tryBuyStreetcpu(MapEngine))
+                                {
+                                    player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                                    player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
+                                    ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); // TODO: String von MapEngine holen
+                                }
+
+                        }
+                    }
                    
 
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
@@ -312,9 +334,21 @@ void TServer::UnitTest() {
 
                         // Wenn Straße frei ist: kaufen
                         if (istFrei) {
-                            player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                            player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
-                            ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); // TODO: String von MapEngine holen
+                            if (player[MomentanerSpieler].getHuman() == CPU1) {
+                                
+                                if (player[MomentanerSpieler].tryBuyStreetcpu(MapEngine))
+                                {
+                                    player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                                    player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
+                                    ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); // TODO: String von MapEngine holen
+                                }
+                            }
+                            else {
+                                player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
+                                player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
+                                ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); // TODO: String von MapEngine holen
+                            }
+                            
                         }
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
@@ -329,6 +363,25 @@ void TServer::UnitTest() {
                         ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                         StrasseBauen = -1;
                     }
+                 
+
+                    if (player[MomentanerSpieler].getHuman() == CPU1)
+                    {
+                        int street = -1;
+                        int targetPlayerOut = -1;
+                        int angebotspreis = player[MomentanerSpieler].handelcpu(MomentanerSpieler,AnzahlSpieler+ AnzahlCpuGegner,player, targetPlayerOut, street, MapEngine);//cpu trade 
+                        if (angebotspreis != -1) {
+
+                            if (player[targetPlayerOut].getHuman() == CPU1)
+                            {
+                              player[targetPlayerOut].acceptTradecpu(street,angebotspreis, MapEngine);
+
+                            }
+                            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert?");//todo controls
+                            MenueAuswahl = Menues::Handel;
+                        }
+                    }
+
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
@@ -509,6 +562,7 @@ void TServer::UnitTest() {
                     ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
                     ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
                     ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
+                  
                     break;
                 default:
                     break;

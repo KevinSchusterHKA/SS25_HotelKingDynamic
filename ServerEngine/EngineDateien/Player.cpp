@@ -306,8 +306,8 @@ vector<int> TPlayer::getHaueser() {
 	return TEMPHaueser;
 }
 // cpu to player
-int TPlayer::handelcpu(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {
-	if ((rand() % 101) > 15) {
+int TPlayer::handelcpu(int cpuID, int totalPlayers, TPlayer p[], int& targetPlayerOut, int& propertyIndexOut, Map& map) {
+	if ((rand() % 101) > 151) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
 		targetPlayerOut = -1;
 		propertyIndexOut = -1;
@@ -318,7 +318,7 @@ int TPlayer::handelcpu(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, in
 		targetPlayer = rand() % totalPlayers;
 	} while (targetPlayer == cpuID);
 
-	std::vector<int> ownedProperties = p[targetPlayer]->getGekObjVector();
+	std::vector<int> ownedProperties = p[targetPlayer].getGekObjVector();
 	if (ownedProperties.empty()) {
 		//std::cout << "CPU Spieler " << targetPlayer << " besitzt keine Straben.\n";
 		targetPlayerOut = -1;
@@ -334,7 +334,7 @@ int TPlayer::handelcpu(int cpuID, int totalPlayers, std::vector<TPlayer*>& p, in
 	int offerPercent = minPercent + rand() % (maxPercent - minPercent + 1);
 	int offer = (1 + offerPercent / 100.0) * map.getPropertyPrice(propIndex);
 
-	if (offer > p[cpuID]->getBudget()) {
+	if (offer > p[cpuID].getBudget()) {
 		/*  std::cout << "CPU Kann sich das Angebot von " << offer
 			   << "' nicht leisten.\n";*/
 		return -1;
@@ -364,7 +364,7 @@ bool TPlayer::acceptTradecpu(int spaceIndex, int offer, Map& map) {
 }
 
 // buy street
-bool TPlayer::tryBuyStreetcpu(std::vector<TPlayer*>& p, Map& map) {
+bool TPlayer::tryBuyStreetcpu(Map& map) {
 	int price = map.getPropertyPrice(getPosition());
 	int id = getID();
 	int pos = getPosition();
@@ -373,8 +373,6 @@ bool TPlayer::tryBuyStreetcpu(std::vector<TPlayer*>& p, Map& map) {
 		return false;
 	}
 	if ((getBudget() * (20 + rand() % 66)) / 100.0 >= price) { //nur wenn price ist 20% - 65% das budgets
-		this->bezahle(price);
-		this->addStrasse(getPosition());
 		return true;
 	}
 	else {
@@ -386,16 +384,16 @@ bool TPlayer::tryBuyStreetcpu(std::vector<TPlayer*>& p, Map& map) {
 }
 
 //buildhouse for cpu
-bool TPlayer::tryBuildHousecpu(std::vector<TPlayer*>& p, Map& map) {
+bool TPlayer::tryBuildHousecpu(TPlayer player[], Map& map) {
 	int myID = getID();
-	std::vector<int> myProperties = p[myID]->getGekObjVector();
+	std::vector<int> myProperties = player[myID].getGekObjVector();
 
 	for (size_t i = 0; i < myProperties.size(); i++) {
 		int propIndex = myProperties[i];
 		int colorGroup = colorcheck(myID, propIndex, myProperties);
 		if (colorGroup == -1) continue;
 
-		std::vector<int> built = p[myID]->getGebObjVector();
+		std::vector<int> built = player[myID].getGebObjVector();
 
 		int minHouses = 6; // max 6-1
 		int bestProp = -1;
@@ -405,7 +403,7 @@ bool TPlayer::tryBuildHousecpu(std::vector<TPlayer*>& p, Map& map) {
 			if (groupProp == -1) continue;
 
 			int houseCount = std::count(built.begin(), built.end(), groupProp);
-			if (houseCount < minHouses && houseCount < 5) {
+			if (houseCount < minHouses && houseCount < 6) {
 				minHouses = houseCount;
 				bestProp = groupProp;
 			}
@@ -414,11 +412,11 @@ bool TPlayer::tryBuildHousecpu(std::vector<TPlayer*>& p, Map& map) {
 		if (bestProp == -1) continue;
 
 		int price = map.getHousePrice(bestProp);
-		int maxPrice = this->getBudget() * ((30 + rand() % 11) / 100.0); // 30-40%
+		int maxPrice = player[myID].getBudget() * ((30 + rand() % 11) / 100.0); // 30-40%
 
 		if (price <= maxPrice) {
 			bezahle(price);
-			this->baueHaus(bestProp, map);
+			player[myID].baueHaus(bestProp, map);
 			//std::cout << "CPU " << myID << " builds a house on " << LUT(this->getPosition()) << "\n";
 			return true;
 		}
