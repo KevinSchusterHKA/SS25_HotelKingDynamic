@@ -153,7 +153,6 @@ void TPlayer::addStrasse(int strasse) {
 	GekaufteStrassen.push_back(strasse);
 	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
-
 void TPlayer::deleteStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
@@ -163,6 +162,17 @@ void TPlayer::deleteStrasse(int strasse) {
 		}
 	}
 	cout << "Diese Strasse besitzen Sie nicht.\n";
+}
+void TPlayer::verkaufeStrasse(int strasse, Map& map) {
+	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
+		if (this->GekaufteStrassen[i] == strasse) {
+			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
+			this->erhalte(int(getPreisStrasse(strasse, map) / 2)); // Geld für Strasse zurückerhalten (aber nur die Hälfte des Preises)
+			cout << "Die Strasse " << LUT(strasse) << " wurde verkauft.\n";
+			return;
+		}
+	}
+	cout << "Sie besitzen nicht die Strasse " << LUT(strasse) << ".\n";
 }
 bool TPlayer::besitztStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
@@ -185,6 +195,19 @@ bool TPlayer::istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe) 
 		}
 	}
 	return true;
+}
+
+int TPlayer::WieVieleHaueserAufSet(int feld) {
+	int count = 0;
+	int farbe = _boardarr[feld].Color;
+	for (int i = 0; i < 40; ++i) {
+		if (_boardarr[i].Type == TypeStreet && _boardarr[i].Color == farbe) {
+			if (this->anzahlHaeuserAuf(feld)) {
+				count++;
+			}
+		}
+	}
+	return count;
 }
 
 bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
@@ -228,6 +251,12 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 }
 
 void TPlayer::baueHaus(int strasse, Map& map) {
+
+	// Prüfen ob das Feld eine Straße ist
+	if (_boardarr[strasse].Type != TypeStreet) {
+		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
+		return;
+	}
 	if (map.ownsStreets(this->getID(), strasse)) {
 		this->GebauteHaeuser.push_back(strasse);
 		cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
@@ -237,31 +266,41 @@ void TPlayer::baueHaus(int strasse, Map& map) {
 	}
 }
 void TPlayer::baueHausTEMP(int strasse, Map& map) {
-
-	std::vector<int> myProperties = this->getGekObjVector();
-	if (colorcheck(this->getID(), strasse, myProperties)) {
-		if (getPreisHaus(strasse, map) - this->getBudget() >= 0) {
-			this->GebauteHaeuser.push_back(strasse);
-			this->bezahle(getPreisHaus(strasse, map));
-			cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
+	// Prüfen ob das Feld eine Straße ist
+	if (_boardarr[strasse].Type != TypeStreet) {
+		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
+		return;
+	}
+	if (this->WieVieleHaueserAufSet(strasse) < 5) {
+		std::vector<int> myProperties = this->getGekObjVector();
+		if (colorcheck(this->getID(), strasse, myProperties)) {
+			if (getPreisHaus(strasse, map) - this->getBudget() >= 0) {
+				this->GebauteHaeuser.push_back(strasse);
+				this->bezahle(getPreisHaus(strasse, map));
+				cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
+			}
+			else {
+				cout << "Sie haben nicht genug Geld, um ein Haus auf " << LUT(strasse) << " zu bauen.\n";
+			}
 		}
 		else {
-			cout << "Sie haben nicht genug Geld, um ein Haus auf " << LUT(strasse) << " zu bauen.\n";
+			cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
 		}
 	}
 	else {
-		cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
+		cout << "Sie koennen kein weiteres Haus auf " << LUT(strasse) << " bauen, da bereits 5 Haeuser vorhanden sind.\n";
 	}
 }
-void TPlayer::verkaufeHaus(int strasse) {
+void TPlayer::verkaufeHaus(int strasse, Map& map) {
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		if (this->GebauteHaeuser[i] == strasse) {
 			this->GebauteHaeuser.erase(this->GebauteHaeuser.begin() + i);
+			this->erhalte(int(getPreisHaus(strasse, map) / 2)); // Geld für Haus zurückerhalten (aber nur die Hälfte des Preises)
 			cout << "Ein Haus auf " << LUT(strasse) << " wurde verkauft.\n";
 			return;
 		}
 	}
-	cout << "Sie besitzen kein Haus auf " << strasse << ".\n";
+	cout << "Sie besitzen kein Haus auf " << LUT(strasse) << ".\n";
 }
 int TPlayer::anzahlHaeuserAuf(int strasse) {
 	int count = 0;

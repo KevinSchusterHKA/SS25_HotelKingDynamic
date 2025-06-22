@@ -76,14 +76,16 @@ public:
 
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
+	void verkaufeStrasse(int strasse, Map& map);
 	bool besitztStrasse(int strasse);
 	bool istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe);
 	bool Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot);
 
 	void baueHaus(int strasse, Map& map);
 	void baueHausTEMP(int strasse, Map& map);
-	void verkaufeHaus(int strasse);
+	void verkaufeHaus(int strasse, Map& map);
 	int anzahlHaeuserAuf(int strasse);
+	int WieVieleHaueserAufSet(int feld);
 
 	vector<string> getGekObjNamen();
 	vector<string> getGebObjNamen();
