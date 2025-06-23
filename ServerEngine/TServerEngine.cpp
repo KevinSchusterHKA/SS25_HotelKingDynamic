@@ -7,7 +7,7 @@ TServer::~TServer(){
 }
 
 void TServer::UnitTest() {
-
+    ControlEngine.AusgabeNachricht("asfasfasfasfasf", 10, 10, Farbe::Rot);
     enum MenueOptionen {
         Reset = -1,
         Start = 0,

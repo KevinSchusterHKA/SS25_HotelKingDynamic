@@ -168,4 +168,5 @@ public:
     void UpdateCursorPosition(COORD Pos);
     void SetConsoleFontSize(int fontSize);
     bool isRunningInWindowsTerminal();
+    void AusgabeNachricht(std::string Nachricht, int x, int y, Farbe f);
 };
