@@ -54,7 +54,6 @@ public:
 		for (PlayerState player : players)
 		{
 			setPlayer(i, player.position, player.inJail ? -1:0);
-			int j = 0;
 			for (int space : player.ownedObjects)
 			{
 				Spaces[space].setOwner(i);
@@ -69,14 +68,16 @@ public:
 						Spaces[_streetarr[streetcolor][2]].buyHouse();
 					}
 				}
-				for (int k = 0; k < player.builtObjects.at(j); k++)
-				{
-					Spaces[space].buyHouse();
-					Spaces[space].setPrice(_factor);
-				}
-				j++;
 			}
 			i++;
+			for (int j = 0; j < 40; j++)
+			{
+				for (int k = 0; k < player.builtObjects.at(j); k++)
+				{
+					Spaces[j].buyHouse();
+					Spaces[j].setPrice(_factor);
+				}
+			}
 		}
 	}
 
