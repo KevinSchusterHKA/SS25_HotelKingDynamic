@@ -91,7 +91,7 @@ void TControl::AusgabeSpielerInformationen( std::string Namen[4],
     Farbe start[] = { Farbe::Rot, Farbe::Gruen, Farbe::Gelb, Farbe::Cyan };
     int BreiteMenueSpielerBox = this->SpielerInformationen[this->SpielerInformationen.size() - 2].size();
 
-    for (int i = 0; i < AnzSpieler+2; i++) { //todo give list of amount of cpu players
+    for (int i = 0; i < AnzSpieler; i++) { //todo give list of amount of cpu players
         this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * BreiteMenueSpielerBox+x, y, start[i]);
 		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, start[i]);
     }

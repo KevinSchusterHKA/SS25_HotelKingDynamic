@@ -212,7 +212,6 @@ int TPlayer::WieVieleHaueserAufSet(int feld) {
 }
 
 bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot ,Map& map) {
-	int target = -1;
 	// Prüfen ob Käufer genug Budget hat
 	if (this->getBudget() < angebot) {
 		cout << "Du hast nicht genug Budget fuer dieses Angebot." << endl;

@@ -7,20 +7,7 @@ TServer::~TServer(){
 }
 
 void TServer::UnitTest() {
-    player[0].addStrasse(3);
-    player[2].addStrasse(11);
-    player[3].addStrasse(13);
-    player[1].addStrasse(1);
 
-
-	player[0].setID(0);
-    player[1].setID(1);
-    player[2].setID(2);
-    player[3].setID(3);
-    std::vector<TPlayer*> playerRefs;
-    for (int i = 0; i < 4; ++i) {
-        playerRefs.push_back(&player[i]);
-    }
     enum MenueOptionen {
         Reset = -1,
         Start = 0,
@@ -51,6 +38,7 @@ void TServer::UnitTest() {
 
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
+    std::vector<TPlayer*> playerRefs;
     int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner = 2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
@@ -216,13 +204,18 @@ void TServer::UnitTest() {
                         for (size_t i = 0; i < AnzahlSpieler; i++)
                         {
                             player[i].setName(SpielerNamen[i]);
+							player[i].setID(i);
                             player[i].setHuman(HUMAN);
                         }
                         MapEngine.SetPlayerNumber(AnzahlSpieler);
                     }
                     for (size_t i = AnzahlSpieler; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
                         player[i].setName(SpielerNamen[i]);
+                        player[i].setID(i);
                         player[i].setHuman(CPU1);  
+                    }
+                    for (int i = 0; i < 4; ++i) {
+                        playerRefs.push_back(&player[i]);
                     }
              		    if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
 					    std::vector<HighscoreEntry> player;
@@ -372,7 +365,7 @@ void TServer::UnitTest() {
                         space = StrasseBauen;
                         player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, space, player[MomentanerSpieler].getBudget()));
                         //player[MomentanerSpieler].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                        player[MomentanerSpieler].baueHaus(player[MomentanerSpieler].getPosition(),MapEngine);
+                        player[MomentanerSpieler].baueHausTEMP(player[MomentanerSpieler].getPosition(),MapEngine);
                         ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                         StrasseBauen = -1;
                     }
@@ -550,8 +543,7 @@ void TServer::UnitTest() {
                     
                     if (option == 0) //Akzeptieren
                     {
-                        player[MomentanerSpieler].Handeln(playerRefs, Strasse, Angebot, TServer::MapEngine);
-                        
+                        player[MomentanerSpieler].Handeln(playerRefs, Strasse, Angebot, MapEngine);
                     }
                     else
                     {
@@ -651,7 +643,7 @@ void TServer::UnitTest() {
             std::vector<int> gekObjAnz;
             std::vector<int> gebObjAnz;               
             std::cout << MRobj[MomentanerSpieler].Msg << "\n";
-            for (size_t i = 0; i < 4; i++)
+            for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
             {
                 gekObjNamen.push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
                 gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
@@ -659,7 +651,7 @@ void TServer::UnitTest() {
                 gekObjAnz.push_back(player[i].getGekObjAnz());          // Hier wird angenommen, dass getGekObjAnz() eine int zurückgibt
                 gebObjAnz.push_back(player[i].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurückgibt
             }
-            ControlEngine.AusgabeSpielerInformationen(SpielerNamen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
+            ControlEngine.AusgabeSpielerInformationen(SpielerNamen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler+AnzahlCpuGegner, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
         }
 
 
