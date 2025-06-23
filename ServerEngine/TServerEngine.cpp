@@ -88,6 +88,7 @@ void TServer::UnitTest() {
     
 	system("cls");
     ControlEngine.SetConsoleFontSize(8);
+    system("chcp 850");
 	Sleep(100); 
 
     //Ausgabe des Startbildschirms
@@ -111,7 +112,6 @@ void TServer::UnitTest() {
             }
         } while (TRUE);
         std::cin.clear();
-        system("chcp 850");
         system("cls");
     }
     Menues MenueAuswahl = Menues::Start;
