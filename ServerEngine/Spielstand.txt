@@ -1,9 +1,11 @@
-roundCount=0
+roundCount=4
 currentPlayerIndex=0
+playerCount=2
+cpuCount=0
 diceOrder=
-Player=sdfg,1380,9,0,0
+Player=asdasf,353,37,0,0,204
+Owned=11,13,14
+Built=0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Player=vcxvxcv,1500,10,0,0,204
 Owned=
-Built=
-Player=ertdfbtbhertdfgber,1500,5,0,0
-Owned=
-Built=
+Built=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
