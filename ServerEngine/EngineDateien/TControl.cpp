@@ -1416,7 +1416,7 @@ bool TControl::isRunningInWindowsTerminal() {
     return false;
 }
 void TControl::AusgabeNachricht(std::string Nachricht,int x,int y,Farbe f) {
-    this->SetFarbe(Farbe::BG_Weiss);
+    this->SetFarbe(Farbe::BG_Schwarz);
     this->SetFarbe(f);
     this->SetConsoleFontSize(20);
     int BreiteMenue = Nachricht.size() + 10;
@@ -1445,6 +1445,8 @@ void TControl::AusgabeNachricht(std::string Nachricht,int x,int y,Farbe f) {
 
     Sleep(2000);
     this->SetConsoleFontSize(8);
+    this->SetFarbe(Farbe::Zuruecksetzen);
+
 
 }
 void TControl::UnitTest() {
