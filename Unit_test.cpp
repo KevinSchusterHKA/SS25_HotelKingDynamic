@@ -165,7 +165,10 @@ void UNITTEST_cpu() {
 		players[i].setPosition(i);
 	} 
 	players[2].addStrasse(1);   //strasse handel test und farbe set 
-	players[2].addStrasse(3);
+	players[2].addStrasse(3); //player hat 2 set für testen
+	players[2].addStrasse(6);
+	players[2].addStrasse(8);
+	players[2].addStrasse(9);
 	players[3].addStrasse(11);   
 	players[3].addStrasse(13);
 	players[3].addStrasse(14);
@@ -214,6 +217,14 @@ void UNITTEST_cpu() {
 			}
 
 			std::cout << "##############" << std::endl;
+		}
+	}
+	for (size_t i = 0; i < amount; ++i) {
+		if (players[i].getHuman() == CPU1) {
+			int costOfBahn = 200;
+			int bahnPos = 26;// 26 is free 5 no street
+			bool willTakeBahn = players[i].takebahn(players, costOfBahn, bahnPos, amount, map);
+			std::cout << "CPU" << players[i].getID() << (willTakeBahn ? " decided to take the Bahn." : " decided NOT to take the Bahn.") << std::endl;
 		}
 	}
 }

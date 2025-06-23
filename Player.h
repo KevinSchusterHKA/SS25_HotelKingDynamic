@@ -76,13 +76,16 @@ public:
 
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
+	void verkaufeStrasse(int strasse, Map& map);
 	bool besitztStrasse(int strasse);
 	bool istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe);
 	bool Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot);
 
 	void baueHaus(int strasse, Map& map);
-	void verkaufeHaus(int strasse);
+	void baueHausTEMP(int strasse, Map& map);
+	void verkaufeHaus(int strasse, Map& map);
 	int anzahlHaeuserAuf(int strasse);
+	int WieVieleHaueserAufSet(int feld);
 
 	vector<string> getGekObjNamen();
 	vector<string> getGebObjNamen();
@@ -97,6 +100,7 @@ public:
 	bool acceptTradecpu(int spaceIndex, int offer, Map& map);
 	bool tryBuyStreetcpu(Map& map);
 	bool tryBuildHousecpu(TPlayer player[], Map& map);
+	bool takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlplayers, Map& map);
 };
 
 
