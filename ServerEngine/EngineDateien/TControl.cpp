@@ -86,14 +86,15 @@ void TControl::AusgabeSpielerInformationen( std::string Namen[4],
                                             int x,
                                             int y,
                                             std::vector<std::vector<std::string>> GekaufteObjekte,
-                                            std::vector<std::vector<std::string>> GebauteObjekte) {
+                                            std::vector<std::vector<std::string>> GebauteObjekte,
+                                            std::vector<int> SpielerReihenfolge) {
 
     Farbe start[] = { Farbe::Rot, Farbe::Gruen, Farbe::Gelb, Farbe::Cyan };
     int BreiteMenueSpielerBox = this->SpielerInformationen[this->SpielerInformationen.size() - 2].size();
 
     for (int i = 0; i < AnzSpieler; i++) { //todo give list of amount of cpu players
-        this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * BreiteMenueSpielerBox+x, y, start[i]);
-		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, start[i]);
+        this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * BreiteMenueSpielerBox+x, y, start[SpielerReihenfolge[i]]);
+		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, start[SpielerReihenfolge[i]]);
     }
 }
 
@@ -1415,6 +1416,40 @@ bool TControl::isRunningInWindowsTerminal() {
     }
     return false;
 }
+void TControl::AusgabeNachricht(std::string Nachricht,int x,int y,Farbe f) {
+    this->SetFarbe(Farbe::BG_Schwarz);
+    this->SetFarbe(f);
+    this->SetConsoleFontSize(20);
+    int BreiteMenue = Nachricht.size() + 10;
+    int linkerRandText = (BreiteMenue - 2) / 2 - Nachricht.size() / 2;
+
+    this->coord.X = x;
+    this->coord.Y = y;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << _symbolcharsControl[ULC];
+    for (size_t i = 1; i < BreiteMenue - 1; i++)
+    {
+        std::cout << _symbolcharsControl[HL];
+    }
+    std::cout << _symbolcharsControl[URC];
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << _symbolcharsControl[VL] << std::setw(linkerRandText) << " " << std::left << Nachricht << std::setw(linkerRandText + 1) << std::right << _symbolcharsControl[VL];
+    this->coord.Y++;
+    SetConsoleCursorPosition(this->hConsole, this->coord);
+    std::cout << _symbolcharsControl[LLC];
+    for (size_t i = 1; i < BreiteMenue - 1; i++)
+    {
+        std::cout << _symbolcharsControl[HL];
+    }
+    std::cout << _symbolcharsControl[LRC];
+
+    Sleep(2000);
+    this->SetConsoleFontSize(8);
+    this->SetFarbe(Farbe::Zuruecksetzen);
+
+
+}
 void TControl::UnitTest() {
 
     enum MenueOptionen {
@@ -1562,7 +1597,7 @@ void TControl::UnitTest() {
                 }
 
                 TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
-                TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+                TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen,{0,1,2,3});
                 break;
             case Menues::Optionen:
                 system("cls");
@@ -1639,7 +1674,7 @@ void TControl::UnitTest() {
         if (UpdateSpielfeld)
         {
             TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
-            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen,{0,1,2,3});
         }
 
 
