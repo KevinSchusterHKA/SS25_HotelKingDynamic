@@ -39,7 +39,7 @@ void TServer::UnitTest() {
 
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
-    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner=2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden=0,StrasseBauen=-1;
+    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner=0, MomentanerSpieler = 0, x = 0, y = 0, AnzahlRunden=0,StrasseBauen=-1;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
