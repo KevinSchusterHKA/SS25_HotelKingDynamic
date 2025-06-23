@@ -86,14 +86,15 @@ void TControl::AusgabeSpielerInformationen( std::string Namen[4],
                                             int x,
                                             int y,
                                             std::vector<std::vector<std::string>> GekaufteObjekte,
-                                            std::vector<std::vector<std::string>> GebauteObjekte) {
+                                            std::vector<std::vector<std::string>> GebauteObjekte,
+                                            std::vector<int> SpielerReihenfolge) {
 
     Farbe start[] = { Farbe::Rot, Farbe::Gruen, Farbe::Gelb, Farbe::Cyan };
     int BreiteMenueSpielerBox = this->SpielerInformationen[this->SpielerInformationen.size() - 2].size();
 
     for (int i = 0; i < AnzSpieler; i++) { //todo give list of amount of cpu players
-        this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * BreiteMenueSpielerBox+x, y, start[i]);
-		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, start[i]);
+        this->AusgabeSpielerBox(Namen[i], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * BreiteMenueSpielerBox+x, y, start[SpielerReihenfolge[i]]);
+		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, start[SpielerReihenfolge[i]]);
     }
 }
 
@@ -1596,7 +1597,7 @@ void TControl::UnitTest() {
                 }
 
                 TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
-                TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+                TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen,{0,1,2,3});
                 break;
             case Menues::Optionen:
                 system("cls");
@@ -1673,7 +1674,7 @@ void TControl::UnitTest() {
         if (UpdateSpielfeld)
         {
             TestControl.AusgabeTestFeld(x / 2 - 110, y / 2 - 44);
-            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen);
+            TestControl.AusgabeSpielerInformationen(playerNames, budget, gekObjAnz, gebObjAnz, AnzahlSpieler, x / 2 - 90, y / 2 - 36, GekObjNamen, GebObjNamen,{0,1,2,3});
         }
 
 

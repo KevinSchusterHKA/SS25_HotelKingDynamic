@@ -690,7 +690,7 @@ void TServer::UnitTest() {
                 gekObjAnz.push_back(player[IndexReihenfolge[i]].getGekObjAnz());          // Hier wird angenommen, dass getGekObjAnz() eine int zurückgibt
                 gebObjAnz.push_back(player[IndexReihenfolge[i]].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurückgibt
             }
-            ControlEngine.AusgabeSpielerInformationen(SpielerNamen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler+AnzahlCpuGegner, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen);
+            ControlEngine.AusgabeSpielerInformationen(SpielerNamen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler+AnzahlCpuGegner, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen,IndexReihenfolge);
         }
 
 
