@@ -39,7 +39,7 @@ void TServer::UnitTest() {
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
     std::vector<TPlayer*> playerRefs;
-    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner = 2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1;
+    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
@@ -119,9 +119,7 @@ void TServer::UnitTest() {
             ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
             HatGewuerfelt = false;
         }
-        if (MomentanerSpieler >= AnzahlSpieler+AnzahlCpuGegner) {
-            MomentanerSpieler = 0;
-        }
+
 
         switch (MomentanerSpieler)
         {
@@ -594,7 +592,9 @@ void TServer::UnitTest() {
         default:
             break;
         }
-
+        if (MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) {
+            MomentanerSpieler = 0;
+        }
 
         //Ausgabe des ausgewaehlten Menüs
 
@@ -645,6 +645,7 @@ void TServer::UnitTest() {
             std::cout << MRobj[MomentanerSpieler].Msg << "\n";
             for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
             {
+				SpielerNamen.push_back(player[i].getName());        // Hier wird angenommen, dass getName() eine std::string zurückgibt
                 gekObjNamen.push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
                 gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
                 tempBudgets.push_back(player[i].getBudget());
