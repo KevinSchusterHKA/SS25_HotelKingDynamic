@@ -39,8 +39,10 @@ void TServer::UnitTest() {
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
     std::vector<TPlayer*> playerRefs;
+    vector<int> WurfelWert;
+    vector<int> IndexReihenfolge;
     int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1;
-    bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
+    bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE, gleicheWuerfe = true;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
@@ -212,6 +214,40 @@ void TServer::UnitTest() {
                         player[i].setID(i);
                         player[i].setHuman(CPU1);  
                     }
+                    // Würfelreihenfolge festlegen:
+                    gleicheWuerfe = true;
+                    do {
+                        WurfelWert.clear();
+                        gleicheWuerfe = false;
+                        for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
+                            int temp1 = player[i].wurfeln();
+                            int temp2 = player[i].wurfeln();
+                            WurfelWert.push_back(temp1 + temp2);
+                        }
+                        // Prüfen, ob alle Würfe unterschiedlich sind
+                        for (int i = 0; i < (int)WurfelWert.size(); ++i) {
+                            for (int j = i + 1; j < (int)WurfelWert.size(); ++j) {
+                                if (WurfelWert[i] == WurfelWert[j]) {
+                                    gleicheWuerfe = true;
+                                    break;
+                                }
+                            }
+                            if (gleicheWuerfe) break;
+                        }
+                    } while (gleicheWuerfe);
+
+                    // Index-Vektor erstellen und richtig resizen!
+                    IndexReihenfolge.resize(WurfelWert.size());
+                    for (int i = 0; i < (int)WurfelWert.size(); ++i) {
+                        IndexReihenfolge[i] = i;
+                    }
+
+                    // Sortieren der Indizes nach den Werten in WurfelWert (absteigend)
+                    sort(IndexReihenfolge.begin(), IndexReihenfolge.end(),
+                        [&WurfelWert](int a, int b) {
+                            return WurfelWert[a] > WurfelWert[b];
+                        });
+
                     for (int i = 0; i < 4; ++i) {
                         playerRefs.push_back(&player[i]);
                     }
