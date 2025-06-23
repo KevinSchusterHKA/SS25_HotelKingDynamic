@@ -550,8 +550,8 @@ void TServer::UnitTest() {
                     
                     if (option == 0) //Akzeptieren
                     {
-                        player[MomentanerSpieler].Handeln(playerRefs, Strasse, Angebot, MapEngine);
-
+                        player[MomentanerSpieler].Handeln(playerRefs, Strasse, Angebot, TServer::MapEngine);
+                        
                     }
                     else
                     {

@@ -229,7 +229,7 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot ,Map
 		if (verkaufer->besitztStrasse(feld)) {
 
 			// Prüfen ob in der Farbgruppe Häuser stehen
-			if (!istStrassenSetHandelbar(feld, spielerListe)) {
+			if (!istStrassenSetHandelbar(feld, spielerListe) || map.setOwner(verkaufer->getID(), this->getID(), feld) == -1) {
 				cout << "Handel abgelehnt: In der Farbgruppe von " << LUT(feld)
 					<< " stehen noch Haeuser." << endl;
 				return false;
@@ -247,8 +247,6 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot ,Map
 
 				cout << "Handel erfolgreich: Strasse " << LUT(feld) << " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
 				return true;
-			
-
 		}
 	}
 
