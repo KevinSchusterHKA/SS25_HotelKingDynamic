@@ -209,13 +209,15 @@ void TServer::UnitTest() {
 							player[i].setID(i);
                             player[i].setHuman(HUMAN);
                         }
-                        MapEngine.SetPlayerNumber(AnzahlSpieler);
                     }
                     for (size_t i = AnzahlSpieler; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
                         player[i].setName(SpielerNamen[i]);
                         player[i].setID(i);
                         player[i].setHuman(CPU1);  
+
                     }
+                    MapEngine.SetPlayerNumber(AnzahlSpieler + AnzahlCpuGegner);
+
                     // Würfelreihenfolge festlegen:
                     gleicheWuerfe = true;
                     do {
@@ -226,9 +228,8 @@ void TServer::UnitTest() {
                             int temp2 = player[i].wurfeln();
                             WurfelWert.push_back(temp1 + temp2);
                             ControlEngine.AusgabeNachricht("Spieler " + to_string(i+1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10*i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
-
                         }
-						system("cls");
+				
                         // Prüfen, ob alle Würfe unterschiedlich sind
                         for (int i = 0; i < (int)WurfelWert.size(); ++i) {
                             for (int j = i + 1; j < (int)WurfelWert.size(); ++j) {
@@ -240,7 +241,8 @@ void TServer::UnitTest() {
                             if (gleicheWuerfe) break;
                         }
                     } while (gleicheWuerfe);
-
+                    Sleep(2000);
+                    system("cls");
                     // Index-Vektor erstellen und richtig resizen!
                     IndexReihenfolge.resize(WurfelWert.size());
                     for (int i = 0; i < (int)WurfelWert.size(); ++i) {
@@ -254,7 +256,7 @@ void TServer::UnitTest() {
                         });
 
                     for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; ++i) {
-                        playerRefs.push_back(&player[i]);
+                        playerRefs.push_back(&player[IndexReihenfolge[i]]);
                     }
              		    if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
 					    std::vector<HighscoreEntry> player;
@@ -472,30 +474,35 @@ void TServer::UnitTest() {
 					    
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
                     }
-                    MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);//space
-                    if (cpudone && MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1)
+                    if (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==CPU1)
                     {
-                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-                        ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-                        MomentanerSpieler++;
-                        HatGewuerfelt = false;
-                        system("cls");
-                        ConfigEngineLogging.newRound();
-                        ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
-
+                        MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);//space
+                        if (cpudone && MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1)
+                        {
+                            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                            ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
+                            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                            HatGewuerfelt = false;
+                            system("cls");
+                            ConfigEngineLogging.newRound();
+                            ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                            MomentanerSpieler++;
+                            cpudone = false;
+                        }
 
                     }
+                   
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
                     {
                         if (HatGewuerfelt)
                         {
                             ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-                            MomentanerSpieler++;
                             HatGewuerfelt = false;
                             system("cls");
                             ConfigEngineLogging.newRound();
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                            MomentanerSpieler++;
+                            
                         }
                         else
                         {

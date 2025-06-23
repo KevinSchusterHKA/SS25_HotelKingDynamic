@@ -1444,7 +1444,7 @@ void TControl::AusgabeNachricht(std::string Nachricht,int x,int y,Farbe f) {
     }
     std::cout << _symbolcharsControl[LRC];
 
-    Sleep(2000);
+    Sleep(500);
     this->SetConsoleFontSize(8);
     this->SetFarbe(Farbe::Zuruecksetzen);
 
