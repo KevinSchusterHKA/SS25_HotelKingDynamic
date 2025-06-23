@@ -152,7 +152,8 @@ public:
                                         int AnzSpieler,
                                         int x,int y,
                                         std::vector<std::vector<std::string>> GekaufteObjekte,
-                                        std::vector<std::vector<std::string>> GebauteObjekte);
+                                        std::vector<std::vector<std::string>> GebauteObjekte,
+                                        std::vector<int> SpielerReihenfolge);
 
 	void AusgabeSpielerInventarAnzeige( std::string Namen,std::vector<std::string> GekaufteObjekte,std::vector<std::string> GebauteObjekte,int x,int y,Farbe f);
     void AusgabeTestFeld(int x, int y);
@@ -168,4 +169,5 @@ public:
     void UpdateCursorPosition(COORD Pos);
     void SetConsoleFontSize(int fontSize);
     bool isRunningInWindowsTerminal();
+    void AusgabeNachricht(std::string Nachricht, int x, int y, Farbe f);
 };
