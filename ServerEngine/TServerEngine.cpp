@@ -559,8 +559,9 @@ void TServer::UnitTest() {
             std::vector<int> gekObjAnz;
             std::vector<int> gebObjAnz;               
             std::cout << MRobj[MomentanerSpieler].Msg << "\n";
-            for (size_t i = 0; i < 4; i++)
+            for (size_t i = 0; i < AnzahlCpuGegner+AnzahlSpieler; i++)
             {
+                SpielerNamen.push_back(player[i].getName());
                 gekObjNamen.push_back(player[i].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
                 gebObjNamen.push_back(player[i].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
                 tempBudgets.push_back(player[i].getBudget());
