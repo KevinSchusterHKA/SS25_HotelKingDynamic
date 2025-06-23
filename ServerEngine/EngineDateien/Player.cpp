@@ -1,4 +1,4 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 using namespace std;
 TPlayer::TPlayer() {};
 TPlayer::TPlayer(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
@@ -9,13 +9,13 @@ TPlayer::~TPlayer() {};
 int TPlayer::Score(int runde, int anzGekGebObj, Map& map) {
 	int score = this->getBudget();
 
-	// Wert aller gekauften Straßen / Felder
+	// Wert aller gekauften StraÃŸen / Felder
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		int feldNr = this->GekaufteStrassen[i];
 		score += getPreisStrasse(feldNr, map);
 	}
 
-	// Wert aller gebauten Häuser (Hauspreis des Feldes)
+	// Wert aller gebauten HÃ¤user (Hauspreis des Feldes)
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		int feldNr = this->GebauteHaeuser[i];
 		score += getPreisHaus(feldNr, map);
@@ -52,10 +52,10 @@ int TPlayer::getPosition() { return this->Position; }
 void TPlayer::setPosition(int p) { this->Position = p; }
 void TPlayer::incPosition(int p) {
 	this->Position += p;
-	if (this->Position == 30) { // Ins Gefängnis gehen
+	if (this->Position == 30) { // Ins GefÃ¤ngnis gehen
 		this->insGefaengnis();
 	}
-	if (this->Position >= 40) { // Eine Runde Übergangen
+	if (this->Position >= 40) { // Eine Runde Ãœbergangen
 		this->Position -= 40;
 	}
 }
@@ -90,7 +90,7 @@ void TPlayer::incPaschCounter() {
 void TPlayer::insGefaengnis() {
 	this->ImGefaengnis = true;
 	this->GefaengnisRunden = 1;
-	this->Position = 10; // Gefängnisfeld
+	this->Position = 10; // GefÃ¤ngnisfeld
 }
 void TPlayer::decGefaengnisRunden() {
 	if (this->GefaengnisRunden > 0) {
@@ -128,20 +128,20 @@ void TPlayer::erhalte(int betrag) { this->Budget += betrag; }
 bool TPlayer::istPleite() { if (this->Budget <= 0) { return true; } return false; }
 void TPlayer::geheZu(int feld) {
 	if (feld < 0 || feld >= 40) {
-		return;					// Ungültiges Feld, nichts tun	
+		return;					// UngÃ¼ltiges Feld, nichts tun	
 	}
 	this->Position = feld;
 }
 
 void TPlayer::addStrasse(int strasse) {
 
-	// Prüfen ob das Feld eine Straße ist
+	// PrÃ¼fen ob das Feld eine StraÃŸe ist
 	if (_boardarr[strasse].Type != TypeStreet) {
 		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
 		return;
 	}
 
-	// Prüfen ob Spieler die Straße bereits besitzt
+	// PrÃ¼fen ob Spieler die StraÃŸe bereits besitzt
 	for (int s = 0; s < this->GekaufteStrassen.size(); s++) {
 		if (s == strasse) {
 			cout << "Strasse " << LUT(strasse) << " gehoert dir bereits.\n";
@@ -149,10 +149,11 @@ void TPlayer::addStrasse(int strasse) {
 		}
 	}
 
-	// Falls nicht, hinzufügen
+	// Falls nicht, hinzufÃ¼gen
 	GekaufteStrassen.push_back(strasse);
 	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
+
 void TPlayer::deleteStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
@@ -167,7 +168,7 @@ void TPlayer::verkaufeStrasse(int strasse, Map& map) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
-			this->erhalte(int(getPreisStrasse(strasse, map) / 2)); // Geld für Strasse zurückerhalten (aber nur die Hälfte des Preises)
+			this->erhalte(int(getPreisStrasse(strasse, map) / 2)); // Geld fï¿½r Strasse zurï¿½ckerhalten (aber nur die Hï¿½lfte des Preises)
 			cout << "Die Strasse " << LUT(strasse) << " wurde verkauft.\n";
 			return;
 		}
@@ -211,33 +212,33 @@ int TPlayer::WieVieleHaueserAufSet(int feld) {
 }
 
 bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
-	// Prüfen ob Käufer genug Budget hat
+	// PrÃ¼fen ob KÃ¤ufer genug Budget hat
 	if (this->getBudget() < angebot) {
 		cout << "Du hast nicht genug Budget fuer dieses Angebot." << endl;
 		return false;
 	}
-	// Prüfen ob Käufer die Straße bereits besitzt
+	// PrÃ¼fen ob KÃ¤ufer die StraÃŸe bereits besitzt
 	if (this->besitztStrasse(feld)) {
 		cout << "Du besitzt diese Strasse bereits!" << endl;
 		return false;
 	}
-	// Verkäufer suchen
+	// VerkÃ¤ufer suchen
 	for (TPlayer* verkaufer : spielerListe) {
-		if (verkaufer->besitztStrasse(feld)) {
+		if (verkaufer->getID() != this->getID() && verkaufer->besitztStrasse(feld)) {
 
-			// Prüfen ob in der Farbgruppe Häuser stehen
+			// PrÃ¼fen ob in der Farbgruppe HÃ¤user stehen
 			if (!istStrassenSetHandelbar(feld, spielerListe)) {
 				cout << "Handel abgelehnt: In der Farbgruppe von " << LUT(feld)
 					<< " stehen noch Haeuser." << endl;
 				return false;
 			}
-			// Käufer bezahlt
+			// KÃ¤ufer bezahlt
 			this->bezahle(angebot);
 
-			// Verkäufer erhält Geld
+			// VerkÃ¤ufer erhÃ¤lt Geld
 			verkaufer->erhalte(angebot);
 
-			// Straße übertragen
+			// StraÃŸe Ã¼bertragen
 			verkaufer->deleteStrasse(feld);
 			this->addStrasse(feld);
 
@@ -251,8 +252,8 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 }
 
 void TPlayer::baueHaus(int strasse, Map& map) {
-
-	// Prüfen ob das Feld eine Straße ist
+	
+	// Prï¿½fen ob das Feld eine Straï¿½e ist
 	if (_boardarr[strasse].Type != TypeStreet) {
 		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
 		return;
@@ -266,7 +267,7 @@ void TPlayer::baueHaus(int strasse, Map& map) {
 	}
 }
 void TPlayer::baueHausTEMP(int strasse, Map& map) {
-	// Prüfen ob das Feld eine Straße ist
+	// Prï¿½fen ob das Feld eine Straï¿½e ist
 	if (_boardarr[strasse].Type != TypeStreet) {
 		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
 		return;
@@ -291,11 +292,12 @@ void TPlayer::baueHausTEMP(int strasse, Map& map) {
 		cout << "Sie koennen kein weiteres Haus auf " << LUT(strasse) << " bauen, da bereits 5 Haeuser vorhanden sind.\n";
 	}
 }
+
 void TPlayer::verkaufeHaus(int strasse, Map& map) {
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		if (this->GebauteHaeuser[i] == strasse) {
 			this->GebauteHaeuser.erase(this->GebauteHaeuser.begin() + i);
-			this->erhalte(int(getPreisHaus(strasse, map) / 2)); // Geld für Haus zurückerhalten (aber nur die Hälfte des Preises)
+			this->erhalte(int(getPreisHaus(strasse, map) / 2)); // Geld fï¿½r Haus zurï¿½ckerhalten (aber nur die Hï¿½lfte des Preises)
 			cout << "Ein Haus auf " << LUT(strasse) << " wurde verkauft.\n";
 			return;
 		}
@@ -336,17 +338,9 @@ vector<int> TPlayer::getGekObjVector() {
 vector<int> TPlayer::getGebObjVector() {
 	return this->GebauteHaeuser;
 }
-vector<int> TPlayer::getHaueser() {
-	vector<int> TEMPHaueser(40, 0);
-	for (int i = 0; i < this->getGebObjVector().size(); i++) {
-		int feldNummer = this->getGebObjVector()[i];
-		TEMPHaueser[feldNummer]++;
-	}
-	return TEMPHaueser;
-}
 // cpu to player
 int TPlayer::handelcpu(int cpuID, int totalPlayers, TPlayer p[], int& targetPlayerOut, int& propertyIndexOut, Map& map) {
-	if ((rand() % 101) > 151) {
+	if ((rand() % 101) > 15) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
 		targetPlayerOut = -1;
 		propertyIndexOut = -1;
@@ -415,7 +409,7 @@ bool TPlayer::tryBuyStreetcpu(Map& map) {
 		return true;
 	}
 	else {
-		//std::cout << "CPU" << getID() << " hat nicht genug Geld für die Strasse auf Position " << getPosition() << ".\n";
+		//std::cout << "CPU" << getID() << " hat nicht genug Geld fÃ¼r die Strasse auf Position " << getPosition() << ".\n";
 		return false;
 	}
 
@@ -426,45 +420,77 @@ bool TPlayer::tryBuyStreetcpu(Map& map) {
 bool TPlayer::tryBuildHousecpu(TPlayer player[], Map& map) {
 	int myID = getID();
 	std::vector<int> myProperties = player[myID].getGekObjVector();
+	std::vector<int> builtobj = player[myID].getGebObjVector();
+	bool built = false;
 
-	for (size_t i = 0; i < myProperties.size(); i++) {
-		int propIndex = myProperties[i];
-		int colorGroup = colorcheck(myID, propIndex, myProperties);
-		if (colorGroup == -1) continue;
+	for (int colorGroup = 0; colorGroup < 8; ++colorGroup) {
+		bool ownsAll = true;
+		for (int i = 0; i < 3; ++i) {
+			int prop = _streetarr[colorGroup][i];
+			if (prop == -1) continue;
+			if (std::find(myProperties.begin(), myProperties.end(), prop) == myProperties.end()) {
+				ownsAll = false;
+				break;
+			}
+		}
 
-		std::vector<int> built = player[myID].getGebObjVector();
+		if (!ownsAll) continue;
 
-		int minHouses = 6; // max 6-1
+		int minHouses = 6; // 5+1
 		int bestProp = -1;
 
-		for (int j = 0; j < 3 && _streetarr[colorGroup][j] != -1; ++j) {
-			int groupProp = _streetarr[colorGroup][j];
+		for (int i = 0; i < 3; ++i) {
+			int groupProp = _streetarr[colorGroup][i];
 			if (groupProp == -1) continue;
 
-			int houseCount = std::count(built.begin(), built.end(), groupProp);
-			if (houseCount < minHouses && houseCount < 6) {
+			int houseCount = std::count(builtobj.begin(), builtobj.end(), groupProp);
+			if (houseCount < minHouses && houseCount < 5) {
 				minHouses = houseCount;
 				bestProp = groupProp;
 			}
 		}
 
 		if (bestProp == -1) continue;
-
 		int price = map.getHousePrice(bestProp);
-		int maxPrice = player[myID].getBudget() * ((30 + rand() % 11) / 100.0); // 30-40%
+		int maxPrice = player[myID].getBudget() * ((30 + rand() % 11) / 100.0); // 30â€“40%
 
 		if (price <= maxPrice) {
 			bezahle(price);
 			player[myID].baueHaus(bestProp, map);
-			//std::cout << "CPU " << myID << " builds a house on " << LUT(this->getPosition()) << "\n";
-			return true;
+			built = true;
+			break;
 		}
 	}
+	return built;
+}
+//take zug for cpu
+bool TPlayer::takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlplayers, Map& map) {
+	int myID = getID();
+	if (player[myID].getBudget() < costofbahn)
+		return false;
+	for (int i = 0; i < anzahlplayers; ++i) {
+		if (i == myID) continue;
+		if (player[i].besitztStrasse(bahnpos))
+			return false; 
+	}
+	bool free_street = true;
+
+	if (map.getPropertyPrice(bahnpos)>0)
+	{
+		free_street = true;
+
+	}
+	else {
+		free_street = false;
+
+	}
+	if (!player[myID].besitztStrasse(bahnpos) && free_street)
+		return true;
 
 	return false;
 }
 
-
+ 
 //test ob man  haus bauen darf
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties) {
 	int colorGroup = -1;

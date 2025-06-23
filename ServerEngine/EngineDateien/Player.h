@@ -94,13 +94,13 @@ public:
 	int getGebObjAnz();
 	vector<int> getGekObjVector();
 	vector<int> getGebObjVector();
-	vector<int> getHaueser();
 
-//cpu logic 
+	//cpu logic 
 	int handelcpu(int cpuID, int totalPlayers, TPlayer player[], int& targetPlayerOut, int& propertyIndexOut, Map& map);
 	bool acceptTradecpu(int spaceIndex, int offer, Map& map);
 	bool tryBuyStreetcpu(Map& map);
 	bool tryBuildHousecpu(TPlayer player[], Map& map);
+	bool takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlplayers, Map& map);
 };
 
 
