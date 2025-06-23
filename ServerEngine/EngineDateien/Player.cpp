@@ -276,7 +276,7 @@ void TPlayer::baueHausTEMP(int strasse, Map& map) {
 	}
 	if (this->WieVieleHaueserAufSet(strasse) < 5) {
 		std::vector<int> myProperties = this->getGekObjVector();
-		if (colorcheck(this->getID(), strasse, myProperties)) {
+		if (0 <= colorcheck(this->getID(), strasse, myProperties) && colorcheck(this->getID(), strasse, myProperties) <= 7) {
 			if (getPreisHaus(strasse, map) - this->getBudget() >= 0) {
 				this->GebauteHaeuser.push_back(strasse);
 				this->bezahle(getPreisHaus(strasse, map));

@@ -406,7 +406,7 @@ void TServer::UnitTest() {
                         space = StrasseBauen;
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(IndexReihenfolge[MomentanerSpieler], space, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
                         //player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
-                        player[IndexReihenfolge[MomentanerSpieler]].baueHausTEMP(player[IndexReihenfolge[MomentanerSpieler]].getPosition(),MapEngine);
+                        player[IndexReihenfolge[MomentanerSpieler]].baueHausTEMP(StrasseBauen,MapEngine);
                         ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                         StrasseBauen = -1;
                     }
