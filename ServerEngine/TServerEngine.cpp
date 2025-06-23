@@ -1,4 +1,6 @@
 #include "TServerEngine.h"
+#include <chrono>
+#include <thread>
 TServer::TServer(){
 
 }
@@ -40,7 +42,7 @@ void TServer::UnitTest() {
 	std::vector<std::string> SpielerNamen;
     std::vector<TPlayer*> playerRefs;
     int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1;
-    bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
+    bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt = FALSE, GameFinished = FALSE, UpdateSpielfeld = FALSE, Handel_once_cpu=false, cpudone=false;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
@@ -145,6 +147,7 @@ void TServer::UnitTest() {
         }
         else { //logic for cpu auto wurfel
             if (player[MomentanerSpieler].getHuman() == CPU1 && !HatGewuerfelt) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(800));
                 EingabeCh = '\r';   
             }
         }
@@ -339,7 +342,7 @@ void TServer::UnitTest() {
                         // Wenn Straße frei ist: kaufen
                         if (istFrei) {
                             if (player[MomentanerSpieler].getHuman() == CPU1) {
-                                
+                                std::this_thread::sleep_for(std::chrono::milliseconds(500));
                                 if (player[MomentanerSpieler].tryBuyStreetcpu(MapEngine))
                                 {
                                     player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
@@ -374,19 +377,36 @@ void TServer::UnitTest() {
                         int street = -1;
                         int targetPlayerOut = -1;
                         int angebotspreis = player[MomentanerSpieler].handelcpu(MomentanerSpieler,AnzahlSpieler+ AnzahlCpuGegner,player, targetPlayerOut, street, MapEngine);//cpu trade 
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                         if (angebotspreis != -1) {
-
-                            if (player[targetPlayerOut].getHuman() == CPU1)
+                            if (!Handel_once_cpu)
                             {
-                              player[targetPlayerOut].acceptTradecpu(street,angebotspreis, MomentanerSpieler,playerRefs,MapEngine);
+                                for (size_t i = 0; i < AnzahlCpuGegner + AnzahlSpieler; i++)
+                                {
+                                    if (player[i].besitztStrasse(Strasse)) {
+                                        target = player[i].getHuman();
+                                        ID = player[i].getID();
+                                    }
+                                }
+                                if (player[targetPlayerOut].getHuman() == CPU1)
+                                {
+                                    player[targetPlayerOut].acceptTradecpu(street, angebotspreis, MomentanerSpieler, playerRefs, MapEngine);
 
-                            }
-                            else {
-                                ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert?");//todo controls
-                                MenueAuswahl = Menues::Handel;
+                                }
+                                else {
+
+                                    MenueAuswahl = Menues::Handel;
+
+                                }
                             }
                             
+                            
                         }
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                       bool answer = player[MomentanerSpieler].tryBuildHousecpu(player,MapEngine);//buildhouse
+
+
+                        cpudone = true;
                     }
 
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
@@ -400,6 +420,8 @@ void TServer::UnitTest() {
                                 ID = player[i].getID();
                             }
                         }
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
                         if (target == CPU1) {
                             if (player[ID].acceptTradecpu(Strasse, Angebot,MomentanerSpieler,playerRefs, MapEngine))
                             {
@@ -411,6 +433,20 @@ void TServer::UnitTest() {
                         }
 					    
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
+                    }
+                    MRobj[MomentanerSpieler] = MapEngine.getSpaceProps(MomentanerSpieler);//space
+                    if (cpudone && MRobj[MomentanerSpieler].Type != 1)
+                    {
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+                        ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
+                        MomentanerSpieler++;
+                        HatGewuerfelt = false;
+                        system("cls");
+                        ConfigEngineLogging.newRound();
+                        ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
+
+
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
                     {
@@ -541,7 +577,10 @@ void TServer::UnitTest() {
                     
                     if (option == 0) //Akzeptieren
                     {
-                        player[MomentanerSpieler].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+                       
+                       
+                            player[MomentanerSpieler].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+
                     }
                     else
                     {
@@ -611,10 +650,31 @@ void TServer::UnitTest() {
             ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         case Menues::Handel:
+
             ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss,"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
             break;
         case Menues::BahnFahren:
-            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, MomentanerSpielerFarbe, "Bahn fahren?"); // Bug
+            if (player[MomentanerSpieler].getHuman()==CPU1)
+            {
+
+                if (player[MomentanerSpieler].takebahn(player, MRobj[MomentanerSpieler].Rent, player[MomentanerSpieler].getPosition(), AnzahlSpieler + AnzahlCpuGegner, MapEngine))
+                {
+                    player[MomentanerSpieler].bezahle(MapEngine.movePlayer(MomentanerSpieler, player[MomentanerSpieler].getAugenzahl(), 1));
+                    player[MomentanerSpieler].bezahle(MRobj[MomentanerSpieler].Rent);
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+                ConfigEngineLogging.playerMoney(player[MomentanerSpieler].getName(), player[MomentanerSpieler].getBudget());
+                MomentanerSpieler++;
+                HatGewuerfelt = false;
+                system("cls");
+                ConfigEngineLogging.newRound();
+                ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
+
+            }
+            else {
+                ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, MomentanerSpielerFarbe, "Bahn fahren?"); // Bug
+            }
             break;
         default:
             break;
