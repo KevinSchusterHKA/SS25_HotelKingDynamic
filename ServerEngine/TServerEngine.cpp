@@ -7,7 +7,6 @@ TServer::~TServer(){
 }
 
 void TServer::UnitTest() {
-    ControlEngine.AusgabeNachricht("asfasfasfasfasf", 10, 10, Farbe::Rot);
     enum MenueOptionen {
         Reset = -1,
         Start = 0,
@@ -223,7 +222,10 @@ void TServer::UnitTest() {
                             int temp1 = player[i].wurfeln();
                             int temp2 = player[i].wurfeln();
                             WurfelWert.push_back(temp1 + temp2);
+                            ControlEngine.AusgabeNachricht("Spieler " + to_string(i) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10*i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
+
                         }
+						system("cls");
                         // Prüfen, ob alle Würfe unterschiedlich sind
                         for (int i = 0; i < (int)WurfelWert.size(); ++i) {
                             for (int j = i + 1; j < (int)WurfelWert.size(); ++j) {
