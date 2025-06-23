@@ -211,7 +211,8 @@ int TPlayer::WieVieleHaueserAufSet(int feld) {
 	return count;
 }
 
-bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
+bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot ,Map& map) {
+	int target = -1;
 	// Prüfen ob Käufer genug Budget hat
 	if (this->getBudget() < angebot) {
 		cout << "Du hast nicht genug Budget fuer dieses Angebot." << endl;
@@ -224,7 +225,8 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 	}
 	// Verkäufer suchen
 	for (TPlayer* verkaufer : spielerListe) {
-		if (verkaufer->getID() != this->getID() && verkaufer->besitztStrasse(feld)) {
+
+		if (verkaufer->besitztStrasse(feld)) {
 
 			// Prüfen ob in der Farbgruppe Häuser stehen
 			if (!istStrassenSetHandelbar(feld, spielerListe)) {
@@ -232,18 +234,21 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 					<< " stehen noch Haeuser." << endl;
 				return false;
 			}
-			// Käufer bezahlt
-			this->bezahle(angebot);
+					
+				// Käufer bezahlt
+				this->bezahle(angebot);
 
-			// Verkäufer erhält Geld
-			verkaufer->erhalte(angebot);
+				// Verkäufer erhält Geld
+				verkaufer->erhalte(angebot);
 
-			// Straße übertragen
-			verkaufer->deleteStrasse(feld);
-			this->addStrasse(feld);
+				// Straße übertragen
+				verkaufer->deleteStrasse(feld);
+				this->addStrasse(feld);
 
-			cout << "Handel erfolgreich: Strasse " << LUT(feld) << " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
-			return true;
+				cout << "Handel erfolgreich: Strasse " << LUT(feld) << " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
+				return true;
+			
+
 		}
 	}
 
@@ -340,7 +345,7 @@ vector<int> TPlayer::getGebObjVector() {
 }
 // cpu to player
 int TPlayer::handelcpu(int cpuID, int totalPlayers, TPlayer p[], int& targetPlayerOut, int& propertyIndexOut, Map& map) {
-	if ((rand() % 101) > 15) {
+	if ((rand() % 101) > 101) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
 		targetPlayerOut = -1;
 		propertyIndexOut = -1;
@@ -381,13 +386,16 @@ int TPlayer::handelcpu(int cpuID, int totalPlayers, TPlayer p[], int& targetPlay
 }
 
 // player to cpu 
-bool TPlayer::acceptTradecpu(int spaceIndex, int offer, Map& map) {
-	int id = getID();
+bool TPlayer::acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlayer*>& spielerListe,Map& map) {
 	int propPrice = map.getPropertyPrice(spaceIndex);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 	int bud = getBudget();
-	if ((offer >= propPrice * (acceptThresholdPercent / 100.0))) {
+	if ((offer >= propPrice * (acceptThresholdPercent / 100.0))&& (spielerListe[kaufer]->getBudget() - offer >= 0)) {
 		//std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
+		this->erhalte(offer);
+		this->deleteStrasse(spaceIndex);
+		spielerListe[kaufer]->addStrasse(spaceIndex);
+		spielerListe[kaufer]->bezahle(offer);
 		return true;
 	}
 	else {

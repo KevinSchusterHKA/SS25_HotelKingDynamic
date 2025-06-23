@@ -7,7 +7,20 @@ TServer::~TServer(){
 }
 
 void TServer::UnitTest() {
+    player[0].addStrasse(3);
+    player[2].addStrasse(11);
+    player[3].addStrasse(13);
+    player[1].addStrasse(1);
 
+
+	player[0].setID(0);
+    player[1].setID(1);
+    player[2].setID(2);
+    player[3].setID(3);
+    std::vector<TPlayer*> playerRefs;
+    for (int i = 0; i < 4; ++i) {
+        playerRefs.push_back(&player[i]);
+    }
     enum MenueOptionen {
         Reset = -1,
         Start = 0,
@@ -38,7 +51,7 @@ void TServer::UnitTest() {
 
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
-    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner = 2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1;
+    int option = 0, AnzahlSpieler = 4, AnzahlCpuGegner = 2, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt=FALSE, GameFinished=FALSE, UpdateSpielfeld = FALSE;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
@@ -374,11 +387,14 @@ void TServer::UnitTest() {
 
                             if (player[targetPlayerOut].getHuman() == CPU1)
                             {
-                              player[targetPlayerOut].acceptTradecpu(street,angebotspreis, MapEngine);
+                              player[targetPlayerOut].acceptTradecpu(street,angebotspreis, MomentanerSpieler,playerRefs,MapEngine);
 
                             }
-                            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert?");//todo controls
-                            MenueAuswahl = Menues::Handel;
+                            else {
+                                ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert?");//todo controls
+                                MenueAuswahl = Menues::Handel;
+                            }
+                            
                         }
                     }
 
@@ -386,7 +402,23 @@ void TServer::UnitTest() {
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
                         ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, Farbe::BG_Rot);
-					    MenueAuswahl = Menues::Handel;
+                        for (size_t i = 0; i < AnzahlCpuGegner+AnzahlSpieler; i++)
+                        {
+                            if (player[i].besitztStrasse(Strasse)) {
+                                target = player[i].getHuman();
+                                ID = player[i].getID();
+                            }
+                        }
+                        if (target == CPU1) {
+                            if (player[ID].acceptTradecpu(Strasse, Angebot,MomentanerSpieler,playerRefs, MapEngine))
+                            {
+
+                            }
+                        }
+                        else {
+                            MenueAuswahl = Menues::Handel;
+                        }
+					    
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
@@ -515,13 +547,10 @@ void TServer::UnitTest() {
                     MenueAuswahl = Menues::Spieler;
                     UpdateSpielfeld = TRUE;
 				    system("cls");
+                    
                     if (option == 0) //Akzeptieren
                     {
-                        std::vector<TPlayer*> playerRefs;
-                        for (int i = 0; i < 4; ++i) {
-                            playerRefs.push_back(&player[i]);
-                        }
-                        player[MomentanerSpieler].Handeln(playerRefs, Strasse, Angebot);
+                        player[MomentanerSpieler].Handeln(playerRefs, Strasse, Angebot, MapEngine);
 
                     }
                     else

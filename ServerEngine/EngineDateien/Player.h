@@ -79,7 +79,7 @@ public:
 	void verkaufeStrasse(int strasse, Map& map);
 	bool besitztStrasse(int strasse);
 	bool istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe);
-	bool Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot);
+	bool Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, Map& map);
 
 	void baueHaus(int strasse, Map& map);
 	void baueHausTEMP(int strasse, Map& map);
@@ -97,7 +97,7 @@ public:
 
 	//cpu logic 
 	int handelcpu(int cpuID, int totalPlayers, TPlayer player[], int& targetPlayerOut, int& propertyIndexOut, Map& map);
-	bool acceptTradecpu(int spaceIndex, int offer, Map& map);
+	bool acceptTradecpu(int spaceIndex, int offer,int kaufer, vector<TPlayer*>& spielerListe,Map& map);
 	bool tryBuyStreetcpu(Map& map);
 	bool tryBuildHousecpu(TPlayer player[], Map& map);
 	bool takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlplayers, Map& map);
