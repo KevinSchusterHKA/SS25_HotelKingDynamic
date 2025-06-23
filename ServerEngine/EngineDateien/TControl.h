@@ -110,7 +110,7 @@ private:
 
     //Menüs
     std::vector<std::string> MenueStartOptionen = { "Spiel starten","Highscore","Optionen","Beenden","##################################################","Startmenue"};
-    std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","Runde Beenden","##################################################","Spielermenue"};
+    std::vector<std::string> MenueSpielerOptionen = { "Wuerfeln","Kaufen","Bauen","Handeln","Verkaufen","Runde Beenden","##################################################","Spielermenue"};
     std::vector<std::string> MenueSpielOptionen = { "Fortfahren","Spiel Speichern","Spiel Laden","Spielregeln","Beenden","Highscore","Zurueck","##################################################","Spielmenue"};
     std::vector<std::string> SpielerInformationen = { "Budget","Anzahl gekaufter Objekte","Anzahl gebauter Objekte","#############################################","Was willst du machen?" };
 
@@ -138,13 +138,13 @@ public:
     void AusgabeStartMenu(int& option, int x, int y);
 	
     void AusgabeJaNeinOption(int& option, int x, int y, Farbe f, std::string Ueberschrift);
-    void AusgabeStrasseHandeln(int& option,int& WelcheStrasse, int& Angebot, int x, int y, Farbe f);
+    void AusgabeStrasseHandeln(int& option, int& WelcheStrasse, int& Angebot, int x, int y, Farbe f);
+    void AusgabeVerkaufen(int& option,int& WelcheStrasse, int& Gebaude, int x, int y, Farbe f);
     void AusgabeGebaeudeBauen(int& option, int& WelcheStrasse, int x, int y, Farbe f);
 	void AusgabeAuswahlSpieler(int& option, int x, int y, Farbe f, int& AnzahlSpieler, int& AnzahlCpuGegner, std::vector<std::string>& SpielerNamen);
     void AusgabeSpielOptionen(int& option, int x, int y);
     void AusgabeSpielerOptionen(int& option, int x, int y, Farbe f);
     void AusgabeSpielRegeln(std::vector<std::string> s, int x, int y);
-	void AusgabeHandelsMenu(int& option, int x, int y, Farbe f);
     void AusgabeStartBildschirm(bool flip, int x, int y);
     void AusgabeFeld(std::string Feld, int x, int y);
     void AusgabeSpielerInformationen(   std::string Namen[4],int Budget[4],

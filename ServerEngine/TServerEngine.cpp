@@ -18,6 +18,7 @@ void TServer::UnitTest() {
         Kaufen,
         Bauen,
         Handeln, 
+        Verkaufen,
         RundeBeenden,
         Fortfahren,
         SpielSpeichern,
@@ -324,6 +325,13 @@ void TServer::UnitTest() {
                         //player[MomentanerSpieler].handel(board.(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
                     }
+                    if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
+                        int Strasse = -1,Gebaude = -1;
+                        ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, Farbe::BG_Rot);
+
+                        //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
+                        system("cls");
+                    }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
                     {
                         if (HatGewuerfelt)
@@ -418,8 +426,8 @@ void TServer::UnitTest() {
                     if ((option + MenueOptionen::Fortfahren) == MenueOptionen::SpielRegeln) { 
                         ControlEngine.AusgabeSpielRegeln(Spielregeln, x / 2 - this->GetLongestStringVector(Spielregeln)/ 2 - 8, y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 2); 
                     }
-                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 10) { Spiellaueft = FALSE; }
-                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 13) { 
+                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Beenden + 11) { Spiellaueft = FALSE; }
+                    if ((option + MenueOptionen::Fortfahren) == MenueOptionen::Highscore + 14) { 
                         std::vector<HighscoreEntry> player;
                         load_highscores("highscores.txt", player);
                         std::vector<std::string> playerNames;
