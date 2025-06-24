@@ -293,7 +293,6 @@ void TServer::UnitTest() {
                     if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                     if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
                     break;
-                 
 
                 case Menues::Spieler:
                     CursorPos = { short(x / 2 - 160), short(y / 2 - 40 + ControlEngine.GetAnzMenuepunkteSpielerOptionen()) };
@@ -505,7 +504,7 @@ void TServer::UnitTest() {
 					    
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
                     }
-                        if (cpudone&&(player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1))
+                    if (cpudone&&(player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1))
                         {
                             std::this_thread::sleep_for(std::chrono::milliseconds(500));
                             ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
@@ -517,7 +516,6 @@ void TServer::UnitTest() {
                             MomentanerSpieler++;
                             cpudone = false;
                         }
-
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                         int Strasse = -1,Gebaude = -1;
                         ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, Farbe::BG_Rot);
@@ -561,6 +559,7 @@ void TServer::UnitTest() {
                         default:
                             break;
                         }
+						Sleep(100);
                     }
                     UpdateSpielfeld = TRUE;
                 
