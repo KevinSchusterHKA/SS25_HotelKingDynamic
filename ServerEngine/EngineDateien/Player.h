@@ -109,3 +109,5 @@ int getPreisStrasse(int feld, Map& map);
 int getPreisHaus(int feld, Map& map);
 
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);
+
+int streetpricewith2(int position, vector<TPlayer*>& spielerListe);
