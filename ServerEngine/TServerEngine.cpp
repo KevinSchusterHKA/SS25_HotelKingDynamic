@@ -403,7 +403,7 @@ void TServer::UnitTest() {
                         // Prüfen ob die Straße schon jemand besitzt
                         bool istFrei = true;
 
-                        for (int i = 0; i < AnzahlSpieler; i++) {
+                        for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++) {
                             if (player[i].besitztStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition())) {
                                 istFrei = false;
                                 break;
@@ -627,6 +627,7 @@ void TServer::UnitTest() {
                                                 GsTemp.players[IndexReihenfolge[i]].builtObjects);
 								temp.setHuman(GsTemp.players[IndexReihenfolge[i]].isHuman);
                                 player[IndexReihenfolge[i]] = temp;
+								playerRefs.push_back(&player[i]);
                             }
                             MapEngine.loadGame(GsTemp.players);
                             RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird

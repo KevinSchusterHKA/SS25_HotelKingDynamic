@@ -238,9 +238,12 @@ void TControl::AusgabeSpielerInventarAnzeige(   std::string Namen,
 
     for (size_t i = 0; i < GebauteObjekte.size(); i++)
     {
-        this->coord.Y ++;
-        SetConsoleCursorPosition(this->hConsole, this->coord);
-        std::cout << _symbolcharsControl[VL] << this->GetFarbe(f) << std::setw(maxSizeOption-2) << std::left << GebauteObjekte[i].substr(0, maxSizeOption-2)<< this->GetFarbe(Farbe::Zuruecksetzen) << _symbolcharsControl[VL];
+        if (GebauteObjekte[i]!="LOS")
+        {
+            this->coord.Y ++;
+            SetConsoleCursorPosition(this->hConsole, this->coord);
+            std::cout << _symbolcharsControl[VL] << this->GetFarbe(f) << std::setw(maxSizeOption-2) << std::left << GebauteObjekte[i].substr(0, maxSizeOption-2)<< this->GetFarbe(Farbe::Zuruecksetzen) << _symbolcharsControl[VL];
+        }
     }
 
     this->coord.Y++;
@@ -1300,7 +1303,6 @@ std::string TControl::GetDigitsInt(int Zahl){
     //std::reverse(digits.begin(), digits.end());
     return digits;
 }
-
 std::string TControl::GetFarbe(Farbe farbe) {
         switch (farbe) {
             case Farbe::Schwarz:   return "\033[30m";
