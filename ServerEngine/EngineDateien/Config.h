@@ -3,19 +3,20 @@
 
 #ifndef CONFIG_H
 #define CONFIG_H
+
+#include <string>
+#include <vector>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include <string>
-#include <vector>
 
 // Maximale Werte
 constexpr int MAX_HIGHSCORES = 10;   // Max Highscores
-constexpr int MAX_NAME_LENGTH = 50;  // Max LÃ¤nge eines Spielernamens
+constexpr int MAX_NAME_LENGTH = 50;  // Max Länge eines Spielernamens
 constexpr int MAX_OBJECTS = 40;       // Max Anzahl an Spielfeldern/Objekten
 constexpr int MAX_PLAYERS = 4;        // Max Spieler
 
-// Spielregeln (fÃ¼r Preise etc.)
+// Spielregeln (für Preise etc.)
 struct GameRules {
     int baseStreetPrice = 0;
     int baseHousePrice = 0;
@@ -36,14 +37,17 @@ struct PlayerState {
     int position = 0;
     bool inJail = false;
     bool hasFreeJailCard = false;
-    std::vector<int> ownedObjects; //Positionen der gekauften Objekte, die der Spieler besitzt
-    std::vector<int> builtObjects; //Positionen der gebauten Objekte, die der Spieler besitzt
+    std::vector<int> ownedObjects;
+    std::vector<int> builtObjects = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+    bool isHuman;                   // ist der Spieler ein Mensch
 };
 
 // Gesamtspielstand
 struct GameState {
     int roundCount = 0;
     int currentPlayerIndex = 0;
+    int playerCount;                // Anzahl der Spieler
+    int cpuCount;                   // Anzahl der CPU Gegner
     std::vector<int> diceOrder;
     std::vector<PlayerState> players;
 };
@@ -53,10 +57,11 @@ bool load_config(const std::string& filename, GameRules& rules);
 bool save_config(const std::string& filename, const GameRules& rules);
 
 bool load_highscores(const std::string& filename, std::vector<HighscoreEntry>& highscores);
-//bool save_highscores(const std::string& filename, std::string Name,int Score); 
-bool save_highscores(const std::string& filename, const std::vector<HighscoreEntry>& highscores);//TODO: statt vector einfach Name und Score vom besten Spieler speichern 
+bool save_highscores(const std::string& filename, const std::vector<HighscoreEntry>& highscores);
 void sort_highscores(std::vector<HighscoreEntry>& highscores);
 
+bool log_action(const std::string& filename, const std::string& action);
+bool load_log(const std::string& filename, std::vector<std::string>& logLines);
 
 bool save_game(const std::string& filename, const GameState& state);
 bool load_game(const std::string& filename, GameState& state);

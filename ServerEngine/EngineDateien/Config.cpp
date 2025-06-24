@@ -1,20 +1,20 @@
 // mit Vector
 //Config.cpp
 
-
 #include "Config.h"
+
 
 // Konfiguration laden
 bool load_config(const std::string& filename, GameRules& rules) 
 {
-    std::ifstream file(filename);   // Datei zum Lesen Ã¶ffnen
+    std::ifstream file(filename);   // Datei zum Lesen öffnen
     if (!file.is_open()) return false;
 
     std::string line;
     while (std::getline(file, line)) // Zeilenweise lesen
     {
-        auto pos = line.find('=');  // Trenne SchlÃ¼ssel und Werte mit =
-        if (pos == std::string::npos) continue; // Ã¼berspringen von ungÃ¼ltigen Zeichen
+        auto pos = line.find('=');  // Trenne Schlüssel und Werte mit =
+        if (pos == std::string::npos) continue; // überspringen von ungültigen Zeichen
         std::string key = line.substr(0, pos);
         std::string value = line.substr(pos + 1);
         // Weisen dem passenden Attribut in GameRules den Wert zu
@@ -74,8 +74,29 @@ bool save_highscores(const std::string& filename, const std::vector<HighscoreEnt
 // Highscores sortieren (absteigend)
 void sort_highscores(std::vector<HighscoreEntry>& highscores) {
     std::sort(highscores.begin(), highscores.end(), [](const auto& a, const auto& b) {
-        return a.score > b.score;                   // GrÃ¶ÃŸere Punktzahl zuerst
+        return a.score > b.score;                   // Größere Punktzahl zuerst
         });
+}
+
+// Aktion ins Log schreiben
+bool log_action(const std::string& filename, const std::string& action) {
+    std::ofstream file(filename, std::ios::app);      // An Datei anhängen
+    if (!file.is_open()) return false;
+    file << action << "\n";                           // Neue Aktion schreiben
+    return true;
+}
+
+// Liest alle Logeinträge in einen Vektor
+bool load_log(const std::string& filename, std::vector<std::string>& logLines) {
+    std::ifstream file(filename);
+    if (!file.is_open()) return false;
+
+    logLines.clear();       // Vektor leeren
+    std::string line;
+    while (std::getline(file, line)) {
+        logLines.push_back(line);       // Zeile hinzufügen
+    }
+    return true;
 }
 
 // Spielstand speichern in eine Datei
@@ -83,22 +104,26 @@ bool save_game(const std::string& filename, const GameState& state) {
     std::ofstream file(filename);
     if (!file.is_open()) return false;
 
+    
     // Allgemeine Spielinformationen schreiben
     file << "roundCount=" << state.roundCount << "\n";
     file << "currentPlayerIndex=" << state.currentPlayerIndex << "\n";
+    file << "playerCount=" << state.playerCount << "\n";
+    file << "cpuCount=" << state.cpuCount << "\n";
 
-    // Reihenfolge der WÃ¼rfelwÃ¼rfe schreiben
+    // Reihenfolge der Würfelwürfe schreiben
     file << "diceOrder=";
     for (size_t i = 0; i < state.diceOrder.size(); ++i) {
         file << state.diceOrder[i];
         if (i < state.diceOrder.size() - 1) file << ",";
     }
     file << "\n";
-
+    
     // Spielzustand jedes Spielers speichern
     for (const auto& player : state.players) {
+        
         file << "Player=" << player.name << "," << player.budget << "," << player.position
-            << "," << player.inJail << "," << player.hasFreeJailCard << "\n";
+            << "," << player.inJail << "," << player.hasFreeJailCard << "," << player.isHuman <<"\n";
 
         // Gekaufte Objekte speichern
         file << "Owned=";
@@ -128,7 +153,7 @@ bool load_game(const std::string& filename, GameState& state) {
     std::string line;
     state.players.clear();      // Spielerinformationen leeren
 
-    // Lese Zeile fÃ¼r Zeile
+    // Lese Zeile für Zeile
     while (std::getline(file, line)) 
     {
         if (line.find("roundCount=") == 0) 
@@ -138,6 +163,14 @@ bool load_game(const std::string& filename, GameState& state) {
         else if (line.find("currentPlayerIndex=") == 0) 
         {
             state.currentPlayerIndex = std::stoi(line.substr(19));
+        }
+        else if (line.find("playerCount=") == 0)
+        {
+            state.playerCount = std::stoi(line.substr(12));
+        }
+        else if (line.find("cpuCount=") == 0)
+        {
+            state.cpuCount = std::stoi(line.substr(9));
         }
         else if (line.find("diceOrder=") == 0) 
         {
@@ -159,6 +192,7 @@ bool load_game(const std::string& filename, GameState& state) {
             std::getline(iss, token, ','); player.position = std::stoi(token);
             std::getline(iss, token, ','); player.inJail = std::stoi(token);
             std::getline(iss, token);     player.hasFreeJailCard = std::stoi(token);
+            std::getline(iss, token);      player.isHuman = std::stoi(token);
             state.players.push_back(player);
         }
         else if (line.find("Owned=") == 0) 
@@ -173,12 +207,18 @@ bool load_game(const std::string& filename, GameState& state) {
         }
         else if (line.find("Built=") == 0) 
         {
+            int temp = 0;
+
             std::istringstream iss(line.substr(6));
             std::string token;
             auto& built = state.players.back().builtObjects;
             while (std::getline(iss, token, ',')) 
             {
-                if (!token.empty()) built.push_back(std::stoi(token));
+                if (std::stoi(token)!=0)
+                {
+                    built.at(temp) = std::stoi(token)+1;
+                }
+                temp++;
             }
         }
     }
