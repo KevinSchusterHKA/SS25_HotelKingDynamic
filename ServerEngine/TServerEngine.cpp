@@ -36,7 +36,18 @@ void TServer::UnitTest() {
         BahnFahren
     };
 
-    std::vector<std::string> Spielregeln = { "Regel 1", "Regel 2", "Regel 3", "Regel 4", "Regel 5555555555555555555555555555555555555555555555555555555555555" };
+    std::vector<std::string> Spielregeln = {
+     "1. Ziel des Spiels: Das Ziel ist es, einen anderen Spieler in den Bankrott zu treiben.",
+     "2. Spielvorbereitung: Jeder Spieler wird automatisch einer Spielfigur mit einer besonderen Farbe zugewiesen und erhaelt ein Startkapital.",
+     "3. Spielablauf: Die Spieler wuerfeln und ziehen entsprechend der Augenzahl.",
+     "4. Grundstuecke kaufen: Landen Sie auf einem unbesetzten Grundstueck, koennen Sie es kaufen.",
+     "5. Miete zahlen: Wenn Sie auf einem Grundstueck eines anderen Spielers landen, muessen Sie Miete zahlen.",
+     "6. Haeuser und Hotels: Sie koennen Haeuser und Hotels auf Ihren Grundstuecken bauen, um die Miete zu erhoehen.",
+     "7. Gefaengnis: Sie koennen ins Gefaengnis kommen, wenn Sie auf das entsprechende Feld landen oder eine Karte ziehen.",
+     "8. Ereignis- und Gemeinschaftskarten: Ziehen Sie Karten, die positive oder negative Effekte haben koennen.",
+     "9. Bankrott: Wenn Sie nicht mehr genug Geld haben, um Ihre Schulden zu begleichen, sind Sie bankrott.",
+     "10. Spielende: Das Spiel endet, wenn ein Spieler bankrott geht."
+    };
 
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
@@ -552,6 +563,7 @@ void TServer::UnitTest() {
                         if (RundeVorhanden) {
                             GameState GsTemp;
                             PlayerState PlTemp;
+                            GsTemp.diceOrder = IndexReihenfolge;
                             GsTemp.currentPlayerIndex = IndexReihenfolge[MomentanerSpieler];
                             for (size_t i = 0; i < AnzahlSpieler; i++)
                             {
@@ -567,11 +579,11 @@ void TServer::UnitTest() {
                             for (size_t i = AnzahlSpieler; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
-                                //PlTemp.builtObjects = player[i].GetGebObjVector;      //TODO:CPU GEGNER
+                                PlTemp.builtObjects = player[i].getGebObjVector();      //TODO:CPU GEGNER
                                 //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);      //TODO:CPU GEGNER
                                 PlTemp.inJail = player[i].imGefaengnis();             //TODO:CPU GEGNER
                                 PlTemp.name = player[i].getName();                    //TODO:CPU GEGNER
-                                //PlTemp.ownedObjects = player[i].GetGekObjVector();    //TODO:CPU GEGNER
+                                PlTemp.ownedObjects = player[i].getGekObjVector();    //TODO:CPU GEGNER
                                 PlTemp.position = player[i].getPosition();            //TODO:CPU GEGNER
                                 GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
                             }
@@ -581,7 +593,6 @@ void TServer::UnitTest() {
                             GsTemp.roundCount = AnzahlRunden;
                             CursorPos = { short(x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2), short(y / 2 + ControlEngine.GetAnzMenuepunkteSpielOptionen() + 1) };
                             ControlEngine.UpdateCursorPosition(CursorPos);
-                            save_config("Config.txt",{});       //TODO: implementieren und auf Funktionalität testen
 						    save_game("Spielstand.txt", GsTemp);    //TODO: implementieren und auf Funktionalität testen
                             std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spiel wird gespeichert!";
                         }
