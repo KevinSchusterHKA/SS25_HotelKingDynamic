@@ -168,7 +168,7 @@ void TPlayer::verkaufeStrasse(int strasse, Map& map) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
-			this->erhalte(int(getPreisStrasse(strasse, map) / 2)); // Geld f�r Strasse zur�ckerhalten (aber nur die H�lfte des Preises)
+			this->erhalte(int(getPreisStrasse(strasse, map) / 2)); // Geld f�r Strasse zurückerhalten (aber nur die H�lfte des Preises)
 			cout << "Die Strasse " << LUT(strasse) << " wurde verkauft.\n";
 			return;
 		}
@@ -295,17 +295,38 @@ void TPlayer::baueHausTEMP(int strasse, Map& map) {
 	}
 }
 
-void TPlayer::verkaufeHaus(int strasse, Map& map) {
-	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
+void TPlayer::verkaufeHaus(int strasse, int anz, Map& map) {
+	if (anz < 0 || anz > 6) {
+		return; // Ungültige Anzahl von Häusern
+	}
+	if (anz == 0) {
+		this->verkaufeStrasse(strasse, map);
+		return;
+	}
+	int verkauft = 0;
+
+	for (int i = 0; i < this->GebauteHaeuser.size(); ) {
 		if (this->GebauteHaeuser[i] == strasse) {
 			this->GebauteHaeuser.erase(this->GebauteHaeuser.begin() + i);
-			this->erhalte(int(getPreisHaus(strasse, map) / 2)); // Geld f�r Haus zur�ckerhalten (aber nur die H�lfte des Preises)
-			cout << "Ein Haus auf " << LUT(strasse) << " wurde verkauft.\n";
-			return;
+			this->erhalte(int(getPreisHaus(strasse, map) / 2));
+			verkauft++;
+			if (verkauft == anz) {
+				break;
+			}
+		}
+		else {
+			i++;
 		}
 	}
-	cout << "Sie besitzen kein Haus auf " << LUT(strasse) << ".\n";
+
+	if (verkauft == 0) {
+		cout << "Sie besitzen kein Haus auf " << LUT(strasse) << ".\n";
+	}
+	else {
+		cout << verkauft << " Haeuser auf " << LUT(strasse) << " wurden verkauft.\n";
+	}
 }
+
 int TPlayer::anzahlHaeuserAuf(int strasse) {
 	int count = 0;
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {

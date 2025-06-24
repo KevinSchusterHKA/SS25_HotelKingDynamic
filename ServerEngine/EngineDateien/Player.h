@@ -83,7 +83,7 @@ public:
 
 	void baueHaus(int strasse, Map& map);
 	void baueHausTEMP(int strasse, Map& map);
-	void verkaufeHaus(int strasse, Map& map);
+	void verkaufeHaus(int strasse, int anz, Map& map);
 	int anzahlHaeuserAuf(int strasse);
 	int WieVieleHaueserAufSet(int feld);
 

@@ -129,11 +129,11 @@ void TServer::UnitTest() {
             ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
             ConfigEngineLogging.playerInPrison();
             player[IndexReihenfolge[MomentanerSpieler]].decGefaengnisRunden();
-            MomentanerSpieler++;
             AnzahlRunden++;
             ConfigEngineLogging.newRound();
             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
             HatGewuerfelt = false;
+            MomentanerSpieler++;
         }  
 
 
@@ -238,9 +238,8 @@ void TServer::UnitTest() {
                                 int temp1 = player[i].wurfeln();
                                 int temp2 = player[i].wurfeln();
                                 WurfelWert.push_back(temp1 + temp2);
-                                ControlEngine.AusgabeNachricht("Spieler " + to_string(i+1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10*i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
+                                
                             }
-				        
                             // Prüfen, ob alle Würfe unterschiedlich sind
                             for (int i = 0; i < (int)WurfelWert.size(); ++i) {
                                 for (int j = i + 1; j < (int)WurfelWert.size(); ++j) {
@@ -254,6 +253,9 @@ void TServer::UnitTest() {
                                     system("cls");
                                     break;
                                 }
+                            }
+                            for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
+                                ControlEngine.AusgabeNachricht("Spieler " + to_string(i + 1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10 * i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
                             }
                             Sleep(2000);
                         } while (gleicheWuerfe);
@@ -519,7 +521,8 @@ void TServer::UnitTest() {
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                         int Strasse = -1,Gebaude = -1;
                         ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, Farbe::BG_Rot);
-
+						player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, MapEngine);
+                        
                         //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
                         system("cls");
                     }
@@ -757,12 +760,11 @@ void TServer::UnitTest() {
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
                 ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-                MomentanerSpieler++;
                 HatGewuerfelt = false;
                 system("cls");
                 ConfigEngineLogging.newRound();
                 ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
-
+                MomentanerSpieler++;
             }
             else {
                 ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, MomentanerSpielerFarbe, "Bahn fahren?"); // Bug
