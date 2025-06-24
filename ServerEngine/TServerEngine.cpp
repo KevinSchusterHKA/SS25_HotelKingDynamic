@@ -274,6 +274,9 @@ void TServer::UnitTest() {
                     }
                     if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                     if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
+
+                    ConfigEngineLogging.newRound();
+                    ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                     break;
                  
 
@@ -330,8 +333,21 @@ void TServer::UnitTest() {
                                     player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                                 }
 
-                                ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
-                                ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
+                                //TODO Logger prüfen ob das so geht
+                                switch (MRobj[IndexReihenfolge[MomentanerSpieler]].Type) {
+                                case 0:
+                                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[MomentanerSpieler].getPosition()));
+                                    break;
+                                    
+                                case 1:
+                                    ConfigEngineLogging.onEventField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);  //TODO: Mit MapEngine absprechen wegen String
+                                    break;
+
+                                }
+                                
+
+                                
+                                
                                 ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
                             }
                         }
@@ -356,7 +372,7 @@ void TServer::UnitTest() {
                                 {
                                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
                                     player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
-                                    ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); // TODO: String von MapEngine holen
+                                    ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[MomentanerSpieler].getPosition())); 
                                 }
 
                         }
@@ -388,13 +404,13 @@ void TServer::UnitTest() {
                                 {
                                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
                                     player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
-                                    ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); // TODO: String von MapEngine holen
+                                    ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[MomentanerSpieler].getPosition())); 
                                 }
                             }
                             else {
                                 player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
                                 player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
-                                ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); // TODO: String von MapEngine holen
+                                ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[MomentanerSpieler].getPosition()));
                             }
                             
                         }
@@ -667,7 +683,7 @@ void TServer::UnitTest() {
                         player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                     }
 
-                    ConfigEngineLogging.playerOnStreet("Spieler kommt auf Straße"); //TODO: Mit MapEngine absprechen wegen String
+                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[MomentanerSpieler].getPosition()));
                     ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
                     ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
                   
