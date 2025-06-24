@@ -136,7 +136,6 @@ void TServer::UnitTest() {
             MomentanerSpieler++;
         }  
 
-
         switch (IndexReihenfolge[MomentanerSpieler])
         {
         case 0:
@@ -154,6 +153,7 @@ void TServer::UnitTest() {
         default:
             break;
         }
+        
 
         EingabeCh = MenueOptionen::Reset;
         if (_kbhit()) {
@@ -544,6 +544,23 @@ void TServer::UnitTest() {
                         else
                         {
 						    std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spieler " + to_string(IndexReihenfolge[MomentanerSpieler] + 1) + " hat noch nicht gewuerfelt!" << std::endl;
+                        }
+                        switch (IndexReihenfolge[MomentanerSpieler])
+                        {
+                        case 0:
+                            MomentanerSpielerFarbe = Farbe::BG_Rot;
+                            break;
+                        case 1:
+                            MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                            break;
+                        case 2:
+                            MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                            break;
+                        case 3:
+                            MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                            break;
+                        default:
+                            break;
                         }
                     }
                     UpdateSpielfeld = TRUE;
