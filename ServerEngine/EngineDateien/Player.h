@@ -96,7 +96,7 @@ public:
 	vector<int> getGebObjVector();
 
 	//cpu logic 
-	int handelcpu(int cpuID, int totalPlayers, TPlayer player[], int& targetPlayerOut, int& propertyIndexOut, Map& map);
+	int handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& spielerListe, int& targetPlayerOut, int& propertyIndexOut, Map& map);
 	bool acceptTradecpu(int spaceIndex, int offer,int kaufer, vector<TPlayer*>& spielerListe,Map& map);
 	bool tryBuyStreetcpu(Map& map);
 	bool tryBuildHousecpu(TPlayer player[], Map& map);

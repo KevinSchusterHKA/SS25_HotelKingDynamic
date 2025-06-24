@@ -441,7 +441,7 @@ void TServer::UnitTest() {
                     }
                     if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1)
                     {
-                       Angebot = player[IndexReihenfolge[MomentanerSpieler]].handelcpu(IndexReihenfolge[MomentanerSpieler],AnzahlSpieler+ AnzahlCpuGegner,player, targetPlayerOut, Strasse, MapEngine);//cpu trade 
+                       Angebot = player[IndexReihenfolge[MomentanerSpieler]].handelcpu(IndexReihenfolge[MomentanerSpieler],AnzahlSpieler+ AnzahlCpuGegner,playerRefs, targetPlayerOut, Strasse, MapEngine);//cpu trade 
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                         if (targetPlayerOut != -1&& player[targetPlayerOut].getHuman()==HUMAN) {
                             if (!Handel_once_cpu)
@@ -459,11 +459,10 @@ void TServer::UnitTest() {
 
                                 }
                                 else {
-                                    ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
+                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 -41, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)",Strasse, Angebot);
                                     if (option==0)
                                     {
                                         player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
-
                                     }
                                 }
                             }
@@ -536,7 +535,10 @@ void TServer::UnitTest() {
                             ConfigEngineLogging.newRound();
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                             MomentanerSpieler++;
-                            
+                            if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
+                                ConfigEngineLogging.newRound();
+                                MomentanerSpieler = 0;
+                            }
                         }
                         else
                         {
@@ -743,10 +745,7 @@ void TServer::UnitTest() {
         }
 
 
-        if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
-            ConfigEngineLogging.newRound();
-            MomentanerSpieler = 0;
-        }
+        
 
         //Ausgabe des ausgewaehlten Menüs
 

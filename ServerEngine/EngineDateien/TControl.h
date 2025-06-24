@@ -132,6 +132,7 @@ public:
     void AusgabeStartMenu(int& option, int x, int y);
 	
     void AusgabeJaNeinOption(int& option, int x, int y, Farbe f, std::string Ueberschrift);
+    void AusgabeJaNeinOptionCPU(int& option, int x, int y, Farbe f, std::string Ueberschrift,int Strasse,int Angebot);
     void AusgabeStrasseHandeln(int& option, int& WelcheStrasse, int& Angebot, int x, int y, Farbe f);
     void AusgabeVerkaufen(int& option,int& WelcheStrasse, int& Gebaude, int x, int y, Farbe f);
     void AusgabeGebaeudeBauen(int& option, int& WelcheStrasse, int x, int y, Farbe f);
