@@ -222,56 +222,60 @@ void TServer::UnitTest() {
 							player[i].setID(i);
                             player[i].setHuman(HUMAN);
                         }
-                    }
-                    for (size_t i = AnzahlSpieler; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
-                        player[i].setName(SpielerNamen[i]);
-                        player[i].setID(i);
-                        player[i].setHuman(CPU1);  
-
-                    }
-                    MapEngine.SetPlayerNumber(AnzahlSpieler + AnzahlCpuGegner);
-
-                    // Würfelreihenfolge festlegen:
-                    gleicheWuerfe = true;
-                    do {
-                        WurfelWert.clear();
-                        gleicheWuerfe = false;
-                        for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
-                            int temp1 = player[i].wurfeln();
-                            int temp2 = player[i].wurfeln();
-                            WurfelWert.push_back(temp1 + temp2);
-                            ControlEngine.AusgabeNachricht("Spieler " + to_string(i+1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10*i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
+                        for (size_t i = AnzahlSpieler; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
+                            player[i].setName(SpielerNamen[i]);
+                            player[i].setID(i);
+                            player[i].setHuman(CPU1);  
                         }
-				
-                        // Prüfen, ob alle Würfe unterschiedlich sind
-                        for (int i = 0; i < (int)WurfelWert.size(); ++i) {
-                            for (int j = i + 1; j < (int)WurfelWert.size(); ++j) {
-                                if (WurfelWert[i] == WurfelWert[j]) {
-                                    gleicheWuerfe = true;
+                        MapEngine.SetPlayerNumber(AnzahlSpieler + AnzahlCpuGegner);
+                        ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                        // Würfelreihenfolge festlegen:
+                        gleicheWuerfe = true;
+                        do {
+                            WurfelWert.clear();
+                            gleicheWuerfe = false;
+                            for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
+                                int temp1 = player[i].wurfeln();
+                                int temp2 = player[i].wurfeln();
+                                WurfelWert.push_back(temp1 + temp2);
+                                ControlEngine.AusgabeNachricht("Spieler " + to_string(i+1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10*i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
+                            }
+				        
+                            // Prüfen, ob alle Würfe unterschiedlich sind
+                            for (int i = 0; i < (int)WurfelWert.size(); ++i) {
+                                for (int j = i + 1; j < (int)WurfelWert.size(); ++j) {
+                                    if (WurfelWert[i] == WurfelWert[j]) {
+                                        gleicheWuerfe = true;
+                                        break;
+                                    }
+                                }
+                                if (gleicheWuerfe) 
+                                {
+                                    system("cls");
                                     break;
                                 }
                             }
-                            if (gleicheWuerfe) break;
+                            Sleep(2000);
+                        } while (gleicheWuerfe);
+                        Sleep(2000);
+                        system("cls");
+                        // Index-Vektor erstellen und richtig resizen!
+                        IndexReihenfolge.resize(WurfelWert.size());
+                        for (int i = 0; i < (int)WurfelWert.size(); ++i) {
+                            IndexReihenfolge[i] = i;
                         }
-                    } while (gleicheWuerfe);
-                    Sleep(2000);
-                    system("cls");
-                    // Index-Vektor erstellen und richtig resizen!
-                    IndexReihenfolge.resize(WurfelWert.size());
-                    for (int i = 0; i < (int)WurfelWert.size(); ++i) {
-                        IndexReihenfolge[i] = i;
-                    }
 
-                    // Sortieren der Indizes nach den Werten in WurfelWert (absteigend)
-                    sort(IndexReihenfolge.begin(), IndexReihenfolge.end(),
-                        [&WurfelWert](int a, int b) {
-                            return WurfelWert[a] > WurfelWert[b];
-                        });
+                        // Sortieren der Indizes nach den Werten in WurfelWert (absteigend)
+                        sort(IndexReihenfolge.begin(), IndexReihenfolge.end(),
+                            [&WurfelWert](int a, int b) {
+                                return WurfelWert[a] > WurfelWert[b];
+                            });
 
-                    for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; ++i) {
-                        playerRefs.push_back(&player[IndexReihenfolge[i]]);
+                        for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; ++i) {
+                            playerRefs.push_back(&player[IndexReihenfolge[i]]);
+                        }
                     }
-             		    if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
+             		if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
 					    std::vector<HighscoreEntry> player;
 					    load_highscores("highscores.txt", player);
                         std::vector<std::string> playerNames;
@@ -286,9 +290,6 @@ void TServer::UnitTest() {
                     }
                     if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                     if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
-
-                    ConfigEngineLogging.newRound();
-                    ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                     break;
                  
 
@@ -389,8 +390,6 @@ void TServer::UnitTest() {
 
                         }
                     }
-                   
-
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                     {
                  
@@ -439,8 +438,6 @@ void TServer::UnitTest() {
                         ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                         StrasseBauen = -1;
                     }
-                 
-
                     if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1)
                     {
                         int street = -1;
@@ -477,7 +474,6 @@ void TServer::UnitTest() {
 
                         cpudone = true;
                     }
-
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
@@ -520,7 +516,6 @@ void TServer::UnitTest() {
                         }
 
                     }
-                   
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                         int Strasse = -1,Gebaude = -1;
                         ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, Farbe::BG_Rot);
@@ -565,7 +560,7 @@ void TServer::UnitTest() {
                             PlayerState PlTemp;
                             GsTemp.diceOrder = IndexReihenfolge;
                             GsTemp.currentPlayerIndex = IndexReihenfolge[MomentanerSpieler];
-                            for (size_t i = 0; i < AnzahlSpieler; i++)
+                            for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 PlTemp.budget = player[i].getBudget();
                                 PlTemp.builtObjects = player[i].getGebObjVector(); // TODO: getGebObjVector Rückgabewert 40 std::vector  mit nuller aufgefüllt außer an den Positionen der Straßen Anzahl Gebaute Gebaude. kontrollieren
@@ -578,14 +573,14 @@ void TServer::UnitTest() {
                             }
                             for (size_t i = AnzahlSpieler; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
-                                PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
-                                PlTemp.builtObjects = player[i].getGebObjVector();      //TODO:CPU GEGNER
-                                //PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);      //TODO:CPU GEGNER
-                                PlTemp.inJail = player[i].imGefaengnis();             //TODO:CPU GEGNER
-                                PlTemp.name = player[i].getName();                    //TODO:CPU GEGNER
-                                PlTemp.ownedObjects = player[i].getGekObjVector();    //TODO:CPU GEGNER
-                                PlTemp.position = player[i].getPosition();            //TODO:CPU GEGNER
-                                GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
+                                //PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
+                                //PlTemp.builtObjects = player[i].getGebObjVector();      //TODO:CPU GEGNER
+                                ////PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);      //TODO:CPU GEGNER
+                                //PlTemp.inJail = player[i].imGefaengnis();             //TODO:CPU GEGNER
+                                //PlTemp.name = player[i].getName();                    //TODO:CPU GEGNER
+                                //PlTemp.ownedObjects = player[i].getGekObjVector();    //TODO:CPU GEGNER
+                                //PlTemp.position = player[i].getPosition();            //TODO:CPU GEGNER
+                                //GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
                             }
                             GsTemp.roundCount=AnzahlRunden;
                             GsTemp.cpuCount = AnzahlCpuGegner;
@@ -613,10 +608,21 @@ void TServer::UnitTest() {
                             load_game("Spielstand.txt", GsTemp);//TODO: implementieren und auf Funktionalität testen
                             AnzahlSpieler = GsTemp.playerCount;
                             AnzahlCpuGegner = GsTemp.cpuCount;
+							IndexReihenfolge = GsTemp.diceOrder;
+                            MomentanerSpieler = GsTemp.currentPlayerIndex;
+
                             for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
-                                TPlayer temp(i, GsTemp.players[i].name, GsTemp.players[i].budget, GsTemp.players[i].position, GsTemp.players[i].inJail, GsTemp.players[i].inJail, GsTemp.players[i].ownedObjects, GsTemp.players[i].builtObjects);
-                                player[i] = temp;
+                                TPlayer temp(   IndexReihenfolge[i], 
+                                                GsTemp.players[IndexReihenfolge[i]].name, 
+                                                GsTemp.players[IndexReihenfolge[i]].budget, 
+                                                GsTemp.players[IndexReihenfolge[i]].position, 
+                                                GsTemp.players[IndexReihenfolge[i]].inJail, 
+                                                GsTemp.players[IndexReihenfolge[i]].inJail,
+                                                GsTemp.players[IndexReihenfolge[i]].ownedObjects, 
+                                                GsTemp.players[IndexReihenfolge[i]].builtObjects);
+								temp.setHuman(GsTemp.players[IndexReihenfolge[i]].isHuman);
+                                player[IndexReihenfolge[i]] = temp;
                             }
                             MapEngine.loadGame(GsTemp.players);
                             RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
@@ -715,7 +721,10 @@ void TServer::UnitTest() {
         default:
             break;
         }
-        if (MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) {
+
+
+        if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
+            ConfigEngineLogging.newRound();
             MomentanerSpieler = 0;
         }
 
