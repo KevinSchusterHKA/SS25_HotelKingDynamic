@@ -54,7 +54,7 @@ void TServer::UnitTest() {
     std::vector<TPlayer*> playerRefs;
     vector<int> WurfelWert;
     vector<int> IndexReihenfolge(4, 0);
-    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1;
+    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt = FALSE, GameFinished = FALSE, UpdateSpielfeld = FALSE, Handel_once_cpu = false, cpudone = false, gleicheWuerfe=true;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
@@ -159,12 +159,11 @@ void TServer::UnitTest() {
         if (_kbhit()) {
             EingabeCh = _getch();
         }
-        else { //logic for cpu auto wurfel
-            if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1 && !HatGewuerfelt) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(800));
+            if ((player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1) && (!HatGewuerfelt)) {
+               Sleep(1000);
                 EingabeCh = '\r';   
             }
-        }
+        
         UpdateSpielfeld = FALSE;
 
         //Verarbeitung der Eingaben
@@ -383,7 +382,7 @@ void TServer::UnitTest() {
                         }
 
                         if (istFrei) {
-
+                            Sleep(500);
                                 if (player[IndexReihenfolge[MomentanerSpieler]].tryBuyStreetcpu(MapEngine))
                                 {
                                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
@@ -443,11 +442,9 @@ void TServer::UnitTest() {
                     }
                     if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1)
                     {
-                        int street = -1;
-                        int targetPlayerOut = -1;
-                        int angebotspreis = player[IndexReihenfolge[MomentanerSpieler]].handelcpu(IndexReihenfolge[MomentanerSpieler],AnzahlSpieler+ AnzahlCpuGegner,player, targetPlayerOut, street, MapEngine);//cpu trade 
+                       Angebot = player[IndexReihenfolge[MomentanerSpieler]].handelcpu(IndexReihenfolge[MomentanerSpieler],AnzahlSpieler+ AnzahlCpuGegner,player, targetPlayerOut, Strasse, MapEngine);//cpu trade 
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                        if (angebotspreis != -1) {
+                        if (targetPlayerOut != -1&& player[targetPlayerOut].getHuman()==HUMAN) {
                             if (!Handel_once_cpu)
                             {
                                 for (size_t i = 0; i < AnzahlCpuGegner + AnzahlSpieler; i++)
@@ -459,13 +456,16 @@ void TServer::UnitTest() {
                                 }
                                 if (player[targetPlayerOut].getHuman() == CPU1)
                                 {
-                                    player[targetPlayerOut].acceptTradecpu(street, angebotspreis, IndexReihenfolge[MomentanerSpieler], playerRefs, MapEngine);
+                                    player[targetPlayerOut].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler], playerRefs, MapEngine);
 
                                 }
                                 else {
+                                    ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
+                                    if (option==0)
+                                    {
+                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
 
-                                    MenueAuswahl = Menues::Handel;
-
+                                    }
                                 }
                             }
                             
@@ -474,12 +474,15 @@ void TServer::UnitTest() {
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                        bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(player,MapEngine);//buildhouse
 
+                       if (HatGewuerfelt)
+                       {
+                           cpudone = true;
 
-                        cpudone = true;
+                       }
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
-                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Handeln von Objekten ist noch nicht implementiert!" << std::endl;
+                        std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::endl;
                         ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, Farbe::BG_Rot);
                         for (size_t i = 0; i < AnzahlCpuGegner+AnzahlSpieler; i++)
                         {
@@ -502,10 +505,7 @@ void TServer::UnitTest() {
 					    
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
                     }
-                    if (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==CPU1)
-                    {
-                        MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);//space
-                        if (cpudone && MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1)
+                        if (cpudone&&(player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1))
                         {
                             std::this_thread::sleep_for(std::chrono::milliseconds(500));
                             ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
@@ -518,7 +518,6 @@ void TServer::UnitTest() {
                             cpudone = false;
                         }
 
-                    }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                         int Strasse = -1,Gebaude = -1;
                         ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, Farbe::BG_Rot);
