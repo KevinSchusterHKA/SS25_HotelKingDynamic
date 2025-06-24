@@ -228,7 +228,11 @@ void TServer::UnitTest() {
                             player[i].setHuman(CPU1);  
                         }
                         MapEngine.SetPlayerNumber(AnzahlSpieler + AnzahlCpuGegner);
-                        ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                        ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
+                        for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; ++i) {
+                            playerRefs.push_back(&player[i]);
+                        }
+
                         // Würfelreihenfolge festlegen:
                         gleicheWuerfe = true;
                         do {
@@ -254,11 +258,10 @@ void TServer::UnitTest() {
                                     break;
                                 }
                             }
-                            for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
-                                ControlEngine.AusgabeNachricht("Spieler " + to_string(i + 1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10 * i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
-                            }
-                            Sleep(2000);
                         } while (gleicheWuerfe);
+                        for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
+                            ControlEngine.AusgabeNachricht("Spieler " + to_string(i + 1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10 * i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
+                        }
                         Sleep(2000);
                         system("cls");
                         // Index-Vektor erstellen und richtig resizen!
@@ -273,9 +276,7 @@ void TServer::UnitTest() {
                                 return WurfelWert[a] > WurfelWert[b];
                             });
 
-                        for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; ++i) {
-                            playerRefs.push_back(&player[IndexReihenfolge[i]]);
-                        }
+                      
                     }
              		if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
 					    std::vector<HighscoreEntry> player;
