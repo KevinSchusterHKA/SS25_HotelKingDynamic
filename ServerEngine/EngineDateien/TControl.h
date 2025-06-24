@@ -51,11 +51,6 @@ enum class Farbe {
 
 class TControl{
 private:
-    
-
-    
-
-    
     int ZeitKorrekturKonstante = 30;
 
 	//ASCII Art
@@ -122,7 +117,6 @@ private:
     COORD coord;
     void HideCursor();
     void ShowCursor();
-    //BOOL WINAPI SetConsoleCursorPosition(_In_ HANDLE hConsoleOutput,_In_ COORD  dwCursorPosition);
     void AusgabeSpielerBox( std::string Namen,
                             int Budget,
                             int AnzahlGekaufterObjekte,
