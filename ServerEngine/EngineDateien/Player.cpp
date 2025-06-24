@@ -384,7 +384,7 @@ int TPlayer::handelcpu(int cpuID, int totalPlayers, TPlayer p[], int& targetPlay
 
 // player to cpu 
 bool TPlayer::acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlayer*>& spielerListe,Map& map) {
-	int propPrice = map.getPropertyPrice(spaceIndex);
+	int propPrice = streetpricewith2(spaceIndex, spielerListe);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 	int bud = getBudget();
 	if ((offer >= propPrice * (acceptThresholdPercent / 100.0))&& (spielerListe[kaufer]->getBudget() - offer >= 0)) {
@@ -530,4 +530,44 @@ int getPreisStrasse(int i, Map& map) {
 
 int getPreisHaus(int i, Map& map) {
 	return map.getHousePrice(i);
+}
+int streetpricewith2(int position, vector<TPlayer*>& spielerListe) {
+	int basePrice = -1;
+
+	switch (position) {
+	case 1:  basePrice = 60;  break; // Oberreut
+	case 3:  basePrice = 80;  break; // Gruenwinkel
+	case 6:  basePrice = 100; break; // Neureut
+	case 8:  basePrice = 100; break; // Waldstadt
+	case 9:  basePrice = 120; break; // Hagsfeld
+	case 11: basePrice = 140; break; // Palmbach
+	case 13: basePrice = 140; break; // Stupferich
+	case 14: basePrice = 160; break; // Bergdoerfer
+	case 16: basePrice = 180; break; // Rintheim
+	case 18: basePrice = 180; break; // Rueppurr
+	case 19: basePrice = 180; break; // Muehlburg
+	case 21: basePrice = 220; break; // Nordstadt
+	case 23: basePrice = 220; break; // Nordweststadt
+	case 24: basePrice = 240; break; // Weststadt
+	case 26: basePrice = 260; break; // Durlach
+	case 27: basePrice = 260; break; // Suedstadt
+	case 29: basePrice = 280; break; // Oststadt
+	case 31: basePrice = 300; break; // Suedweststadt
+	case 32: basePrice = 300; break; // Innenstadt Ost
+	case 34: basePrice = 320; break; // Innenstadt West
+	case 37: basePrice = 350; break; // Geigersberg
+	case 39: basePrice = 400; break; // Schlossplatz
+	default:
+		return -1;
+	}
+	int totalOwnedStreets = 0;
+	for (std::size_t i = 0; i < spielerListe.size(); ++i) {
+		TPlayer* spieler = spielerListe[i];
+		if (spieler != nullptr) {
+			totalOwnedStreets += spieler->getGekObjAnz();
+		}
+	}
+
+	double finalPrice = basePrice * std::pow(1.02, totalOwnedStreets);
+	return static_cast<int>(finalPrice);
 }
