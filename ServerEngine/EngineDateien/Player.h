@@ -100,8 +100,8 @@ public:
 	int handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& spielerListe, int& targetPlayerOut, int& propertyIndexOut, Map& map);
 	bool acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlayer*>& spielerListe, Map& map);
 	bool tryBuyStreetcpu(Map& map);
-	bool tryBuildHousecpu(TPlayer player[], Map& map);
-	bool takebahn(TPlayer player[], int costofbahn, int bahnpos, int anzahlplayers, Map& map);
+	bool tryBuildHousecpu(vector<TPlayer*>& spielerListe, Map& map);
+	bool takebahn(vector<TPlayer*>& spielerListe, int costofbahn, int bahnpos, int anzahlplayers, Map& map);
 	void cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& map);
 };
 
