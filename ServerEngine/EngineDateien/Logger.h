@@ -14,10 +14,11 @@ public:
 	void onChestField(std::string event);
 	void onEventField(std::string event);
 	void playerBuysObject(std::string object, int price);
-	void playerBuildsBuilding(std::string building);
+	void playerBuildsBuilding(int level);
 	void playerMoney(std::string player, int money);
 	void payTax();
 	void newGame();
+	void usesTrain(std::string origin, std::string destination);
 	
 
 private:

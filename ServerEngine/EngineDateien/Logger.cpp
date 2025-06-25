@@ -111,8 +111,8 @@ void Logger::playerBuysObject(std::string object, int price) {
     writeToFile("Spieler hat Das Objekt " + object + " für " + std::to_string(price) + " gekauft \n\t\t");
 }
 
-void Logger::playerBuildsBuilding(std::string building) {
-    writeToFile("Spieler hat ein " + building + " gebaut \n\t\t");
+void Logger::playerBuildsBuilding(int level) {
+    writeToFile("Spieler hat ein Haus gebaut und hat nun " + std::to_string(level) + " Häuser \n\t\t");
 }
 
 void Logger::playerMoney(std::string player, int money) {
@@ -122,4 +122,9 @@ void Logger::playerMoney(std::string player, int money) {
 
 void Logger::payTax() {
     writeToFile("Spieler muss Steuern in Höhe von 200$ zahlen \n\t\t");
+}
+
+void Logger::usesTrain(std::string origin, std::string destination) {
+    writeToFile("Der Spieler ist mit der Bahn von "+origin+ " nach " + destination +" gefahren\n\t\t");
+
 }
