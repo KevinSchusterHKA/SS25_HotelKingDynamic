@@ -632,7 +632,7 @@ void TServer::UnitTest() {
                             AnzahlCpuGegner = GsTemp.cpuCount;
 							IndexReihenfolge = GsTemp.diceOrder;
                             MomentanerSpieler = GsTemp.currentPlayerIndex;
-
+                            playerRefs.clear();
                             for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 TPlayer temp(   IndexReihenfolge[i], 
@@ -872,7 +872,7 @@ void TServer::UnitTest() {
         std::vector<HighscoreEntry> temp;
         for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
         {
-            temp.push_back({ player[i].getName(),player[i].getBudget() });
+            temp.push_back({ player[i].getName(),player[i].Score(playerRefs) });
         }
 		save_highscores("highscores.txt", temp); //TODO: Funktionalität testen
     }

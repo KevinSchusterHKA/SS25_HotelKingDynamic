@@ -37,7 +37,7 @@ public:
 	TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeuserspeicher, vector<int> gebautehaeuser);
 	~TPlayer();
 
-	int Score(int runde, int anzGekGebObj, vector<TPlayer*>& spielerListe);
+	int Score(vector<TPlayer*>& spielerListe);
 	void getData();
 	void setID(int id);
 	int getID();

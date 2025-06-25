@@ -9,7 +9,7 @@ TPlayer::TPlayer(int id, string name, int budget, int position, bool imgefaengni
 
 TPlayer::~TPlayer() {};
 
-int TPlayer::Score(int runde, int anzGekGebObj, vector<TPlayer*>& spielerListe) {
+int TPlayer::Score(vector<TPlayer*>& spielerListe) {
 	int score = this->getBudget();
 
 	// Wert aller gekauften Straßen / Felder
