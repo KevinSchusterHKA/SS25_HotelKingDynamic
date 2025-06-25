@@ -26,6 +26,7 @@ private:
 	int GefaengnisRunden = 0;
 	vector<int> GekaufteStrassen;
 	vector<int> GebauteHaeuser;
+	vector<int> GebauteHaeuserSpeicherFormat;
 
 
 
@@ -33,9 +34,10 @@ public:
 	TPlayer();
 	TPlayer(int id, int budget, int position);
 	TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
+	TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeuserspeicher, vector<int> gebautehaeuser);
 	~TPlayer();
 
-	int Score(int runde, int anzGekGebObj, Map& map);
+	int Score(vector<TPlayer*>& spielerListe);
 	void getData();
 	void setID(int id);
 	int getID();
@@ -72,18 +74,17 @@ public:
 	void bezahle(int betrag);
 	void erhalte(int betrag);
 	bool istPleite();
-	void geheZu(int feld);
 
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
-	void verkaufeStrasse(int strasse, Map& map);
+	void verkaufeStrasse(int strasse, vector<TPlayer*>& spielerListe);
 	bool besitztStrasse(int strasse);
 	bool istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe);
 	bool Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, Map& map);
 
 	void baueHaus(int strasse, Map& map);
-	void baueHausTEMP(int strasse, Map& map);
-	void verkaufeHaus(int strasse, Map& map);
+	int baueHausTEMP(int strasse, vector<TPlayer*>& spielerListe);
+	void verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe);
 	int anzahlHaeuserAuf(int strasse);
 	int WieVieleHaueserAufSet(int feld);
 
@@ -96,16 +97,21 @@ public:
 	vector<int> getGebObjVector();
 
 	//cpu logic 
-	int handelcpu(int cpuID, int totalPlayers, TPlayer player[], int& targetPlayerOut, int& propertyIndexOut, Map& map);
-	bool acceptTradecpu(int spaceIndex, int offer,int kaufer, vector<TPlayer*>& spielerListe,Map& map);
+	int handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& spielerListe, int& targetPlayerOut, int& propertyIndexOut, Map& map);
+	bool acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlayer*>& spielerListe, Map& map);
 	bool tryBuyStreetcpu(Map& map);
-	bool tryBuildHousecpu(TPlayer player[], Map& map);
-	bool takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlplayers, Map& map);
+	bool tryBuildHousecpu(vector<TPlayer*>& spielerListe, Map& map);
+	bool takebahn(vector<TPlayer*>& spielerListe, int costofbahn, int bahnpos, int anzahlplayers, Map& map);
+	void cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& map);
 };
 
 
 string LUT(int i);
-int getPreisStrasse(int feld, Map& map);
-int getPreisHaus(int feld, Map& map);
+//int getPreisStrasse(int feld, Map& map);
+//int getPreisHaus(int feld, Map& map);
 
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);
+
+int streetpricewith2(int position, vector<TPlayer*>& spielerListe);
+int housepricewith2(int position, vector<TPlayer*>& spielerListe);
+vector<int> SpeicherZuInternFormat(vector<int> gebauteHaueserSpeicher);
