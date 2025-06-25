@@ -684,7 +684,7 @@ void TControl::AusgabeJaNeinOptionCPU(int& option, int x, int y, Farbe f, std::s
     int linkerRandText = (BreiteMenue - 2) / 2 - Ueberschrift.size() / 2;
     this->coord.X = x;
     this->coord.Y = y;
-    std::string temp = "Strasse:" + std::to_string(Strasse) + " fuer " + std::to_string(Angebot) + "$ (Bestaetige mit Enter)";
+    std::string temp = "Strasse: xx fuer xxxx$ (Bestaetige mit Enter)";
     
     SetConsoleCursorPosition(this->hConsole, this->coord);
     std::cout << _symbolcharsControl[ULC];
@@ -701,7 +701,7 @@ void TControl::AusgabeJaNeinOptionCPU(int& option, int x, int y, Farbe f, std::s
     this->coord.Y++;
     SetConsoleCursorPosition(this->hConsole, this->coord);
 
-    std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue / 2 - temp.size() / 2-1) << " " << std::left << temp << std::setw(BreiteMenue / 2 - temp.size()/2) << std::right << _symbolcharsControl[VL];
+    std::cout << _symbolcharsControl[VL] << std::setw(BreiteMenue / 2 - temp.size() / 2) << " " <<setw(66)<< std::left << "Strasse:" + std::to_string(Strasse) + " fuer " + std::to_string(Angebot) + "$ (Bestaetige mit Enter)"<<std::right<< _symbolcharsControl[VL];
     this->coord.Y++;
     SetConsoleCursorPosition(this->hConsole, this->coord);
 
@@ -1609,7 +1609,6 @@ bool TControl::isRunningInWindowsTerminal() {
 void TControl::AusgabeNachricht(std::string Nachricht,int x,int y,Farbe f) {
     this->SetFarbe(Farbe::BG_Schwarz);
     this->SetFarbe(f);
-    this->SetConsoleFontSize(20);
     int BreiteMenue = Nachricht.size() + 10;
     int linkerRandText = (BreiteMenue - 2) / 2 - Nachricht.size() / 2;
 
@@ -1635,7 +1634,6 @@ void TControl::AusgabeNachricht(std::string Nachricht,int x,int y,Farbe f) {
     std::cout << _symbolcharsControl[LRC];
 
     Sleep(500);
-    this->SetConsoleFontSize(8);
     this->SetFarbe(Farbe::Zuruecksetzen);
 
 
