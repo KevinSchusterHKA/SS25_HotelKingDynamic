@@ -46,7 +46,13 @@ void TServer::UnitTest() {
      "7. Gefaengnis: Sie koennen ins Gefaengnis kommen, wenn Sie auf das entsprechende Feld landen oder eine Karte ziehen.",
      "8. Ereignis- und Gemeinschaftskarten: Ziehen Sie Karten, die positive oder negative Effekte haben koennen.",
      "9. Bankrott: Wenn Sie nicht mehr genug Geld haben, um Ihre Schulden zu begleichen, sind Sie bankrott.",
-     "10. Spielende: Das Spiel endet, wenn ein Spieler bankrott geht."
+     "10. Spielende: Das Spiel endet, wenn ein Spieler bankrott geht.",
+	 "11. Handelsoptionen: Spieler koennen untereinander handeln, um ihre Position zu verbessern.",
+     "12. Wuerfel: Bei einem Pasch duerfen Sie erneut wuerfeln, aber bei dreimaligem Pasch muessen Sie ins Gefaengnis.",
+     "13. Strassenbahn: Spieler koennen die Strassenbahn benutzen, um schneller voranzukommen.",
+     "14. Haueser und Hotels: Bevor man eine Strasse von Strassenset verkaufen kann darf keine Gebaeude mehr auf einer dieser Strassen sein.",
+     "15. Strassen Verkaufen: Um eine Strasse zu Verkaufen geben Sie als Gebaeudeanzahl die Zahl 0 ein."
+	 "16. Fairplay: Spielen Sie fair und respektieren Sie die Regeln.",
     };
 
     COORD CursorPos = { 0,0 };
@@ -237,6 +243,7 @@ void TServer::UnitTest() {
 
                         ConfigEngineLogging.newRound();
                         ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+						ControlEngine.SetConsoleFontSize(20);
                         // Würfelreihenfolge festlegen:
                         gleicheWuerfe = true;
                         do {
@@ -263,11 +270,18 @@ void TServer::UnitTest() {
                                 }
                             }
                         } while (gleicheWuerfe);
-                        for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
+                        /*std::vector<TPlayer>temp;
+                        for (size_t i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++)
+                        {
+                            temp.push_back(player[i]);
+                        }*/
+                        for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {//IndexReihenfolge: 3201 , dcab
                             ControlEngine.AusgabeNachricht("Spieler " + to_string(i + 1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10 * i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
                         }
-                        Sleep(2000);
+                        Sleep(3000);
                         system("cls");
+                        ControlEngine.SetConsoleFontSize(8);
+
                         // Index-Vektor erstellen und richtig resizen!
                         IndexReihenfolge.resize(WurfelWert.size());
                         for (int i = 0; i < (int)WurfelWert.size(); ++i) {
@@ -279,7 +293,10 @@ void TServer::UnitTest() {
                             [&WurfelWert](int a, int b) {
                                 return WurfelWert[a] > WurfelWert[b];
                             });
-
+                        //for (size_t i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) //dbca
+                        //{
+                        //    player[i] = temp[IndexReihenfolge[i]];
+                        //}
                       
                     }
              		if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
@@ -378,17 +395,7 @@ void TServer::UnitTest() {
                                 case _type::TypeTax: 
                                     ConfigEngineLogging.payTax();
                                     break;
-                                    
-                                
-
                                 }
-
-                                
-                                
-
-                                
-                                
-                              
                             }
                         }
                         else {
@@ -484,7 +491,7 @@ void TServer::UnitTest() {
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::endl;
-                        ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, Farbe::BG_Rot);
+                        ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, MomentanerSpielerFarbe);
                         for (size_t i = 0; i < AnzahlCpuGegner+AnzahlSpieler; i++)
                         {
                             if (player[i].besitztStrasse(Strasse)) {
@@ -555,10 +562,12 @@ void TServer::UnitTest() {
                         }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                         int Strasse = -1,Gebaude = -1;
-                        ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, Farbe::BG_Rot);
+                        ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
 						player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs);
                         
                         //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
+
+                        //MapEngine aktualisieren nach verkauften Objekten
                         system("cls");
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
@@ -677,7 +686,7 @@ void TServer::UnitTest() {
                             playerRefs.clear();
                             for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
-                                TPlayer temp(   IndexReihenfolge[i], 
+                                /*TPlayer temp(   IndexReihenfolge[i], 
                                                 GsTemp.players[IndexReihenfolge[i]].name, 
                                                 GsTemp.players[IndexReihenfolge[i]].budget, 
                                                 GsTemp.players[IndexReihenfolge[i]].position, 
@@ -685,8 +694,17 @@ void TServer::UnitTest() {
                                                 GsTemp.players[IndexReihenfolge[i]].inJail,
                                                 GsTemp.players[IndexReihenfolge[i]].ownedObjects, 
                                                 GsTemp.players[IndexReihenfolge[i]].builtObjects,
-                                                SpeicherZuInternFormat(GsTemp.players[IndexReihenfolge[i]].builtObjects));
-								temp.setHuman(GsTemp.players[IndexReihenfolge[i]].isHuman);
+                                                SpeicherZuInternFormat(GsTemp.players[IndexReihenfolge[i]].builtObjects));*/
+                                TPlayer temp(   i,
+                                                GsTemp.players[i].name,
+                                                GsTemp.players[IndexReihenfolge[i]].budget,
+                                                GsTemp.players[IndexReihenfolge[i]].position,
+                                                GsTemp.players[IndexReihenfolge[i]].inJail,
+                                                GsTemp.players[IndexReihenfolge[i]].inJail,
+                                                GsTemp.players[IndexReihenfolge[i]].ownedObjects,
+                                                GsTemp.players[IndexReihenfolge[i]].builtObjects,
+                                                SpeicherZuInternFormat(GsTemp.players[IndexReihenfolge[i]].builtObjects));;
+								temp.setHuman(GsTemp.players[i].isHuman);
                                 player[IndexReihenfolge[i]] = temp;
 								playerRefs.push_back(&player[i]);
                             }
@@ -742,6 +760,8 @@ void TServer::UnitTest() {
                     {
                         //Code zum Ablehnen des Handels
                     }
+
+                    break;
                 case Menues::BahnFahren:
                     //TODO:Position spieler wird beim Bahnhof nicht richtig aktualisiert
                     MenueAuswahl = Menues::Spieler;
@@ -754,7 +774,7 @@ void TServer::UnitTest() {
                     {
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
+                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()-player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl()) {
                             //KIT Campus|-> Durlach BF
                         case 5:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(25 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
@@ -781,7 +801,6 @@ void TServer::UnitTest() {
                             break;
 
                         }
-                        
                     }
                     else {
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 0));
@@ -812,9 +831,6 @@ void TServer::UnitTest() {
         default:
             break;
         }
-
-
-        
 
         //Ausgabe des ausgewaehlten Menüs
 

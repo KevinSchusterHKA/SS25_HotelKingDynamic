@@ -66,8 +66,10 @@ void TPlayer::incPosition(int p) {
 int TPlayer::getWurfel(int index) { return this->Wurfelzahl[index]; }
 void TPlayer::setWurfel(int w, int index) { this->Wurfelzahl[index] = w; }
 void TPlayer::Wurfelmechn() {
-	this->setWurfel(2, 0);
-	this->setWurfel(3, 1);
+	for (size_t i = 0; i < 2; i++)
+	{
+		this->setWurfel(this->wurfeln(), i);
+	}
 	this->setAugenzahl(this->getWurfel(0) + this->getWurfel(1));
 	this->incPosition(this->getAugenzahl());
 }
