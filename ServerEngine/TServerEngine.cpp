@@ -361,6 +361,9 @@ void TServer::UnitTest() {
                                 if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                                 {
                                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
+                                    Spiellaueft = false;
+									GameFinished = true;
+                                    break;
                                 }
                                 if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type == 7)
                                 {

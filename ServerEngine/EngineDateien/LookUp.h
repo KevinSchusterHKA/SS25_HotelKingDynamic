@@ -64,7 +64,7 @@ const string _playerchars[] = { (string)(_fgcolortable[fgred] + 'A' + _fgcolorta
 const char _symbolchars[] = {   (char)127,
                                 (char)174,
                                 (char)175,
-                                (char)184,
+                                '$',
                                 (char)179,
                                 (char)196,
                                 (char)218,
@@ -270,7 +270,7 @@ const int _streetarr[8][3] = {
     {26,27,29},
     {31,32,34},
     {37,39,-1}
-};
+};//1,3,6,8,9,11,13,14,16,18,19,21,23,24,26,27,29,31,32,34,37,39 alle Straßen
 
 const MapReturnObj _chestCards[] = {
     MapReturnObj(0, TypeGo, -1, 0, 0, "Ruecke vor bis auf Los (Ziehe 200" + string(1, _symbolchars[Coin]) + " ein)"),
