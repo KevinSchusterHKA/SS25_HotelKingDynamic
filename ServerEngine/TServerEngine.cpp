@@ -698,6 +698,7 @@ void TServer::UnitTest() {
                     {
                         //Code zum Ablehnen des Handels
                     }
+					break;
                 case Menues::BahnFahren:
                     //TODO:Position spieler wird beim Bahnhof nicht richtig aktualisiert
                     MenueAuswahl = Menues::Spieler;
