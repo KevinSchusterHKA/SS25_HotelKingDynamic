@@ -211,7 +211,7 @@ int TPlayer::WieVieleHaueserAufSet(int feld) {
 	return count;
 }
 
-bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot ,Map& map) {
+bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, Map& map) {
 	// Prüfen ob Käufer genug Budget hat
 	if (this->getBudget() < angebot) {
 		cout << "Du hast nicht genug Budget fuer dieses Angebot." << endl;
@@ -233,19 +233,19 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot ,Map
 					<< " stehen noch Haeuser." << endl;
 				return false;
 			}
-					
-				// Käufer bezahlt
-				this->bezahle(angebot);
 
-				// Verkäufer erhält Geld
-				verkaufer->erhalte(angebot);
+			// Käufer bezahlt
+			this->bezahle(angebot);
 
-				// Straße übertragen
-				verkaufer->deleteStrasse(feld);
-				this->addStrasse(feld);
+			// Verkäufer erhält Geld
+			verkaufer->erhalte(angebot);
 
-				cout << "Handel erfolgreich: Strasse " << LUT(feld) << " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
-				return true;
+			// Straße übertragen
+			verkaufer->deleteStrasse(feld);
+			this->addStrasse(feld);
+
+			cout << "Handel erfolgreich: Strasse " << LUT(feld) << " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
+			return true;
 		}
 	}
 
@@ -254,7 +254,7 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot ,Map
 }
 
 void TPlayer::baueHaus(int strasse, Map& map) {
-	
+
 	// Pr�fen ob das Feld eine Stra�e ist
 	if (_boardarr[strasse].Type != TypeStreet) {
 		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
@@ -363,32 +363,35 @@ vector<int> TPlayer::getGebObjVector() {
 }
 // cpu to player
 int TPlayer::handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {
-	if ((rand() % 101) > 101) {
+	if ((rand() % 101) > 15) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
 		targetPlayerOut = -1;
 		propertyIndexOut = -1;
 		return -1;
 	}
+	int totalOwnedStreets = 0;
+	for (std::size_t i = 0; i < p.size(); ++i) {
+		if (p[i] != nullptr) {
+			totalOwnedStreets += p[i]->getGekObjAnz();
+		}
+	} 
+	if (totalOwnedStreets==0)
+	{
+		return -1;
+	}
 	int targetPlayer;
 	do {
 		targetPlayer = rand() % totalPlayers;
-	} while (targetPlayer == cpuID);
+	} while ((targetPlayer == cpuID)||(p[targetPlayer]->getGekObjAnz() == 0));
 
 	std::vector<int> ownedProperties = p[targetPlayer]->getGekObjVector();
-	if (ownedProperties.empty()) {
-		//std::cout << "CPU Spieler " << targetPlayer << " besitzt keine Straben.\n";
-		targetPlayerOut = -1;
-		propertyIndexOut = -1;
-		return -1;
-	}
-
 	int randIndex = rand() % ownedProperties.size();
 	int propIndex = ownedProperties[randIndex];
 
 	int minPercent = 5;
 	int maxPercent = 15;
 	int offerPercent = minPercent + rand() % (maxPercent - minPercent + 1);
-	int offer = (1 + offerPercent / 100.0) * streetpricewith2(propIndex,p);
+	int offer = (1 + offerPercent / 100.0) * streetpricewith2(propIndex, p);
 
 	if (offer > p[cpuID]->getBudget()) {
 		/*  std::cout << "CPU Kann sich das Angebot von " << offer
@@ -404,11 +407,11 @@ int TPlayer::handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& p, int& ta
 }
 
 // player to cpu 
-bool TPlayer::acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlayer*>& spielerListe,Map& map) {
+bool TPlayer::acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlayer*>& spielerListe, Map& map) {
 	int propPrice = streetpricewith2(spaceIndex, spielerListe);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 	int bud = getBudget();
-	if ((offer >= propPrice * (acceptThresholdPercent / 100.0))&& (spielerListe[kaufer]->getBudget() - offer >= 0)) {
+	if ((offer >= propPrice * (acceptThresholdPercent / 100.0)) && (spielerListe[kaufer]->getBudget() - offer >= 0)) {
 		//std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
 		this->erhalte(offer);
 		this->deleteStrasse(spaceIndex);
@@ -497,7 +500,7 @@ bool TPlayer::takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlp
 	for (int i = 0; i < anzahlplayers; ++i) {
 		if (i == myID) continue;
 		if (player[i].besitztStrasse(bahnpos))
-			return false; 
+			return false;
 	}
 	bool free_street = true;
 
@@ -515,8 +518,36 @@ bool TPlayer::takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlp
 
 	return false;
 }
+//cpu verkauf haus 
+void TPlayer::cpuHausOderStrassenVerkauf(Map& map) {
+	int benoetigt = 100 + (rand() % 200);
+	if (getBudget() >= benoetigt) return;
+	//cout << "CPU [" << getName() << "] hat nur $" << getBudget() << " und braucht $" << benoetigt << ".\n";
+	std::vector<int> meineStrassen = getGekObjVector();
+	for (int space : meineStrassen) {
+		int hausAnzahl = anzahlHaeuserAuf(space);
+		if (hausAnzahl >= 1) {
+			for (int i = 0; i < hausAnzahl; ++i) {
+				int geld = map.getHousePrice(space)/2;
+				erhalte(geld);
+				std::vector<int>::iterator  it = std::find(GebauteHaeuser.begin(), GebauteHaeuser.end(), space);
+				if (it != GebauteHaeuser.end()) GebauteHaeuser.erase(it);
+				//cout << "Verkaufe Haus auf \"" << map.getName(space)<< "\" für $" << geld << ".\n";
+				if (getBudget() >= benoetigt) return;
+			}
+		}
+	}
+	for (int id : meineStrassen) {
+		if (besitztStrasse(id)) {
+			if (getBudget() >= benoetigt) return;
+			verkaufeStrasse(id, map);
+			//cout << "→ Verkaufe Haus auf \"" << map.getName(id)<< "\" für $" << map.getPropertyPrice(id) << ".\n";
+		}
+	}
+	//cout << "CPU [" << getName() << "] konnte nicht genug Geld aufbringen.\n";
+}
 
- 
+
 //test ob man  haus bauen darf
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties) {
 	int colorGroup = -1;
@@ -583,9 +614,8 @@ int streetpricewith2(int position, vector<TPlayer*>& spielerListe) {
 	}
 	int totalOwnedStreets = 0;
 	for (std::size_t i = 0; i < spielerListe.size(); ++i) {
-		TPlayer* spieler = spielerListe[i];
-		if (spieler != nullptr) {
-			totalOwnedStreets += spieler->getGekObjAnz();
+		if (spielerListe[i] != nullptr) {
+			totalOwnedStreets += spielerListe[i]->getGekObjAnz();
 		}
 	}
 
