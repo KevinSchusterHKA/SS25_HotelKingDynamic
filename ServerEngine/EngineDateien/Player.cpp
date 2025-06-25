@@ -674,10 +674,10 @@ vector<int> SpeicherZuInternFormat(vector<int> gebauteHaueserSpeicher) {
 	return temp;
 }
 
-int WemGehoertStrasse(int feld, vector<TPlayer>& spielerListe) {
-	for (TPlayer p : spielerListe) {
-		if (p.besitztStrasse(feld)) {
-			return p.getID();
+int WemGehoertStrasse(int feld, vector<TPlayer*>& spielerListe) {
+	for (TPlayer* p : spielerListe) {
+		if (p->besitztStrasse(feld)) {
+			return p->getID();
 		}
 	}
 	return -1; // Keine Straße gefunden
