@@ -54,7 +54,7 @@ void TServer::UnitTest() {
     std::vector<TPlayer*> playerRefs;
     vector<int> WurfelWert;
     vector<int> IndexReihenfolge(4, 0);
-    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1;
+    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1, ReferencePlayer = 0;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt = FALSE, GameFinished = FALSE, UpdateSpielfeld = FALSE, Handel_once_cpu = false, cpudone = false, gleicheWuerfe=true;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
@@ -526,10 +526,10 @@ void TServer::UnitTest() {
 
                                 }
                                 else {
-                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
+                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + player[targetPlayerOut].getID()), "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
                                     if (option == 0)
                                     {
-                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot);
                                     }
                                 }
                             }
@@ -737,12 +737,13 @@ void TServer::UnitTest() {
                     
                     if (option == 0) //Akzeptieren
                     {
-                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+                        ReferencePlayer = player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot);
                     }
                     else
                     {
                         //Code zum Ablehnen des Handels
                     }
+                    break;
                 case Menues::BahnFahren:
                     //TODO:Position spieler wird beim Bahnhof nicht richtig aktualisiert
                     MenueAuswahl = Menues::Spieler;
@@ -755,7 +756,7 @@ void TServer::UnitTest() {
                     {
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
+                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition() - player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl()) {
                             //KIT Campus|-> Durlach BF
                         case 5:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(25 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
@@ -832,7 +833,8 @@ void TServer::UnitTest() {
             ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         case Menues::Handel:
-            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss,"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
+            ReferencePlayer = WemGehoertStrasse(Strasse, playerRefs);
+            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + player[ReferencePlayer].getID()), "Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
             break;
         case Menues::BahnFahren:
             if (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==CPU1)

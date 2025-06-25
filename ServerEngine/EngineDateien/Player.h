@@ -80,7 +80,7 @@ public:
 	void verkaufeStrasse(int strasse, vector<TPlayer*>& spielerListe);
 	bool besitztStrasse(int strasse);
 	bool istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe);
-	bool Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, Map& map);
+	int Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot);
 
 	void baueHaus(int strasse, Map& map);
 	int baueHausTEMP(int strasse, vector<TPlayer*>& spielerListe);
@@ -115,3 +115,4 @@ int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);
 int streetpricewith2(int position, vector<TPlayer*>& spielerListe);
 int housepricewith2(int position, vector<TPlayer*>& spielerListe);
 vector<int> SpeicherZuInternFormat(vector<int> gebauteHaueserSpeicher);
+int WemGehoertStrasse(int strasse, vector<TPlayer*>& spielerListe);
