@@ -500,11 +500,11 @@ bool TPlayer::tryBuildHousecpu(vector<TPlayer*>& player, Map& map) {
 }
 //take zug for cpu
 bool TPlayer::takebahn(vector<TPlayer*>& player, int costofbahn, int bahnpos,int anzahlplayers, Map& map) {
-	int myID = getID();
+	int myID = this->getID();
 	if (player[myID]->getBudget() < costofbahn)
 		return false;
 	for (int i = 0; i < anzahlplayers; ++i) {
-		if (i == myID) continue;
+		if (player[i]->getID() == myID) continue;
 		if (player[i]->besitztStrasse(bahnpos))
 			return false;
 	}
@@ -519,8 +519,9 @@ bool TPlayer::takebahn(vector<TPlayer*>& player, int costofbahn, int bahnpos,int
 		free_street = false;
 
 	}
-	if (!player[myID]->besitztStrasse(bahnpos) && free_street)
+	if (!player[myID]->besitztStrasse(bahnpos) && free_street) {
 		return true;
+	}
 
 	return false;
 }
