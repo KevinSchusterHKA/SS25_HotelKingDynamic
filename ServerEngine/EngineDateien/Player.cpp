@@ -6,19 +6,19 @@ TPlayer::TPlayer(int id, string name, int budget, int position, bool imgefaengni
 
 TPlayer::~TPlayer() {};
 
-int TPlayer::Score(int runde, int anzGekGebObj, Map& map) {
+int TPlayer::Score(int runde, int anzGekGebObj, vector<TPlayer*>& spielerListe) {
 	int score = this->getBudget();
 
 	// Wert aller gekauften Straßen / Felder
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		int feldNr = this->GekaufteStrassen[i];
-		score += getPreisStrasse(feldNr, map);
+		score += streetpricewith2(feldNr, spielerListe);
 	}
 
 	// Wert aller gebauten Häuser (Hauspreis des Feldes)
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
 		int feldNr = this->GebauteHaeuser[i];
-		score += getPreisHaus(feldNr, map);
+		score += housepricewith2(feldNr, spielerListe);
 	}
 
 	return score;
@@ -164,11 +164,11 @@ void TPlayer::deleteStrasse(int strasse) {
 	}
 	cout << "Diese Strasse besitzen Sie nicht.\n";
 }
-void TPlayer::verkaufeStrasse(int strasse, Map& map) {
+void TPlayer::verkaufeStrasse(int strasse, vector<TPlayer*>& spielerListe) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
-			this->erhalte(int(getPreisStrasse(strasse, map) / 2)); // Geld f�r Strasse zurückerhalten (aber nur die H�lfte des Preises)
+			this->erhalte(int(streetpricewith2(strasse, spielerListe) / 2)); // Geld für Strasse zurückerhalten (aber nur die Hälfte des Preises)
 			cout << "Die Strasse " << LUT(strasse) << " wurde verkauft.\n";
 			return;
 		}
@@ -228,7 +228,7 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, Map
 		if (verkaufer->besitztStrasse(feld)) {
 
 			// Prüfen ob in der Farbgruppe Häuser stehen
-			if (!istStrassenSetHandelbar(feld, spielerListe) || map.setOwner(verkaufer->getID(), this->getID(), feld) == -1) {
+			if (!istStrassenSetHandelbar(feld, spielerListe)) {
 				cout << "Handel abgelehnt: In der Farbgruppe von " << LUT(feld)
 					<< " stehen noch Haeuser." << endl;
 				return false;
@@ -268,18 +268,18 @@ void TPlayer::baueHaus(int strasse, Map& map) {
 		cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
 	}
 }
-void TPlayer::baueHausTEMP(int strasse, Map& map) {
+int TPlayer::baueHausTEMP(int strasse, vector<TPlayer*>& spielerListe) {
 	// Pr�fen ob das Feld eine Stra�e ist
 	if (_boardarr[strasse].Type != TypeStreet) {
 		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
-		return;
+		return -1;
 	}
 	if (this->WieVieleHaueserAufSet(strasse) < 5) {
 		std::vector<int> myProperties = this->getGekObjVector();
 		if (0 <= colorcheck(this->getID(), strasse, myProperties) && colorcheck(this->getID(), strasse, myProperties) <= 7) {
-			if (getPreisHaus(strasse, map) - this->getBudget() >= 0) {
+			if (housepricewith2(strasse, spielerListe) - this->getBudget() >= 0) {
 				this->GebauteHaeuser.push_back(strasse);
-				this->bezahle(getPreisHaus(strasse, map));
+				this->bezahle(housepricewith2(strasse, spielerListe));
 				cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
 			}
 			else {
@@ -295,12 +295,12 @@ void TPlayer::baueHausTEMP(int strasse, Map& map) {
 	}
 }
 
-void TPlayer::verkaufeHaus(int strasse, int anz, Map& map) {
+void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe) {
 	if (anz < 0 || anz > 6) {
 		return; // Ungültige Anzahl von Häusern
 	}
 	if (anz == 0) {
-		this->verkaufeStrasse(strasse, map);
+		this->verkaufeStrasse(strasse, spielerListe);
 		return;
 	}
 	int verkauft = 0;
@@ -308,7 +308,7 @@ void TPlayer::verkaufeHaus(int strasse, int anz, Map& map) {
 	for (int i = 0; i < this->GebauteHaeuser.size(); ) {
 		if (this->GebauteHaeuser[i] == strasse) {
 			this->GebauteHaeuser.erase(this->GebauteHaeuser.begin() + i);
-			this->erhalte(int(getPreisHaus(strasse, map) / 2));
+			this->erhalte(int(housepricewith2(strasse, spielerListe) / 2));
 			verkauft++;
 			if (verkauft == anz) {
 				break;
@@ -519,7 +519,7 @@ bool TPlayer::takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlp
 	return false;
 }
 //cpu verkauf haus 
-void TPlayer::cpuHausOderStrassenVerkauf(Map& map) {
+void TPlayer::cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& map) {
 	int benoetigt = 100 + (rand() % 200);
 	if (getBudget() >= benoetigt) return;
 	//cout << "CPU [" << getName() << "] hat nur $" << getBudget() << " und braucht $" << benoetigt << ".\n";
@@ -528,7 +528,7 @@ void TPlayer::cpuHausOderStrassenVerkauf(Map& map) {
 		int hausAnzahl = anzahlHaeuserAuf(space);
 		if (hausAnzahl >= 1) {
 			for (int i = 0; i < hausAnzahl; ++i) {
-				int geld = map.getHousePrice(space)/2;
+				int geld = housepricewith2(space, spielerListe)/2;
 				erhalte(geld);
 				std::vector<int>::iterator  it = std::find(GebauteHaeuser.begin(), GebauteHaeuser.end(), space);
 				if (it != GebauteHaeuser.end()) GebauteHaeuser.erase(it);
@@ -540,7 +540,7 @@ void TPlayer::cpuHausOderStrassenVerkauf(Map& map) {
 	for (int id : meineStrassen) {
 		if (besitztStrasse(id)) {
 			if (getBudget() >= benoetigt) return;
-			verkaufeStrasse(id, map);
+			verkaufeStrasse(id, spielerListe);
 			//cout << "→ Verkaufe Haus auf \"" << map.getName(id)<< "\" für $" << map.getPropertyPrice(id) << ".\n";
 		}
 	}
@@ -571,18 +571,13 @@ int colorcheck(int playerID, int space, std::vector<int>& ownedProperties) {
 
 	return colorGroup;
 }
-
-string LUT(int i) {
-	return _boardarr[i].Name;
-}
-
-int getPreisStrasse(int i, Map& map) {
-	return map.getPropertyPrice(i);
-}
-
-int getPreisHaus(int i, Map& map) {
-	return map.getHousePrice(i);
-}
+string LUT(int i) { return _boardarr[i].Name; }
+//int getPreisStrasse(int i, Map& map) {
+//	return map.getPropertyPrice(i);
+//}
+//int getPreisHaus(int i, Map& map) {
+//	return map.getHousePrice(i);
+//}
 int streetpricewith2(int position, vector<TPlayer*>& spielerListe) {
 	int basePrice = -1;
 
@@ -615,10 +610,48 @@ int streetpricewith2(int position, vector<TPlayer*>& spielerListe) {
 	int totalOwnedStreets = 0;
 	for (std::size_t i = 0; i < spielerListe.size(); ++i) {
 		if (spielerListe[i] != nullptr) {
-			totalOwnedStreets += spielerListe[i]->getGekObjAnz();
+			totalOwnedStreets += spielerListe[i]->getGekObjAnz() + spielerListe[i]->getGebObjAnz();
 		}
 	}
 
 	double finalPrice = basePrice * std::pow(1.02, totalOwnedStreets);
+	return static_cast<int>(finalPrice);
+}
+int housepricewith2(int position, vector<TPlayer*>& spielerListe) {
+	int basePrice = -1;
+
+	switch (position) {
+	case 1:  basePrice = 50; break;  // Oberreut
+	case 3:  basePrice = 50; break;  // Gruenwinkel
+	case 6:  basePrice = 50; break;  // Neureut
+	case 8:  basePrice = 50; break;  // Waldstadt
+	case 9:  basePrice = 50; break;  // Hagsfeld
+	case 11: basePrice = 100; break; // Palmbach
+	case 13: basePrice = 100; break; // Stupferich
+	case 14: basePrice = 100; break; // Bergdoerfer
+	case 16: basePrice = 100; break; // Rintheim
+	case 18: basePrice = 100; break; // Rueppurr
+	case 19: basePrice = 100; break; // Muehlburg
+	case 21: basePrice = 150; break; // Nordstadt
+	case 23: basePrice = 150; break; // Nordweststadt
+	case 24: basePrice = 150; break; // Weststadt
+	case 26: basePrice = 150; break; // Durlach
+	case 27: basePrice = 150; break; // Suedstadt
+	case 29: basePrice = 150; break; // Oststadt
+	case 31: basePrice = 200; break; // Suedweststadt
+	case 32: basePrice = 200; break; // Innenstadt Ost
+	case 34: basePrice = 200; break; // Innenstadt West
+	case 37: basePrice = 200; break; // Geigersberg
+	case 39: basePrice = 200; break; // Schlossplatz
+	default:
+		return -1;
+	}
+	int totalOwnedStreets = 0;
+	for (std::size_t i = 0; i < spielerListe.size(); ++i) {
+		if (spielerListe[i] != nullptr) {
+			totalOwnedStreets += spielerListe[i]->getGekObjAnz() + spielerListe[i]->getGebObjAnz();
+		}
+	}
+	double finalPrice = basePrice * pow(1.02, totalOwnedStreets);
 	return static_cast<int>(finalPrice);
 }
