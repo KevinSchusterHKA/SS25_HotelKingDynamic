@@ -283,8 +283,8 @@ void TServer::UnitTest() {
                       
                     }
              		if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
-					    std::vector<HighscoreEntry> player;
-					    load_highscores("highscores.txt", player);
+					    std::vector<HighscoreEntry> playerHS;
+					    load_highscores("highscores.txt", playerHS);
                         std::vector<std::string> playerNames;
                         std::vector<int> playerScore;
                         for (size_t i = 0; i < playerHS.size(); i++)
