@@ -443,45 +443,7 @@ void TServer::UnitTest() {
                         ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                         StrasseBauen = -1;
                     }
-                    if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1)
-                    {
-                       Angebot = player[IndexReihenfolge[MomentanerSpieler]].handelcpu(IndexReihenfolge[MomentanerSpieler],AnzahlSpieler+ AnzahlCpuGegner,playerRefs, targetPlayerOut, Strasse, MapEngine);//cpu trade 
-                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                        if (targetPlayerOut != -1&& player[targetPlayerOut].getHuman()==HUMAN) {
-                            if (!Handel_once_cpu)
-                            {
-                                for (size_t i = 0; i < AnzahlCpuGegner + AnzahlSpieler; i++)
-                                {
-                                    if (player[i].besitztStrasse(Strasse)) {
-                                        target = player[i].getHuman();
-                                        ID = player[i].getID();
-                                    }
-                                }
-                                if (player[targetPlayerOut].getHuman() == CPU1)
-                                {
-                                    player[targetPlayerOut].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler], playerRefs, MapEngine);
-
-                                }
-                                else {
-                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 -41, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)",Strasse, Angebot);
-                                    if (option==0)
-                                    {
-                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
-                                    }
-                                }
-                            }
-                            
-                            
-                        }
-                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                       bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(player,MapEngine);//buildhouse
-
-                       if (HatGewuerfelt)
-                       {
-                           cpudone = true;
-
-                       }
-                    }
+                   
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::endl;
@@ -506,6 +468,41 @@ void TServer::UnitTest() {
                         }
 					    
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
+                    }
+                    if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1)
+                    {
+                        Angebot = player[IndexReihenfolge[MomentanerSpieler]].handelcpu(IndexReihenfolge[MomentanerSpieler], AnzahlSpieler + AnzahlCpuGegner, playerRefs, targetPlayerOut, Strasse, MapEngine);//cpu trade 
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                        if (targetPlayerOut != -1 && player[targetPlayerOut].getHuman() == HUMAN) {
+                            if (!Handel_once_cpu)
+                            {
+                                for (size_t i = 0; i < AnzahlCpuGegner + AnzahlSpieler; i++)
+                                {
+                                    if (player[i].besitztStrasse(Strasse)) {
+                                        target = player[i].getHuman();
+                                        ID = player[i].getID();
+                                    }
+                                }
+                                if (player[targetPlayerOut].getHuman() == CPU1)
+                                {
+                                    player[targetPlayerOut].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler], playerRefs, MapEngine);
+
+                                }
+                                else {
+                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
+                                    if (option == 0)
+                                    {
+                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+                                    }
+                                }
+                            }
+
+
+                        }
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                        bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(playerRefs, MapEngine);//buildhouse
+                        player[IndexReihenfolge[MomentanerSpieler]].cpuHausOderStrassenVerkauf(playerRefs, MapEngine);//verkauf haus
+                        cpudone = true;
                     }
                     if (cpudone&&(player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1))
                         {
@@ -801,7 +798,7 @@ void TServer::UnitTest() {
             if (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==CPU1)
             {
 
-                if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(player, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(), AnzahlSpieler + AnzahlCpuGegner, MapEngine))
+                if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(), AnzahlSpieler + AnzahlCpuGegner, MapEngine))
                 {
                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);

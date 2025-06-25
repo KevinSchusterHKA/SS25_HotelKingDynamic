@@ -368,7 +368,7 @@ vector<int> TPlayer::getGebObjVector() {
 }
 // cpu to player
 int TPlayer::handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {
-	if ((rand() % 101) > 15) {
+	if ((rand() % 101) > 108) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
 		targetPlayerOut = -1;
 		propertyIndexOut = -1;
@@ -451,10 +451,10 @@ bool TPlayer::tryBuyStreetcpu(Map& map) {
 }
 
 //buildhouse for cpu
-bool TPlayer::tryBuildHousecpu(TPlayer player[], Map& map) {
+bool TPlayer::tryBuildHousecpu(vector<TPlayer*>& player, Map& map) {
 	int myID = getID();
-	std::vector<int> myProperties = player[myID].getGekObjVector();
-	std::vector<int> builtobj = player[myID].getGebObjVector();
+	std::vector<int> myProperties = player[myID]->getGekObjVector();
+ 	std::vector<int> builtobj = player[myID]->getGebObjVector();
 	bool built = false;
 
 	for (int colorGroup = 0; colorGroup < 8; ++colorGroup) {
@@ -485,12 +485,12 @@ bool TPlayer::tryBuildHousecpu(TPlayer player[], Map& map) {
 		}
 
 		if (bestProp == -1) continue;
-		int price = map.getHousePrice(bestProp);
-		int maxPrice = player[myID].getBudget() * ((30 + rand() % 11) / 100.0); // 30–40%
+		int price = housepricewith2(bestProp, player);
+		int maxPrice = player[myID]->getBudget() * ((30 + rand() % 11) / 100.0); // 30–40%
 
 		if (price <= maxPrice) {
 			bezahle(price);
-			player[myID].baueHaus(bestProp, map);
+			player[myID]->baueHausTEMP(bestProp, player);
 			built = true;
 			break;
 		}
@@ -498,13 +498,13 @@ bool TPlayer::tryBuildHousecpu(TPlayer player[], Map& map) {
 	return built;
 }
 //take zug for cpu
-bool TPlayer::takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlplayers, Map& map) {
-	int myID = getID();
-	if (player[myID].getBudget() < costofbahn)
+bool TPlayer::takebahn(vector<TPlayer*>& player, int costofbahn, int bahnpos,int anzahlplayers, Map& map) {
+	int myID = this->getID();
+	if (player[myID]->getBudget() < costofbahn)
 		return false;
 	for (int i = 0; i < anzahlplayers; ++i) {
-		if (i == myID) continue;
-		if (player[i].besitztStrasse(bahnpos))
+		if (player[i]->getID() == myID) continue;
+		if (player[i]->besitztStrasse(bahnpos))
 			return false;
 	}
 	bool free_street = true;
@@ -518,8 +518,9 @@ bool TPlayer::takebahn(TPlayer player[], int costofbahn, int bahnpos,int anzahlp
 		free_street = false;
 
 	}
-	if (!player[myID].besitztStrasse(bahnpos) && free_street)
+	if (!player[myID]->besitztStrasse(bahnpos) && free_street) {
 		return true;
+	}
 
 	return false;
 }
