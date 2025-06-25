@@ -11,11 +11,14 @@ public:
 	void playerRollingDice(int first, int second);
 	void playerOnStreet(std::string streetName);
 	void playerInPrison();
+	void onChestField(std::string event);
 	void onEventField(std::string event);
-	void playerBuysObject(std::string object);
+	void playerBuysObject(std::string object, int price);
 	void playerBuildsBuilding(std::string building);
 	void playerMoney(std::string player, int money);
+	void payTax();
 	void newGame();
+	
 
 private:
 	int round;

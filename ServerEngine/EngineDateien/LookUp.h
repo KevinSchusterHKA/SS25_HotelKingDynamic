@@ -59,8 +59,27 @@ enum _char {
     CR
 };
 
-const string _playerchars[] = { (string)(_fgcolortable[fgred] + (char)3 + _fgcolortable[fgwhite]), (string)(_fgcolortable[fggreen] + (char)4 + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgyellow] + (char)5 + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgcyan] + (char)6 + _fgcolortable[fgwhite]), " "};//♥♦♣♠ 3-6
-const char _symbolchars[] = { (char)127, (char)174, (char)175, (char)184, (char)179, (char)196, (char)218, (char)191, (char)192, (char)217, (char)193, (char)194, (char)195, (char)180, (char)197, (char)1, (char)21, '=', ' '};//⌂(char)127 « » ©(char)184 │ ─ ┌ ┐└ ┘┬ ┴ ├ ┤ ┼ ☺(char)1 §(char)21 =
+const string _playerchars[] = { (string)(_fgcolortable[fgred] + 'A' + _fgcolortable[fgwhite]), (string)(_fgcolortable[fggreen] + 'B' + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgyellow] + 'C' + _fgcolortable[fgwhite]), (string)(_fgcolortable[fgcyan] + 'D' + _fgcolortable[fgwhite]), " "};//♥♦♣♠ 3-6
+//const char _symbolchars[] = { (char)127, (char)174, (char)175, (char)184, (char)179, (char)196, (char)218, (char)191, (char)192, (char)217, (char)193, (char)194, (char)195, (char)180, (char)197, (char)1, (char)21, '=', ' '};//⌂(char)127 « » ©(char)184 │ ─ ┌ ┐└ ┘┬ ┴ ├ ┤ ┼ ☺(char)1 §(char)21 =
+const char _symbolchars[] = {   (char)127,
+                                (char)174,
+                                (char)175,
+                                (char)184,
+                                (char)179,
+                                (char)196,
+                                (char)218,
+                                (char)191,
+                                (char)192,
+                                (char)217,
+                                (char)193,
+                                (char)194,
+                                (char)195,
+                                (char)180,
+                                (char)197,
+                                'G',        //(char)1,
+                                'E',        //(char)21
+                                '=',
+                                ' ' };//⌂(char)127 « » ©(char)184 │ ─ ┌ ┐└ ┘┬ ┴ ├ ┤ ┼ ☺(char)1 §(char)21 =
 
 const char _symbolcharsControl[] = { (char)127,   // ⌂ 
                                 (char)174, // « 1
