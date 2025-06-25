@@ -93,7 +93,6 @@ void TServer::UnitTest() {
     ControlEngine.SetConsoleFontSize(8);
     system("chcp 850");
 	Sleep(100); 
-
     //Ausgabe des Startbildschirms
     if (Spiellaueft)
     {
@@ -741,7 +740,7 @@ void TServer::UnitTest() {
                     }
                     else
                     {
-                        //Code zum Ablehnen des Handels
+						ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 20, y / 2 - 1, Farbe::BG_Rot);
                     }
 					break;
                 case Menues::BahnFahren:
