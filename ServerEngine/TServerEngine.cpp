@@ -127,13 +127,17 @@ void TServer::UnitTest() {
         if (player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis())
         {
             ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-            ConfigEngineLogging.playerInPrison();
+            
             player[IndexReihenfolge[MomentanerSpieler]].decGefaengnisRunden();
             AnzahlRunden++;
             ConfigEngineLogging.newRound();
             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
             HatGewuerfelt = false;
             MomentanerSpieler++;
+            if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
+                ConfigEngineLogging.newRound();
+                MomentanerSpieler = 0;
+            }
         }  
 
         switch (IndexReihenfolge[MomentanerSpieler])
@@ -227,11 +231,12 @@ void TServer::UnitTest() {
                             player[i].setHuman(CPU1);  
                         }
                         MapEngine.SetPlayerNumber(AnzahlSpieler + AnzahlCpuGegner);
-                        ConfigEngineLogging.newPlayer(player[MomentanerSpieler].getName());
                         for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; ++i) {
                             playerRefs.push_back(&player[i]);
                         }
 
+                        ConfigEngineLogging.newRound();
+                        ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                         // Würfelreihenfolge festlegen:
                         gleicheWuerfe = true;
                         do {
@@ -305,8 +310,10 @@ void TServer::UnitTest() {
                             std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler "+to_string(IndexReihenfolge[MomentanerSpieler]+1)+" : wirft den Wuerfel!";
 
                             player[IndexReihenfolge[MomentanerSpieler]].Wurfelmechn();
+
                             int wuerfel1 = player[IndexReihenfolge[MomentanerSpieler]].getWurfel(0);
                             int wuerfel2 = player[IndexReihenfolge[MomentanerSpieler]].getWurfel(1);
+
                             HatGewuerfelt = true;
 
                             ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe);  
@@ -347,22 +354,41 @@ void TServer::UnitTest() {
                                     player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                                 }
 
-                                //TODO Logger prüfen ob das so geht
+                                //Logger verschiedene Felder
                                 switch (MRobj[IndexReihenfolge[MomentanerSpieler]].Type) {
-                                case 0:
-                                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[MomentanerSpieler].getPosition()));
+                                case _type::TypeStreet: case _type::TypeStation: case _type::TypePark:
+                                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                                     break;
                                     
-                                case 1:
-                                    ConfigEngineLogging.onEventField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);  //TODO: Mit MapEngine absprechen wegen String
+                                case _type::TypeChance: 
+                                    ConfigEngineLogging.onEventField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);  
                                     break;
 
+                                case _type::TypeChest:
+                                    ConfigEngineLogging.onChestField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);  
+                                    break;
+
+                                case _type::TypePrison:
+                                    if (!player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis())
+                                    {
+                                        ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
+                                    }
+                                    break;
+
+                                case _type::TypeTax: 
+                                    ConfigEngineLogging.payTax();
+                                    break;
+                                    
+                                
+
                                 }
+
+                                
                                 
 
                                 
                                 
-                                ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
+                              
                             }
                         }
                         else {
@@ -384,9 +410,14 @@ void TServer::UnitTest() {
                             Sleep(500);
                                 if (player[IndexReihenfolge[MomentanerSpieler]].tryBuyStreetcpu(MapEngine))
                                 {
-                                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
+
+                                    int price = MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget());
+                                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
                                     player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
-                                    ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[MomentanerSpieler].getPosition())); 
+
+                                    if (price != -1) {
+                                        ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
+                                    }
                                 }
 
                         }
@@ -414,15 +445,25 @@ void TServer::UnitTest() {
                                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
                                 if (player[IndexReihenfolge[MomentanerSpieler]].tryBuyStreetcpu(MapEngine))
                                 {
-                                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
+
+                                    int price = MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget());
+                                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
                                     player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
-                                    ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[MomentanerSpieler].getPosition())); 
+
+                                    if (price != -1) {
+                                        ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
+                                    };
                                 }
                             }
                             else {
-                                player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
+                                int price = MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget());
+
+                                player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
                                 player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
-                                ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[MomentanerSpieler].getPosition()));
+                                
+                                if (price != -1) {
+                                    ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
+                                }
                             }
                             
                         }
@@ -435,49 +476,11 @@ void TServer::UnitTest() {
                         space = StrasseBauen;
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(IndexReihenfolge[MomentanerSpieler], space, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
                         //player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
-                        player[IndexReihenfolge[MomentanerSpieler]].baueHausTEMP(StrasseBauen,MapEngine);
+                        player[IndexReihenfolge[MomentanerSpieler]].baueHausTEMP(StrasseBauen,playerRefs);
                         ConfigEngineLogging.playerBuildsBuilding("Haus wurde gebaut"); //TODO: Mit MapEngine absprechen wegen String
                         StrasseBauen = -1;
                     }
-                    if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1)
-                    {
-                       Angebot = player[IndexReihenfolge[MomentanerSpieler]].handelcpu(IndexReihenfolge[MomentanerSpieler],AnzahlSpieler+ AnzahlCpuGegner,playerRefs, targetPlayerOut, Strasse, MapEngine);//cpu trade 
-                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                        if (targetPlayerOut != -1&& player[targetPlayerOut].getHuman()==HUMAN) {
-                            if (!Handel_once_cpu)
-                            {
-                                for (size_t i = 0; i < AnzahlCpuGegner + AnzahlSpieler; i++)
-                                {
-                                    if (player[i].besitztStrasse(Strasse)) {
-                                        target = player[i].getHuman();
-                                        ID = player[i].getID();
-                                    }
-                                }
-                                if (player[targetPlayerOut].getHuman() == CPU1)
-                                {
-                                    player[targetPlayerOut].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler], playerRefs, MapEngine);
-
-                                }
-                                else {
-                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 -41, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)",Strasse, Angebot);
-                                    if (option==0)
-                                    {
-                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
-                                    }
-                                }
-                            }
-                            
-                            
-                        }
-                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                       bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(player,MapEngine);//buildhouse
-
-                       if (HatGewuerfelt)
-                       {
-                           cpudone = true;
-
-                       }
-                    }
+                   
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::endl;
@@ -503,6 +506,41 @@ void TServer::UnitTest() {
 					    
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
                     }
+                    if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1)
+                    {
+                        Angebot = player[IndexReihenfolge[MomentanerSpieler]].handelcpu(IndexReihenfolge[MomentanerSpieler], AnzahlSpieler + AnzahlCpuGegner, playerRefs, targetPlayerOut, Strasse, MapEngine);//cpu trade 
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                        if (targetPlayerOut != -1 && player[targetPlayerOut].getHuman() == HUMAN) {
+                            if (!Handel_once_cpu)
+                            {
+                                for (size_t i = 0; i < AnzahlCpuGegner + AnzahlSpieler; i++)
+                                {
+                                    if (player[i].besitztStrasse(Strasse)) {
+                                        target = player[i].getHuman();
+                                        ID = player[i].getID();
+                                    }
+                                }
+                                if (player[targetPlayerOut].getHuman() == CPU1)
+                                {
+                                    player[targetPlayerOut].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler], playerRefs, MapEngine);
+
+                                }
+                                else {
+                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
+                                    if (option == 0)
+                                    {
+                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+                                    }
+                                }
+                            }
+
+
+                        }
+                        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                        bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(playerRefs, MapEngine);//buildhouse
+                        player[IndexReihenfolge[MomentanerSpieler]].cpuHausOderStrassenVerkauf(playerRefs, MapEngine);//verkauf haus
+                        cpudone = true;
+                    }
                     if (cpudone&&(player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1))
                         {
                             std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -511,14 +549,14 @@ void TServer::UnitTest() {
                             HatGewuerfelt = false;
                             system("cls");
                             ConfigEngineLogging.newRound();
-                            ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                             MomentanerSpieler++;
+                            ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                             cpudone = false;
                         }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                         int Strasse = -1,Gebaude = -1;
                         ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, Farbe::BG_Rot);
-						player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, MapEngine);
+						player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs);
                         
                         //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
                         system("cls");
@@ -529,16 +567,21 @@ void TServer::UnitTest() {
                         {
                             AnzahlRunden++;
                             ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-
+                            if (player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis())
+                            {
+                                ConfigEngineLogging.playerInPrison();
+                            }
                             HatGewuerfelt = false;
                             system("cls");
+                            
                             ConfigEngineLogging.newRound();
-                            ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                             MomentanerSpieler++;
                             if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
                                 ConfigEngineLogging.newRound();
                                 MomentanerSpieler = 0;
                             }
+                            ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                            
                         }
                         else
                         {
@@ -631,6 +674,7 @@ void TServer::UnitTest() {
                             AnzahlCpuGegner = GsTemp.cpuCount;
 							IndexReihenfolge = GsTemp.diceOrder;
                             MomentanerSpieler = GsTemp.currentPlayerIndex;
+                            playerRefs.clear();
 
                             for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
@@ -641,7 +685,8 @@ void TServer::UnitTest() {
                                                 GsTemp.players[IndexReihenfolge[i]].inJail, 
                                                 GsTemp.players[IndexReihenfolge[i]].inJail,
                                                 GsTemp.players[IndexReihenfolge[i]].ownedObjects, 
-                                                GsTemp.players[IndexReihenfolge[i]].builtObjects);
+                                                GsTemp.players[IndexReihenfolge[i]].builtObjects,
+                                                SpeicherZuInternFormat(GsTemp.players[IndexReihenfolge[i]].builtObjects));
 								temp.setHuman(GsTemp.players[IndexReihenfolge[i]].isHuman);
                                 player[IndexReihenfolge[i]] = temp;
 								playerRefs.push_back(&player[i]);
@@ -709,8 +754,36 @@ void TServer::UnitTest() {
 
                     if (!option)
                     {
-                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(MomentanerSpieler, player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
+                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
+                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
+                            //KIT Campus|-> Durlach BF
+                        case 5:
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            break;
+                            //Zuendhuetle|-> Entenfang
+                        case 12:
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            break;
+                            //Europaplatz|-> Hauptbahnhof
+                        case 15:
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            break;
+                            //Durlach BF|-> KIT Campus
+                        case 25:
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            break;
+                            //Entenfang|-> Zuendhuetle
+                        case 28:
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            break;
+                            //Hauptbahnhof | ->Europaplatz
+                        case 35:
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            break;
+
+                        }
+                        
                     }
                     else {
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 0));
@@ -730,10 +803,7 @@ void TServer::UnitTest() {
                         player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                     }
 
-                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[MomentanerSpieler].getPosition()));
-                    ConfigEngineLogging.onEventField("Event xyz wurde ausgelöst");  //TODO: Mit MapEngine absprechen wegen String
-                    ConfigEngineLogging.playerInPrison();                           //TODO: Mit MapEngine absprechen wegen String
-                  
+                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                     break;
                 default:
                     break;
@@ -769,7 +839,7 @@ void TServer::UnitTest() {
             if (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==CPU1)
             {
 
-                if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(player, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(), AnzahlSpieler + AnzahlCpuGegner, MapEngine))
+                if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(), AnzahlSpieler + AnzahlCpuGegner, MapEngine))
                 {
                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
@@ -843,7 +913,7 @@ void TServer::UnitTest() {
         std::vector<HighscoreEntry> temp;
         for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
         {
-            temp.push_back({ player[i].getName(),player[i].getBudget() });
+            temp.push_back({ player[i].getName(),player[i].Score(playerRefs) });
         }
 		save_highscores("highscores.txt", temp); //TODO: Funktionalität testen
     }

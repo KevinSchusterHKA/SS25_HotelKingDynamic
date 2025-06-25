@@ -98,13 +98,17 @@ void Logger::playerInPrison() {
     
 }
 void Logger::onEventField(std::string event) {
-    writeToFile("Spieler hat eine Ereigniskarte: " + event+" \n\t\t");
+    writeToFile("Spieler ist auf einem Ereignisfeld: " + event+" \n\t\t");
+}
+
+void Logger::onChestField(std::string event) {
+    writeToFile("Spieler ist auf einem Gemeinschaftsfeld: " + event + " \n\t\t");
 }
 
 
-void Logger::playerBuysObject(std::string object) {
+void Logger::playerBuysObject(std::string object, int price) {
 
-    writeToFile("Spieler hat Das Objekt " + object + " gekauft \n\t\t");
+    writeToFile("Spieler hat Das Objekt " + object + " für " + std::to_string(price) + " gekauft \n\t\t");
 }
 
 void Logger::playerBuildsBuilding(std::string building) {
@@ -112,6 +116,10 @@ void Logger::playerBuildsBuilding(std::string building) {
 }
 
 void Logger::playerMoney(std::string player, int money) {
-    writeToFile("Der Spieler " + player + " besitzt "+ std::to_string(money) +"€ \n\t\t");
+    writeToFile("Der Spieler " + player + " besitzt "+ std::to_string(money) +"$ \n\t\t");
 
+}
+
+void Logger::payTax() {
+    writeToFile("Spieler muss Steuern in Höhe von 200$ zahlen \n\t\t");
 }
