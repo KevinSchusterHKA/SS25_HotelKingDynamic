@@ -26,6 +26,7 @@ private:
 	int GefaengnisRunden = 0;
 	vector<int> GekaufteStrassen;
 	vector<int> GebauteHaeuser;
+	vector<int> GebauteHaeuserSpeicherFormat;
 
 
 
@@ -33,6 +34,7 @@ public:
 	TPlayer();
 	TPlayer(int id, int budget, int position);
 	TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser);
+	TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeuserspeicher, vector<int> gebautehaeuser);
 	~TPlayer();
 
 	int Score(int runde, int anzGekGebObj, vector<TPlayer*>& spielerListe);
@@ -72,7 +74,6 @@ public:
 	void bezahle(int betrag);
 	void erhalte(int betrag);
 	bool istPleite();
-	void geheZu(int feld);
 
 	void addStrasse(int strasse);
 	void deleteStrasse(int strasse);
@@ -106,10 +107,11 @@ public:
 
 
 string LUT(int i);
-int getPreisStrasse(int feld, Map& map);
-int getPreisHaus(int feld, Map& map);
+//int getPreisStrasse(int feld, Map& map);
+//int getPreisHaus(int feld, Map& map);
 
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);
 
 int streetpricewith2(int position, vector<TPlayer*>& spielerListe);
 int housepricewith2(int position, vector<TPlayer*>& spielerListe);
+vector<int> SpeicherZuInternFormat(vector<int> gebauteHaueserSpeicher);

@@ -2,7 +2,10 @@
 using namespace std;
 TPlayer::TPlayer() {};
 TPlayer::TPlayer(int id, int budget, int position) { this->ID = id; this->Budget = budget; this->Position = position; };
-TPlayer::TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuser = gebautehaeser; };
+TPlayer::TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeuser) { this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuserSpeicherFormat = gebautehaeuser; };
+TPlayer::TPlayer(int id, string name, int budget, int position, bool imgefaengnis, int gefaengnisrunden, vector<int> gekauftestrassen, vector<int> gebautehaeuserspeicher, vector<int> gebautehaeuser) {
+	this->ID = id; this->Name = name; this->Budget = budget; this->Position = position; this->ImGefaengnis = imgefaengnis, this->GefaengnisRunden = gefaengnisrunden, this->GekaufteStrassen = gekauftestrassen, this->GebauteHaeuserSpeicherFormat = gebautehaeuserspeicher, this->GebauteHaeuser = gebautehaeuser;
+};
 
 TPlayer::~TPlayer() {};
 
@@ -126,12 +129,6 @@ void TPlayer::bezahle(int betrag) {
 }
 void TPlayer::erhalte(int betrag) { this->Budget += betrag; }
 bool TPlayer::istPleite() { if (this->Budget <= 0) { return true; } return false; }
-void TPlayer::geheZu(int feld) {
-	if (feld < 0 || feld >= 40) {
-		return;					// Ungültiges Feld, nichts tun	
-	}
-	this->Position = feld;
-}
 
 void TPlayer::addStrasse(int strasse) {
 
@@ -153,7 +150,6 @@ void TPlayer::addStrasse(int strasse) {
 	GekaufteStrassen.push_back(strasse);
 	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
 }
-
 void TPlayer::deleteStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
@@ -165,6 +161,10 @@ void TPlayer::deleteStrasse(int strasse) {
 	cout << "Diese Strasse besitzen Sie nicht.\n";
 }
 void TPlayer::verkaufeStrasse(int strasse, vector<TPlayer*>& spielerListe) {
+	if (this->WieVieleHaueserAufSet(strasse) > 0) {
+		cout << "Sie koennen keine Strasse verkaufen, auf der Sie Haeuser gebaut haben.\n";
+		return;
+	}
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
@@ -183,7 +183,6 @@ bool TPlayer::besitztStrasse(int strasse) {
 	}
 	return false;
 }
-
 bool TPlayer::istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe) {
 	int farbe = _boardarr[feld].Color;
 	for (int i = 0; i < 40; ++i) {
@@ -197,7 +196,6 @@ bool TPlayer::istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe) 
 	}
 	return true;
 }
-
 int TPlayer::WieVieleHaueserAufSet(int feld) {
 	int count = 0;
 	int farbe = _boardarr[feld].Color;
@@ -277,8 +275,9 @@ int TPlayer::baueHausTEMP(int strasse, vector<TPlayer*>& spielerListe) {
 	if (this->WieVieleHaueserAufSet(strasse) < 5) {
 		std::vector<int> myProperties = this->getGekObjVector();
 		if (0 <= colorcheck(this->getID(), strasse, myProperties) && colorcheck(this->getID(), strasse, myProperties) <= 7) {
-			if (housepricewith2(strasse, spielerListe) - this->getBudget() >= 0) {
+			if (this->getBudget() - housepricewith2(strasse, spielerListe) >= 0) {
 				this->GebauteHaeuser.push_back(strasse);
+				this->GebauteHaeuserSpeicherFormat[strasse]++;
 				this->bezahle(housepricewith2(strasse, spielerListe));
 				cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
 			}
@@ -294,7 +293,6 @@ int TPlayer::baueHausTEMP(int strasse, vector<TPlayer*>& spielerListe) {
 		cout << "Sie koennen kein weiteres Haus auf " << LUT(strasse) << " bauen, da bereits 5 Haeuser vorhanden sind.\n";
 	}
 }
-
 void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe) {
 	if (anz < 0 || anz > 6) {
 		return; // Ungültige Anzahl von Häusern
@@ -308,6 +306,7 @@ void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe)
 	for (int i = 0; i < this->GebauteHaeuser.size(); ) {
 		if (this->GebauteHaeuser[i] == strasse) {
 			this->GebauteHaeuser.erase(this->GebauteHaeuser.begin() + i);
+			this->GebauteHaeuserSpeicherFormat[strasse]--;
 			this->erhalte(int(housepricewith2(strasse, spielerListe) / 2));
 			verkauft++;
 			if (verkauft == anz) {
@@ -326,7 +325,6 @@ void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe)
 		cout << verkauft << " Haeuser auf " << LUT(strasse) << " wurden verkauft.\n";
 	}
 }
-
 int TPlayer::anzahlHaeuserAuf(int strasse) {
 	int count = 0;
 	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
@@ -346,14 +344,22 @@ vector<string> TPlayer::getGekObjNamen() {
 }
 vector<string> TPlayer::getGebObjNamen() {
 	vector<string> temp;
-	for (int i = 0; i < this->GebauteHaeuser.size(); i++) {
-		temp.push_back(LUT(this->GebauteHaeuser[i]));
+	for (int i = 0; i < this->GebauteHaeuserSpeicherFormat.size(); i++) {
+		if (GebauteHaeuserSpeicherFormat[i] != 0) {
+			temp.push_back(LUT(i)+", Anz: "+to_string(GebauteHaeuserSpeicherFormat[i]));
+		}
 	}
 	return temp;
 }
 
 int TPlayer::getGekObjAnz() { return this->GekaufteStrassen.size(); }
-int TPlayer::getGebObjAnz() { return this->GebauteHaeuser.size(); }
+int TPlayer::getGebObjAnz() { 
+	int count = 0;
+	for(int i = 0; i < this->GebauteHaeuserSpeicherFormat.size(); i++) {
+		count += this->GebauteHaeuserSpeicherFormat[i];
+	}
+	return count;
+}
 
 vector<int> TPlayer::getGekObjVector() {
 	return this->GekaufteStrassen;
@@ -654,4 +660,15 @@ int housepricewith2(int position, vector<TPlayer*>& spielerListe) {
 	}
 	double finalPrice = basePrice * pow(1.02, totalOwnedStreets);
 	return static_cast<int>(finalPrice);
+}
+vector<int> SpeicherZuInternFormat(vector<int> gebauteHaueserSpeicher) {
+	vector<int> temp;
+	for (int i = 0; i < gebauteHaueserSpeicher.size(); i++) {
+		if (i != 0) {
+			for (int j = 0; j < gebauteHaueserSpeicher[i]; j++) {
+				temp.push_back(i);
+			}
+		}
+	}
+	return temp;
 }

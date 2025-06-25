@@ -641,7 +641,8 @@ void TServer::UnitTest() {
                                                 GsTemp.players[IndexReihenfolge[i]].inJail, 
                                                 GsTemp.players[IndexReihenfolge[i]].inJail,
                                                 GsTemp.players[IndexReihenfolge[i]].ownedObjects, 
-                                                GsTemp.players[IndexReihenfolge[i]].builtObjects);
+                                                GsTemp.players[IndexReihenfolge[i]].builtObjects,
+                                                SpeicherZuInternFormat(GsTemp.players[IndexReihenfolge[i]].builtObjects));
 								temp.setHuman(GsTemp.players[IndexReihenfolge[i]].isHuman);
                                 player[IndexReihenfolge[i]] = temp;
 								playerRefs.push_back(&player[i]);
