@@ -46,7 +46,13 @@ void TServer::UnitTest() {
      "7. Gefaengnis: Sie koennen ins Gefaengnis kommen, wenn Sie auf das entsprechende Feld landen oder eine Karte ziehen.",
      "8. Ereignis- und Gemeinschaftskarten: Ziehen Sie Karten, die positive oder negative Effekte haben koennen.",
      "9. Bankrott: Wenn Sie nicht mehr genug Geld haben, um Ihre Schulden zu begleichen, sind Sie bankrott.",
-     "10. Spielende: Das Spiel endet, wenn ein Spieler bankrott geht."
+     "10. Spielende: Das Spiel endet, wenn ein Spieler bankrott geht.",
+     "11. Handelsoptionen: Spieler koennen untereinander handeln, um ihre Position zu verbessern.",
+     "12. Wuerfel: Bei einem Pasch duerfen Sie erneut wuerfeln, aber bei dreimaligem Pasch muessen Sie ins Gefaengnis.",
+     "13. Strassenbahn: Spieler koennen die Strassenbahn benutzen, um schneller voranzukommen.",
+     "14. Haueser und Hotels: Bevor man eine Strasse von Strassenset verkaufen kann darf keine Gebaeude mehr auf einer dieser Strassen sein.",
+     "15. Strassen Verkaufen: Um eine Strasse zu Verkaufen geben Sie als Gebaeudeanzahl die Zahl 0 ein.",
+     "16. Fairplay: Spielen Sie fair und respektieren Sie die Regeln."
     };
 
     COORD CursorPos = { 0,0 };
