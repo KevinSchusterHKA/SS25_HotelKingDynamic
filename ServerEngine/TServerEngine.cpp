@@ -352,7 +352,7 @@ void TServer::UnitTest() {
                                 //Logger verschiedene Felder
                                 switch (MRobj[IndexReihenfolge[MomentanerSpieler]].Type) {
                                 case _type::TypeStreet: case _type::TypeStation: case _type::TypePark:
-                                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[MomentanerSpieler].getPosition()));
+                                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                                     break;
                                     
                                 case _type::TypeChance: 
@@ -366,12 +366,13 @@ void TServer::UnitTest() {
                                 case _type::TypePrison:
                                     if (!player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis())
                                     {
-                                        ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[MomentanerSpieler].getPosition()));
+                                        ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                                     }
+                                    break;
 
                                 case _type::TypeTax: 
                                     ConfigEngineLogging.payTax();
-
+                                    break;
                                     
                                 
 
@@ -410,7 +411,7 @@ void TServer::UnitTest() {
                                     player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
 
                                     if (price != -1) {
-                                        ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[MomentanerSpieler].getPosition()), price);
+                                        ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
                                     }
                                 }
 
@@ -445,7 +446,7 @@ void TServer::UnitTest() {
                                     player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
 
                                     if (price != -1) {
-                                        ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[MomentanerSpieler].getPosition()), price);
+                                        ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
                                     };
                                 }
                             }
@@ -456,7 +457,7 @@ void TServer::UnitTest() {
                                 player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
                                 
                                 if (price != -1) {
-                                    ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[MomentanerSpieler].getPosition()), price);
+                                    ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
                                 }
                             }
                             
@@ -572,8 +573,10 @@ void TServer::UnitTest() {
                             }
                             HatGewuerfelt = false;
                             system("cls");
+                            
                             ConfigEngineLogging.newRound();
                             MomentanerSpieler++;
+                            
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                             
                         }
@@ -747,7 +750,7 @@ void TServer::UnitTest() {
                         player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                     }
 
-                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[MomentanerSpieler].getPosition()));
+                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                    
                   
                     break;
