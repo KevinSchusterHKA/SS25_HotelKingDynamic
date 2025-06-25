@@ -210,16 +210,16 @@ int TPlayer::WieVieleHaueserAufSet(int feld) {
 	return count;
 }
 
-bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, Map& map) {
+int TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 	// Prüfen ob Käufer genug Budget hat
 	if (this->getBudget() < angebot) {
 		cout << "Du hast nicht genug Budget fuer dieses Angebot." << endl;
-		return false;
+		return -1;
 	}
 	// Prüfen ob Käufer die Straße bereits besitzt
 	if (this->besitztStrasse(feld)) {
 		cout << "Du besitzt diese Strasse bereits!" << endl;
-		return false;
+		return -1;
 	}
 	// Verkäufer suchen
 	for (TPlayer* verkaufer : spielerListe) {
@@ -230,7 +230,7 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, Map
 			if (!istStrassenSetHandelbar(feld, spielerListe)) {
 				cout << "Handel abgelehnt: In der Farbgruppe von " << LUT(feld)
 					<< " stehen noch Haeuser." << endl;
-				return false;
+				return -1;
 			}
 
 			// Käufer bezahlt
@@ -244,13 +244,14 @@ bool TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, Map
 			this->addStrasse(feld);
 
 			cout << "Handel erfolgreich: Strasse " << LUT(feld) << " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
-			return true;
+			return verkaufer->getID();
 		}
 	}
 
 	cout << "Kein Verkaeufer fuer diese Strasse gefunden." << endl;
-	return false;
+	return -1;
 }
+
 
 void TPlayer::baueHaus(int strasse, Map& map) {
 
@@ -673,4 +674,12 @@ vector<int> SpeicherZuInternFormat(vector<int> gebauteHaueserSpeicher) {
 		}
 	}
 	return temp;
+}
+int WemGehoertStrasse(int feld, vector<TPlayer*>& spielerListe) {
+	for (TPlayer* p : spielerListe) {
+		if (p->besitztStrasse(feld)) {
+			return p->getID();
+		}
+	}
+	return -1; // Keine Straße gefunden
 }

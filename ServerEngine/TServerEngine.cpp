@@ -60,7 +60,7 @@ void TServer::UnitTest() {
     std::vector<TPlayer*> playerRefs;
     vector<int> WurfelWert;
     vector<int> IndexReihenfolge(4, 0);
-    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1;
+    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1, ReferencePlayer = 0;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt = FALSE, GameFinished = FALSE, UpdateSpielfeld = FALSE, Handel_once_cpu = false, cpudone = false, gleicheWuerfe=true;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
@@ -361,9 +361,7 @@ void TServer::UnitTest() {
                                 if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                                 {
                                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                                    Spiellaueft = false;
-									GameFinished = true;
-                                    break;
+
                                 }
                                 if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type == 7)
                                 {
@@ -536,10 +534,10 @@ void TServer::UnitTest() {
 
                                 }
                                 else {
-                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
+                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + player[targetPlayerOut].getID()), "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
                                     if (option == 0)
                                     {
-                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot);
                                     }
                                 }
                             }
@@ -559,8 +557,8 @@ void TServer::UnitTest() {
                             HatGewuerfelt = false;
                             system("cls");
                             ConfigEngineLogging.newRound();
-                            MomentanerSpieler++;
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                            MomentanerSpieler++;
                             cpudone = false;
                         }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
@@ -699,7 +697,7 @@ void TServer::UnitTest() {
                                                 GsTemp.players[IndexReihenfolge[i]].builtObjects,
                                                 SpeicherZuInternFormat(GsTemp.players[IndexReihenfolge[i]].builtObjects));*/
                                 TPlayer temp(   i,
-                                                GsTemp.players[i].name,
+                                                GsTemp.players[IndexReihenfolge[i]].name,
                                                 GsTemp.players[IndexReihenfolge[i]].budget,
                                                 GsTemp.players[IndexReihenfolge[i]].position,
                                                 GsTemp.players[IndexReihenfolge[i]].inJail,
@@ -757,7 +755,7 @@ void TServer::UnitTest() {
                     
                     if (option == 0) //Akzeptieren
                     {
-                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+                        ReferencePlayer = player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot);
                     }
                     else
                     {
@@ -823,7 +821,7 @@ void TServer::UnitTest() {
                         player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                     }
 
-                    ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
+                    //ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                     break;
                 default:
                     break;
@@ -831,49 +829,6 @@ void TServer::UnitTest() {
             option = Reset + 1;
             break;
             
-        default:
-            break;
-        }
-
-        //Ausgabe des ausgewaehlten Menüs
-
-        switch (MenueAuswahl)
-        {
-        case Menues::Start:
-            ControlEngine.AusgabeStartMenu(option, x / 2 - ControlEngine.GetLaengstenStringMenueStartOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteStartOptionen() / 2);
-            break;
-        case Menues::Spieler:
-            ControlEngine.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, MomentanerSpielerFarbe); //die Farbe dem zugehoerigen Spieler anpassen
-
-            break;
-        case Menues::Optionen:
-            ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
-            break;
-        case Menues::Handel:
-            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss,"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
-            break;
-        case Menues::BahnFahren:
-            if (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==CPU1)
-            {
-
-                if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(), AnzahlSpieler + AnzahlCpuGegner, MapEngine))
-                {
-                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
-                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                }
-                std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-                ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-                HatGewuerfelt = false;
-                system("cls");
-                ConfigEngineLogging.newRound();
-                ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
-                MomentanerSpieler++;
-            }
-            else {
-                ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, MomentanerSpielerFarbe, "Bahn fahren?"); // Bug
-            }
-            break;
         default:
             break;
         }
@@ -914,6 +869,50 @@ void TServer::UnitTest() {
             ControlEngine.AusgabeSpielerInformationen(SpielerNamen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler+AnzahlCpuGegner, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen,IndexReihenfolge);
 
         }
+        //Ausgabe des ausgewaehlten Menüs
+
+        switch (MenueAuswahl)
+        {
+        case Menues::Start:
+            ControlEngine.AusgabeStartMenu(option, x / 2 - ControlEngine.GetLaengstenStringMenueStartOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteStartOptionen() / 2);
+            break;
+        case Menues::Spieler:
+            ControlEngine.AusgabeSpielerOptionen(option, x / 2 - 160, y / 2 - 44, MomentanerSpielerFarbe); //die Farbe dem zugehoerigen Spieler anpassen
+
+            break;
+        case Menues::Optionen:
+            ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
+            break;
+        case Menues::Handel:
+			ReferencePlayer = WemGehoertStrasse(Strasse, playerRefs);
+            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + player[ReferencePlayer].getID()),"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
+            break;
+        case Menues::BahnFahren:
+            if (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==CPU1)
+            {
+
+                if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(), AnzahlSpieler + AnzahlCpuGegner, MapEngine))
+                {
+                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
+                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+                ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
+                HatGewuerfelt = false;
+                system("cls");
+                ConfigEngineLogging.newRound();
+                ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                MomentanerSpieler++;
+            }
+            else {
+                ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, MomentanerSpielerFarbe, "Bahn fahren?"); // Bug
+            }
+            break;
+        default:
+            break;
+        }
+
 
 
         DWORD elapsed_time = GetTickCount64() - start_time;
