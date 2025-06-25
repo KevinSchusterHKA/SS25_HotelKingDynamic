@@ -675,6 +675,7 @@ void TServer::UnitTest() {
 							IndexReihenfolge = GsTemp.diceOrder;
                             MomentanerSpieler = GsTemp.currentPlayerIndex;
                             playerRefs.clear();
+
                             for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 TPlayer temp(   IndexReihenfolge[i], 
