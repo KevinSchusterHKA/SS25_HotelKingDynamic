@@ -489,7 +489,7 @@ void TServer::UnitTest() {
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::endl;
-                        ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, Farbe::BG_Rot);
+                        ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, MomentanerSpielerFarbe);
                         for (size_t i = 0; i < AnzahlCpuGegner+AnzahlSpieler; i++)
                         {
                             if (player[i].besitztStrasse(Strasse)) {
@@ -560,7 +560,7 @@ void TServer::UnitTest() {
                         }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                         int Strasse = -1,Gebaude = -1;
-                        ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, Farbe::BG_Rot);
+                        ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
 						player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs);
                         
                         //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
@@ -746,7 +746,7 @@ void TServer::UnitTest() {
                     }
                     else
                     {
-						ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 20, y / 2 - 1, Farbe::BG_Rot);
+						ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 20, y / 2 - 1, MomentanerSpielerFarbe);
                     }
 					break;
                 case Menues::BahnFahren:
