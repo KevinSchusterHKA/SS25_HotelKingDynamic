@@ -46,7 +46,13 @@ void TServer::UnitTest() {
      "7. Gefaengnis: Sie koennen ins Gefaengnis kommen, wenn Sie auf das entsprechende Feld landen oder eine Karte ziehen.",
      "8. Ereignis- und Gemeinschaftskarten: Ziehen Sie Karten, die positive oder negative Effekte haben koennen.",
      "9. Bankrott: Wenn Sie nicht mehr genug Geld haben, um Ihre Schulden zu begleichen, sind Sie bankrott.",
-     "10. Spielende: Das Spiel endet, wenn ein Spieler bankrott geht."
+     "10. Spielende: Das Spiel endet, wenn ein Spieler bankrott geht.",
+     "11. Handelsoptionen: Spieler koennen untereinander handeln, um ihre Position zu verbessern.",
+     "12. Wuerfel: Bei einem Pasch duerfen Sie erneut wuerfeln, aber bei dreimaligem Pasch muessen Sie ins Gefaengnis.",
+     "13. Strassenbahn: Spieler koennen die Strassenbahn benutzen, um schneller voranzukommen.",
+     "14. Haueser und Hotels: Bevor man eine Strasse von Strassenset verkaufen kann darf keine Gebaeude mehr auf einer dieser Strassen sein.",
+     "15. Strassen Verkaufen: Um eine Strasse zu Verkaufen geben Sie als Gebaeudeanzahl die Zahl 0 ein.",
+     "16. Fairplay: Spielen Sie fair und respektieren Sie die Regeln."
     };
 
     COORD CursorPos = { 0,0 };
@@ -54,7 +60,7 @@ void TServer::UnitTest() {
     std::vector<TPlayer*> playerRefs;
     vector<int> WurfelWert;
     vector<int> IndexReihenfolge(4, 0);
-    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1;
+    int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1, ReferencePlayer = 0;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt = FALSE, GameFinished = FALSE, UpdateSpielfeld = FALSE, Handel_once_cpu = false, cpudone = false, gleicheWuerfe=true;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
@@ -93,7 +99,6 @@ void TServer::UnitTest() {
     ControlEngine.SetConsoleFontSize(8);
     system("chcp 850");
 	Sleep(100); 
-
     //Ausgabe des Startbildschirms
     if (Spiellaueft)
     {
@@ -484,7 +489,7 @@ void TServer::UnitTest() {
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::endl;
-                        ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, Farbe::BG_Rot);
+                        ControlEngine.AusgabeStrasseHandeln(option, Strasse, Angebot, x / 2 -211, y / 2-20, MomentanerSpielerFarbe);
                         for (size_t i = 0; i < AnzahlCpuGegner+AnzahlSpieler; i++)
                         {
                             if (player[i].besitztStrasse(Strasse)) {
@@ -526,10 +531,10 @@ void TServer::UnitTest() {
 
                                 }
                                 else {
-                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, Farbe::BG_Weiss, "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
+                                    ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + player[targetPlayerOut].getID()), "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
                                     if (option == 0)
                                     {
-                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot);
                                     }
                                 }
                             }
@@ -555,7 +560,7 @@ void TServer::UnitTest() {
                         }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                         int Strasse = -1,Gebaude = -1;
-                        ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, Farbe::BG_Rot);
+                        ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
 						player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs);
                         
                         //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
@@ -675,6 +680,7 @@ void TServer::UnitTest() {
 							IndexReihenfolge = GsTemp.diceOrder;
                             MomentanerSpieler = GsTemp.currentPlayerIndex;
                             playerRefs.clear();
+
                             for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 TPlayer temp(   IndexReihenfolge[i], 
@@ -736,12 +742,13 @@ void TServer::UnitTest() {
                     
                     if (option == 0) //Akzeptieren
                     {
-                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, MapEngine);
+                        ReferencePlayer = player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot);
                     }
                     else
                     {
-                        //Code zum Ablehnen des Handels
+						ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 20, y / 2 - 1, MomentanerSpielerFarbe);
                     }
+					break;
                 case Menues::BahnFahren:
                     //TODO:Position spieler wird beim Bahnhof nicht richtig aktualisiert
                     MenueAuswahl = Menues::Spieler;
@@ -754,7 +761,7 @@ void TServer::UnitTest() {
                     {
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
+                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition() - player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl()) {
                             //KIT Campus|-> Durlach BF
                         case 5:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(25 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
@@ -813,11 +820,7 @@ void TServer::UnitTest() {
             break;
         }
 
-
-        
-
         //Ausgabe des ausgewaehlten Menüs
-
         switch (MenueAuswahl)
         {
         case Menues::Start:
@@ -831,12 +834,12 @@ void TServer::UnitTest() {
             ControlEngine.AusgabeSpielOptionen(option, x / 2 - ControlEngine.GetLaengstenStringMenueSpielOptionen() / 2, y / 2 - ControlEngine.GetAnzMenuepunkteSpielOptionen() / 2);
             break;
         case Menues::Handel:
-            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, Farbe::BG_Weiss,"Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
+            ReferencePlayer = WemGehoertStrasse(Strasse, playerRefs);
+            ControlEngine.AusgabeJaNeinOption(option, x / 2 - 198, y / 2 - 9, static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + player[ReferencePlayer].getID()), "Akzeptierst du den Handel Spieler wem die Strasse gehoert?");
             break;
         case Menues::BahnFahren:
             if (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==CPU1)
             {
-
                 if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(), AnzahlSpieler + AnzahlCpuGegner, MapEngine))
                 {
                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
