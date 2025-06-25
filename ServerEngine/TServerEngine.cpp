@@ -211,73 +211,76 @@ void TServer::UnitTest() {
 							player[i].setID(i);
                             player[i].setHuman(HUMAN);
                         }
-                    }
-                    for (size_t i = AnzahlSpieler; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
-                        player[i].setName(SpielerNamen[i]);
-                        player[i].setID(i);
-                        player[i].setHuman(CPU1);  
+                        ConfigEngineLogging.newRound();
+                        for (size_t i = AnzahlSpieler; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
+                            player[i].setName(SpielerNamen[i]);
+                            player[i].setID(i);
+                            player[i].setHuman(CPU1);  
 
-                    }
-                    MapEngine.SetPlayerNumber(AnzahlSpieler + AnzahlCpuGegner);
-
-                    // Würfelreihenfolge festlegen:
-                    gleicheWuerfe = true;
-                    do {
-                        WurfelWert.clear();
-                        gleicheWuerfe = false;
-                        for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
-                            int temp1 = player[i].wurfeln();
-                            int temp2 = player[i].wurfeln();
-                            WurfelWert.push_back(temp1 + temp2);
-                            ControlEngine.AusgabeNachricht("Spieler " + to_string(i+1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10*i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
                         }
-				
-                        // Prüfen, ob alle Würfe unterschiedlich sind
-                        for (int i = 0; i < (int)WurfelWert.size(); ++i) {
-                            for (int j = i + 1; j < (int)WurfelWert.size(); ++j) {
-                                if (WurfelWert[i] == WurfelWert[j]) {
-                                    gleicheWuerfe = true;
-                                    break;
-                                }
+                        MapEngine.SetPlayerNumber(AnzahlSpieler + AnzahlCpuGegner);
+
+                        // Würfelreihenfolge festlegen:
+                        gleicheWuerfe = true;
+                        do {
+                            WurfelWert.clear();
+                            gleicheWuerfe = false;
+                            ControlEngine.SetConsoleFontSize(20);
+                            for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
+                                int temp1 = player[i].wurfeln();
+                                int temp2 = player[i].wurfeln();
+                                WurfelWert.push_back(temp1 + temp2);
+                                ControlEngine.AusgabeNachricht("Spieler " + to_string(i+1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10*i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
                             }
-                            if (gleicheWuerfe) break;
+				            
+                            // Prüfen, ob alle Würfe unterschiedlich sind
+                            for (int i = 0; i < (int)WurfelWert.size(); ++i) {
+                                for (int j = i + 1; j < (int)WurfelWert.size(); ++j) {
+                                    if (WurfelWert[i] == WurfelWert[j]) {
+                                        gleicheWuerfe = true;
+                                        break;
+                                    }
+                                }
+                                if (gleicheWuerfe) break;
+                            }
+                        } while (gleicheWuerfe);
+                        Sleep(2000);
+                        system("cls");
+                        ControlEngine.SetConsoleFontSize(8);
+
+                        // Index-Vektor erstellen und richtig resizen!
+                        IndexReihenfolge.resize(WurfelWert.size());
+                        for (int i = 0; i < (int)WurfelWert.size(); ++i) {
+                            IndexReihenfolge[i] = i;
                         }
-                    } while (gleicheWuerfe);
-                    Sleep(2000);
-                    system("cls");
-                    // Index-Vektor erstellen und richtig resizen!
-                    IndexReihenfolge.resize(WurfelWert.size());
-                    for (int i = 0; i < (int)WurfelWert.size(); ++i) {
-                        IndexReihenfolge[i] = i;
-                    }
 
-                    // Sortieren der Indizes nach den Werten in WurfelWert (absteigend)
-                    sort(IndexReihenfolge.begin(), IndexReihenfolge.end(),
-                        [&WurfelWert](int a, int b) {
-                            return WurfelWert[a] > WurfelWert[b];
-                        });
+                        // Sortieren der Indizes nach den Werten in WurfelWert (absteigend)
+                        sort(IndexReihenfolge.begin(), IndexReihenfolge.end(),
+                            [&WurfelWert](int a, int b) {
+                                return WurfelWert[a] > WurfelWert[b];
+                            });
 
-                    for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; ++i) {
-                        playerRefs.push_back(&player[IndexReihenfolge[i]]);
+                        for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; ++i) {
+                            playerRefs.push_back(&player[IndexReihenfolge[i]]);
+                        }
                     }
-             		    if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
-					    std::vector<HighscoreEntry> player;
-					    load_highscores("highscores.txt", player);
+             		if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
+					    std::vector<HighscoreEntry> playerHS;
+					    load_highscores("highscores.txt", playerHS);
                         std::vector<std::string> playerNames;
                         std::vector<int> playerScore;
-                        for (size_t i = 0; i < player.size(); i++)
+                        for (size_t i = 0; i < playerHS.size(); i++)
                         {
-                            playerNames.push_back(player[i].playerName);
-                            playerScore.push_back(player[i].score);
+                            playerNames.push_back(playerHS[i].playerName);
+                            playerScore.push_back(playerHS[i].score);
                         }
 
-                        ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), player.size(), x / 2 - this->GetLongestStringVector(playerNames) / 2 - 6, y / 2 + ControlEngine.GetAnzMenuepunkteStartOptionen() + 2);
+                        ControlEngine.AusgabeHighscore(playerNames.data(), playerScore.data(), playerHS.size(), x / 2 - this->GetLongestStringVector(playerNames) / 2 - 6, y / 2 + ControlEngine.GetAnzMenuepunkteStartOptionen() + 2);
                     }
                     if (option == MenueOptionen::Optionen) { system("cls"); MenueLetztes = MenueAuswahl; MenueAuswahl = Menues::Optionen; }
                     if (option == MenueOptionen::Beenden) { Spiellaueft = FALSE; }
 
-                    ConfigEngineLogging.newRound();
-                    ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                    //ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                     break;
                  
 
@@ -794,11 +797,13 @@ void TServer::UnitTest() {
         if (elapsed_time < FRAME_DURATION) {
             Sleep(FRAME_DURATION - elapsed_time);
         }
+
         if (player[IndexReihenfolge[MomentanerSpieler]].getBudget() < 0)
         {
-			GameFinished = TRUE;
-			Spiellaueft = FALSE;
+            GameFinished = TRUE;
+            Spiellaueft = FALSE;
         }
+        
     }
     if (GameFinished) {
         std::vector<HighscoreEntry> temp;

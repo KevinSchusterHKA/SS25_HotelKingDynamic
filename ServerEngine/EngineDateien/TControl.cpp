@@ -1536,7 +1536,6 @@ bool TControl::isRunningInWindowsTerminal() {
 void TControl::AusgabeNachricht(std::string Nachricht,int x,int y,Farbe f) {
     this->SetFarbe(Farbe::BG_Schwarz);
     this->SetFarbe(f);
-    this->SetConsoleFontSize(20);
     int BreiteMenue = Nachricht.size() + 10;
     int linkerRandText = (BreiteMenue - 2) / 2 - Nachricht.size() / 2;
 
@@ -1562,7 +1561,6 @@ void TControl::AusgabeNachricht(std::string Nachricht,int x,int y,Farbe f) {
     std::cout << _symbolcharsControl[LRC];
 
     Sleep(500);
-    this->SetConsoleFontSize(8);
     this->SetFarbe(Farbe::Zuruecksetzen);
 
 
