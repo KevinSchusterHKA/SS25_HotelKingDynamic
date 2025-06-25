@@ -814,11 +814,7 @@ void TServer::UnitTest() {
             break;
         }
 
-
-        
-
         //Ausgabe des ausgewaehlten Menüs
-
         switch (MenueAuswahl)
         {
         case Menues::Start:
@@ -838,7 +834,6 @@ void TServer::UnitTest() {
         case Menues::BahnFahren:
             if (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==CPU1)
             {
-
                 if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(), AnzahlSpieler + AnzahlCpuGegner, MapEngine))
                 {
                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
