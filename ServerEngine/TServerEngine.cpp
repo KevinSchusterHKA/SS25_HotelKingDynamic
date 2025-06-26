@@ -596,7 +596,7 @@ void TServer::UnitTest() {
                         int Strasse = -1,Gebaude = -1;
                         ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
 						player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs);
-                        
+                        MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
                         //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
                         system("cls");
                     }
@@ -730,6 +730,7 @@ void TServer::UnitTest() {
                                 player[IndexReihenfolge[i]] = temp;
 								playerRefs.push_back(&player[i]);
                             }
+                            MapEngine = Map();
                             MapEngine.loadGame(GsTemp.players);
                             RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                         }

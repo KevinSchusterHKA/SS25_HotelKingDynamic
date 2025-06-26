@@ -58,7 +58,7 @@ public:
 			{
 				Spaces[space].setOwner(i);
 				Spaces[space].setPrice(_factor);
-				int streetcolor = ownsStreets(i, Playerpos[i]);
+				int streetcolor = ownsStreets(i, space);
 				if (streetcolor != -1)
 				{
 					Spaces[_streetarr[streetcolor][0]].buyHouse();
@@ -75,7 +75,10 @@ public:
 				for (int k = 0; k < player.builtObjects.at(j); k++)
 				{
 					Spaces[j].buyHouse();
-					Spaces[j].setPrice(_factor);
+					for (int l = 0; l < 40; l++)
+					{
+						Spaces[l].setPrice(_factor);
+					}
 				}
 			}
 		}
