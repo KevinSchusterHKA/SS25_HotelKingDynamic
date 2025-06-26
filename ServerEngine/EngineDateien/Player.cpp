@@ -385,11 +385,18 @@ int TPlayer::handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& p, int& ta
 	{
 		return -1;
 	}
-	int targetPlayer;
-	do {
-		targetPlayer = rand() % totalPlayers;
-	} while ((targetPlayer == cpuID)||(p[targetPlayer]->getGekObjAnz() == 0));
-
+	std::vector<int> targetPlayervec;
+	for (int i = 0; i < totalPlayers; ++i) {
+		if (i != cpuID && (p[i]->getGekObjAnz() > 0)) {
+			targetPlayervec.push_back(i);
+		}
+	}
+	if (targetPlayervec.size()==0)
+	{
+		return -1;
+	}
+	int randomplayer = rand() % targetPlayervec.size();
+	int targetPlayer = targetPlayervec[randomplayer];
 	std::vector<int> ownedProperties = p[targetPlayer]->getGekObjVector();
 	int randIndex = rand() % ownedProperties.size();
 	int propIndex = ownedProperties[randIndex];
@@ -681,4 +688,28 @@ int WemGehoertStrasse(int feld, vector<TPlayer*>& spielerListe) {
 		}
 	}
 	return -1; // Keine Straße gefunden
+}
+int visitCountsPerPlayer[4] = { 0 };
+int check_bahn_pos(int playerId, int position,int dice_roll) {
+	int trainStationPositions[] = { 5, 12, 15, 25, 28, 35 };
+		if (visitCountsPerPlayer[playerId] == 1)
+		{
+			position -= dice_roll;
+			visitCountsPerPlayer[playerId] = 0;
+			return 2;
+		}
+	 
+	for (int i = 0; i < 6; ++i) {
+		if (position == trainStationPositions[i]) {
+		
+			visitCountsPerPlayer[playerId]++;
+			int count = visitCountsPerPlayer[playerId];   
+			return count;
+		}
+	}
+	return 0;
+}
+
+void movcpuonTrainStation(int playerIndex, int augenzahl, std::vector<TPlayer*>& player) {
+	
 }
