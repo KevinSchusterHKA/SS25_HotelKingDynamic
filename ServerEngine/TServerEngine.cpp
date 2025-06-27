@@ -589,6 +589,10 @@ void TServer::UnitTest() {
                             ConfigEngineLogging.newRound();
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                             MomentanerSpieler++;
+                            if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
+                                ConfigEngineLogging.newRound();
+                                MomentanerSpieler = 0;
+                            }
                             cpudone = false;
                         }
                     }
@@ -885,6 +889,10 @@ void TServer::UnitTest() {
             {
                 MomentanerSpieler++;
                 cpu_train = FALSE;
+                if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
+                    ConfigEngineLogging.newRound();
+                    MomentanerSpieler = 0;
+                }
             }
 
             while (MRobj[IndexReihenfolge[MomentanerSpieler]].flag)
