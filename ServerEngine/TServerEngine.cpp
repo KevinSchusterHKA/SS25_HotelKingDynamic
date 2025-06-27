@@ -672,18 +672,8 @@ void TServer::UnitTest() {
                                 PlTemp.name = player[i].getName();
                                 PlTemp.ownedObjects = player[i].getGekObjVector();
                                 PlTemp.position = player[i].getPosition();
+								PlTemp.isHuman = player[i].getHuman();
                                 GsTemp.players.push_back(PlTemp);
-                            }
-                            for (size_t i = AnzahlSpieler; i < AnzahlSpieler+AnzahlCpuGegner; i++)
-                            {
-                                //PlTemp.budget = player[i].getBudget();                //TODO:CPU GEGNER
-                                //PlTemp.builtObjects = player[i].getGebObjVector();      //TODO:CPU GEGNER
-                                ////PlTemp.hasFreeJailCard = MapEngine.GetPrison(i);      //TODO:CPU GEGNER
-                                //PlTemp.inJail = player[i].imGefaengnis();             //TODO:CPU GEGNER
-                                //PlTemp.name = player[i].getName();                    //TODO:CPU GEGNER
-                                //PlTemp.ownedObjects = player[i].getGekObjVector();    //TODO:CPU GEGNER
-                                //PlTemp.position = player[i].getPosition();            //TODO:CPU GEGNER
-                                //GsTemp.players.push_back(PlTemp);                     //TODO:CPU GEGNER
                             }
                             GsTemp.roundCount=AnzahlRunden;
                             GsTemp.cpuCount = AnzahlCpuGegner;
