@@ -314,7 +314,7 @@ void TServer::UnitTest() {
                         if (!HatGewuerfelt)
                         {
                             //PLAYERENGINE
-                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler "+to_string(IndexReihenfolge[MomentanerSpieler]+1)+" : wirft den Wuerfel!";
+                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << player[IndexReihenfolge[MomentanerSpieler]].getName() + " : wirft den Wuerfel!";
 
                             player[IndexReihenfolge[MomentanerSpieler]].Wurfelmechn();
 
@@ -341,11 +341,11 @@ void TServer::UnitTest() {
                             }
 
                             //MAPENGINE - Bug Bahnfahren erst nächste Runde nach Würfeln
-                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type == 1 && (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==HUMAN))
-                            {
-                                MenueAuswahl = Menues::BahnFahren;
-                            }
-                            else {
+                            //if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type == 1 && (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==HUMAN))
+                            //{
+                            //    //MenueAuswahl = Menues::BahnFahren;
+                            //}
+                            //else {
                                 player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], wuerfel1 + wuerfel2, 0));
                                 MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
                                 if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
@@ -366,13 +366,13 @@ void TServer::UnitTest() {
                                 case _type::TypeStreet: case _type::TypeStation: case _type::TypePark:
                                     ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                                     break;
-                                    
-                                case _type::TypeChance: 
-                                    ConfigEngineLogging.onEventField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);  
+
+                                case _type::TypeChance:
+                                    ConfigEngineLogging.onEventField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);
                                     break;
 
                                 case _type::TypeChest:
-                                    ConfigEngineLogging.onChestField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);  
+                                    ConfigEngineLogging.onChestField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);
                                     break;
 
                                 case _type::TypePrison:
@@ -382,21 +382,11 @@ void TServer::UnitTest() {
                                     }
                                     break;
 
-                                case _type::TypeTax: 
+                                case _type::TypeTax:
                                     ConfigEngineLogging.payTax();
                                     break;
-                                    
-                                
-
                                 }
-
-                                
-                                
-
-                                
-                                
-                              
-                            }
+                            //}
                         }
                         else {
                             std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(IndexReihenfolge[MomentanerSpieler] + 1) + " hat schon gewuerfelt!";
@@ -431,7 +421,7 @@ void TServer::UnitTest() {
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                     {
-                 
+                        MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
                         //player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
                         //player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
                         //ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
@@ -475,6 +465,10 @@ void TServer::UnitTest() {
                                 }
                             }
                             
+                        }
+                        if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type==TypeStation)
+                        {
+							MenueAuswahl = Menues::BahnFahren;
                         }
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
