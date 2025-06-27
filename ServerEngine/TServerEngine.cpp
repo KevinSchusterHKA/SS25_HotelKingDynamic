@@ -483,7 +483,7 @@ void TServer::UnitTest() {
                         space = StrasseBauen;
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(IndexReihenfolge[MomentanerSpieler], space, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
                         //player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
-                        int houseBuilt = player[IndexReihenfolge[MomentanerSpieler]].baueHausTEMP(StrasseBauen,playerRefs);
+                        int houseBuilt = player[IndexReihenfolge[MomentanerSpieler]].baueHaus(StrasseBauen,playerRefs);
                         if (houseBuilt != -1) {
                             ConfigEngineLogging.playerBuildsBuilding(houseBuilt); 
                         }

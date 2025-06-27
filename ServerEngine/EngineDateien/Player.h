@@ -82,8 +82,7 @@ public:
 	bool istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe);
 	int Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot);
 
-	void baueHaus(int strasse, Map& map);
-	int baueHausTEMP(int strasse, vector<TPlayer*>& spielerListe);
+	int baueHaus(int strasse, vector<TPlayer*>& spielerListe);
 	void verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe);
 	int anzahlHaeuserAuf(int strasse);
 	int WieVieleHaueserAufSet(int feld);

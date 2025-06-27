@@ -201,7 +201,7 @@ int TPlayer::WieVieleHaueserAufSet(int feld) {
 	int farbe = _boardarr[feld].Color;
 	for (int i = 0; i < 40; ++i) {
 		if (_boardarr[i].Type == TypeStreet && _boardarr[i].Color == farbe) {
-			if (this->anzahlHaeuserAuf(feld)) {
+			if (this->anzahlHaeuserAuf(i)) {
 				count++;
 			}
 		}
@@ -251,22 +251,7 @@ int TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 	return -1;
 }
 
-void TPlayer::baueHaus(int strasse, Map& map) {
-
-	// Pr�fen ob das Feld eine Stra�e ist
-	if (_boardarr[strasse].Type != TypeStreet) {
-		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
-		return;
-	}
-	if (map.ownsStreets(this->getID(), strasse)) {
-		this->GebauteHaeuser.push_back(strasse);
-		cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
-	}
-	else {
-		cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
-	}
-}
-int TPlayer::baueHausTEMP(int strasse, vector<TPlayer*>& spielerListe) {
+int TPlayer::baueHaus(int strasse, vector<TPlayer*>& spielerListe) {
 	// Pr�fen ob das Feld eine Stra�e ist
 	if (_boardarr[strasse].Type != TypeStreet) {
 		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
@@ -498,7 +483,7 @@ bool TPlayer::tryBuildHousecpu(vector<TPlayer*>& player, Map& map) {
 
 		if (price <= maxPrice) {
 			bezahle(price);
-			player[myID]->baueHausTEMP(bestProp, player);
+			player[myID]->baueHaus(bestProp, player);
 			built = true;
 			break;
 		}
