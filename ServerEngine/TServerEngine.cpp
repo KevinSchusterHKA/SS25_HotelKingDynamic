@@ -134,6 +134,7 @@ void TServer::UnitTest() {
             
             player[IndexReihenfolge[MomentanerSpieler]].decGefaengnisRunden();
             AnzahlRunden++;
+
             ConfigEngineLogging.newRound();
             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
             HatGewuerfelt = false;
@@ -142,25 +143,26 @@ void TServer::UnitTest() {
                 ConfigEngineLogging.newRound();
                 MomentanerSpieler = 0;
             }
+            switch (IndexReihenfolge[MomentanerSpieler])
+            {
+            case 0:
+                MomentanerSpielerFarbe = Farbe::BG_Rot;
+                break;
+            case 1:
+                MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                break;
+            case 2:
+                MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                break;
+            case 3:
+                MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                break;
+            default:
+                break;
+            }
         }  
 
-        switch (IndexReihenfolge[MomentanerSpieler])
-        {
-        case 0:
-            MomentanerSpielerFarbe = Farbe::BG_Rot;
-            break;
-        case 1:
-            MomentanerSpielerFarbe = Farbe::BG_Gruen;
-            break;
-        case 2:
-            MomentanerSpielerFarbe = Farbe::BG_Gelb;
-            break;
-        case 3:
-            MomentanerSpielerFarbe = Farbe::BG_Cyan;
-            break;
-        default:
-            break;
-        }
+        
         
 
         EingabeCh = MenueOptionen::Reset;
@@ -593,6 +595,23 @@ void TServer::UnitTest() {
                                 ConfigEngineLogging.newRound();
                                 MomentanerSpieler = 0;
                             }
+                            switch (IndexReihenfolge[MomentanerSpieler])
+                            {
+                            case 0:
+                                MomentanerSpielerFarbe = Farbe::BG_Rot;
+                                break;
+                            case 1:
+                                MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                                break;
+                            case 2:
+                                MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                                break;
+                            case 3:
+                                MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                                break;
+                            default:
+                                break;
+                            }
                             cpudone = false;
                         }
                     }
@@ -624,7 +643,23 @@ void TServer::UnitTest() {
                                 MomentanerSpieler = 0;
                             }
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
-                            
+                            switch (IndexReihenfolge[MomentanerSpieler])
+                            {
+                            case 0:
+                                MomentanerSpielerFarbe = Farbe::BG_Rot;
+                                break;
+                            case 1:
+                                MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                                break;
+                            case 2:
+                                MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                                break;
+                            case 3:
+                                MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                                break;
+                            default:
+                                break;
+                            }
                         }
                         else
                         {
@@ -892,6 +927,23 @@ void TServer::UnitTest() {
                 if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
                     ConfigEngineLogging.newRound();
                     MomentanerSpieler = 0;
+                }
+                switch (IndexReihenfolge[MomentanerSpieler])
+                {
+                case 0:
+                    MomentanerSpielerFarbe = Farbe::BG_Rot;
+                    break;
+                case 1:
+                    MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                    break;
+                case 2:
+                    MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                    break;
+                case 3:
+                    MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                    break;
+                default:
+                    break;
                 }
             }
 

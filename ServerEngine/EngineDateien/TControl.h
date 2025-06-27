@@ -125,6 +125,7 @@ private:
                             int y,
                             Farbe f);
     
+	void AusgabeSpielerInventarAnzeige( std::string Namen,std::vector<std::string> GekaufteObjekte,std::vector<std::string> GebauteObjekte,int x,int y,Farbe f);
 public:
     TControl();
     ~TControl();
@@ -150,7 +151,6 @@ public:
                                         std::vector<std::vector<std::string>> GebauteObjekte,
                                         std::vector<int> SpielerReihenfolge);
 
-	void AusgabeSpielerInventarAnzeige( std::string Namen,std::vector<std::string> GekaufteObjekte,std::vector<std::string> GebauteObjekte,int x,int y,Farbe f);
     void AusgabeTestFeld(int x, int y);
     void AusgabeHighscore(std::string Namen[], int HighscoreWert[], int size, int x, int y);
 	void AusgabeWuerfel(int wuerfel, int x, int y, Farbe f);
