@@ -446,7 +446,7 @@ void TServer::UnitTest() {
                             }
                         }
 
-                        // Wenn Straße frei ist: kaufen
+                        // Wenn Straße frei ist und genug Geld hat: kaufen
                         if (istFrei) {
                             if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1) {
                                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -454,9 +454,10 @@ void TServer::UnitTest() {
                                 {
 
                                     int price = MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-                                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
-                                    player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
-
+                                    if(player[IndexReihenfolge[MomentanerSpieler]].getBudget() - price >= 0 && price != -1) {
+                                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
+                                        player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
+                                    }
                                     if (price != -1) {
                                         ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
                                     };
@@ -464,9 +465,10 @@ void TServer::UnitTest() {
                             }
                             else {
                                 int price = MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-
-                                player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
-                                player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
+                                if (player[IndexReihenfolge[MomentanerSpieler]].getBudget() - price >= 0 && price != -1) {
+                                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
+                                    player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
+                                }
                                 
                                 if (price != -1) {
                                     ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);

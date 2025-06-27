@@ -261,25 +261,30 @@ int TPlayer::baueHaus(int strasse, vector<TPlayer*>& spielerListe) {
 		std::vector<int> myProperties = this->getGekObjVector();
 		if (0 <= colorcheck(this->getID(), strasse, myProperties) && colorcheck(this->getID(), strasse, myProperties) <= 7) {
 			if (this->getBudget() - housepricewith2(strasse, spielerListe) >= 0) {
+				// Haus bauen
 				this->GebauteHaeuser.push_back(strasse);
 				this->GebauteHaeuserSpeicherFormat[strasse]++;
 				this->bezahle(housepricewith2(strasse, spielerListe));
 				cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
+				return 1;
 			}
 			else {
 				cout << "Sie haben nicht genug Geld, um ein Haus auf " << LUT(strasse) << " zu bauen.\n";
+				return -1;
 			}
 		}
 		else {
 			cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
+			return -1;
 		}
 	}
 	else {
 		cout << "Sie koennen kein weiteres Haus auf " << LUT(strasse) << " bauen, da bereits 5 Haeuser vorhanden sind.\n";
+		return -1;
 	}
 }
 void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe) {
-	if (anz < 0 || anz > 6) {
+	if (anz < 0 || anz >= 6) {
 		return; // Ungültige Anzahl von Häusern
 	}
 	if (anz == 0) {
