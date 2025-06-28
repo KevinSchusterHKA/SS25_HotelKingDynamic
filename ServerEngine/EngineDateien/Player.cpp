@@ -130,50 +130,50 @@ void TPlayer::bezahle(int betrag) {
 void TPlayer::erhalte(int betrag) { this->Budget += betrag; }
 bool TPlayer::istPleite() { if (this->Budget <= 0) { return true; } return false; }
 
-void TPlayer::addStrasse(int strasse) {
+void TPlayer::addStrasse(int strasse, string& Nachricht) {
 
 	// Prüfen ob das Feld eine Straße ist
 	if (_boardarr[strasse].Type != TypeStreet) {
-		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
+		Nachricht = "Feld " + LUT(strasse) + " ist keine Strasse und kann nicht gekauft werden.";
 		return;
 	}
 
 	// Prüfen ob Spieler die Straße bereits besitzt
 	for (int s = 0; s < this->GekaufteStrassen.size(); s++) {
 		if (s == strasse) {
-			cout << "Strasse " << LUT(strasse) << " gehoert dir bereits.\n";
+			Nachricht = "Strasse " + LUT(strasse) + " gehoert dir bereits.";
 			return;
 		}
 	}
 
 	// Falls nicht, hinzufügen
 	GekaufteStrassen.push_back(strasse);
-	cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " gekauft.\n";
+	Nachricht = "Strasse " + LUT(strasse) + " wurde von Spieler " + to_string(this->ID) + " gekauft.";
 }
-void TPlayer::deleteStrasse(int strasse) {
+void TPlayer::deleteStrasse(int strasse, string& Nachricht) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
-			cout << "Strasse " << LUT(strasse) << " wurde von Spieler " << this->ID << " verkauft.\n";
+			Nachricht = "Strasse " + LUT(strasse) + " wurde von Spieler " + to_string(this->ID) + " verkauft.";
 			return;
 		}
 	}
-	cout << "Diese Strasse besitzen Sie nicht.\n";
+	Nachricht = "Diese Strasse besitzen Sie nicht.";
 }
-void TPlayer::verkaufeStrasse(int strasse, vector<TPlayer*>& spielerListe) {
+void TPlayer::verkaufeStrasse(int strasse, vector<TPlayer*>& spielerListe, string& Nachricht) {
 	if (this->WieVieleHaueserAufSet(strasse) > 0) {
-		cout << "Sie koennen keine Strasse verkaufen, auf der Sie Haeuser gebaut haben.\n";
+		Nachricht = "Sie koennen keine Strasse verkaufen, auf der Sie Haeuser gebaut haben.";
 		return;
 	}
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
 		if (this->GekaufteStrassen[i] == strasse) {
 			this->GekaufteStrassen.erase(this->GekaufteStrassen.begin() + i);
 			this->erhalte(int(streetpricewith2(strasse, spielerListe) / 2)); // Geld für Strasse zurückerhalten (aber nur die Hälfte des Preises)
-			cout << "Die Strasse " << LUT(strasse) << " wurde verkauft.\n";
+			Nachricht = "Die Strasse " + LUT(strasse) + " wurde verkauft.";
 			return;
 		}
 	}
-	cout << "Sie besitzen nicht die Strasse " << LUT(strasse) << ".\n";
+	Nachricht = "Sie besitzen nicht die Strasse " + LUT(strasse) + ".";
 }
 bool TPlayer::besitztStrasse(int strasse) {
 	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
@@ -209,15 +209,15 @@ int TPlayer::WieVieleHaueserAufSet(int feld) {
 	return count;
 }
 
-int TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
+int TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, string& Nachricht) {
 	// Prüfen ob Käufer genug Budget hat
 	if (this->getBudget() < angebot) {
-		cout << "Du hast nicht genug Budget fuer dieses Angebot." << endl;
+		Nachricht = "Du hast nicht genug Budget fuer dieses Angebot.";
 		return -1;
 	}
 	// Prüfen ob Käufer die Straße bereits besitzt
 	if (this->besitztStrasse(feld)) {
-		cout << "Du besitzt diese Strasse bereits!" << endl;
+		Nachricht = "Du besitzt diese Strasse bereits!";
 		return -1;
 	}
 	// Verkäufer suchen
@@ -227,8 +227,7 @@ int TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 
 			// Prüfen ob in der Farbgruppe Häuser stehen
 			if (!istStrassenSetHandelbar(feld, spielerListe)) {
-				cout << "Handel abgelehnt: In der Farbgruppe von " << LUT(feld)
-					<< " stehen noch Haeuser." << endl;
+				Nachricht = "Handel abgelehnt: In der Farbgruppe von " + LUT(feld) + " stehen noch Haeuser.";
 				return -1;
 			}
 
@@ -239,22 +238,22 @@ int TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot) {
 			verkaufer->erhalte(angebot);
 
 			// Straße übertragen
-			verkaufer->deleteStrasse(feld);
-			this->addStrasse(feld);
+			verkaufer->deleteStrasse(feld, Nachricht);
+			this->addStrasse(feld, Nachricht);
 
-			cout << "Handel erfolgreich: Strasse " << LUT(feld) << " von Spieler " << verkaufer->getID() << " gekauft fuer " << angebot << ".\n";
+			Nachricht = "Handel erfolgreich: Strasse " + LUT(feld) + " von Spieler " + to_string(verkaufer->getID()) + " gekauft fuer " + to_string(angebot) + ".";
 			return verkaufer->getID();
 		}
 	}
 
-	cout << "Kein Verkaeufer fuer diese Strasse gefunden." << endl;
+	Nachricht = "Kein Verkaeufer fuer diese Strasse gefunden.";
 	return -1;
 }
 
-int TPlayer::baueHaus(int strasse, vector<TPlayer*>& spielerListe) {
-	// Pr�fen ob das Feld eine Stra�e ist
+int TPlayer::baueHaus(int strasse, vector<TPlayer*>& spielerListe, string& Nachricht) {
+	// Prüfen ob das Feld eine Straße ist
 	if (_boardarr[strasse].Type != TypeStreet) {
-		cout << "Feld " << LUT(strasse) << " ist keine Strasse und kann nicht gekauft werden.\n";
+		Nachricht = "Feld " + LUT(strasse) + " ist keine Strasse und kann nicht gekauft werden.";
 		return -1;
 	}
 	if (this->WieVieleHaueserAufSet(strasse) < 5) {
@@ -265,30 +264,31 @@ int TPlayer::baueHaus(int strasse, vector<TPlayer*>& spielerListe) {
 				this->GebauteHaeuser.push_back(strasse);
 				this->GebauteHaeuserSpeicherFormat[strasse]++;
 				this->bezahle(housepricewith2(strasse, spielerListe));
-				cout << "Ein Haus wurde auf " << LUT(strasse) << " gebaut.\n";
+				Nachricht = "Ein Haus wurde auf " + LUT(strasse) + " gebaut.";
 				return 1;
 			}
 			else {
-				cout << "Sie haben nicht genug Geld, um ein Haus auf " << LUT(strasse) << " zu bauen.\n";
+				Nachricht = "Sie haben nicht genug Geld, um ein Haus auf " + LUT(strasse) + " zu bauen.";
 				return -1;
 			}
 		}
 		else {
-			cout << "Sie besitzen nicht das Set von der " << LUT(strasse) << ".\n";
+			Nachricht = "Sie besitzen nicht das Set von der " + LUT(strasse) + ".";
 			return -1;
 		}
 	}
 	else {
-		cout << "Sie koennen kein weiteres Haus auf " << LUT(strasse) << " bauen, da bereits 5 Haeuser vorhanden sind.\n";
+		Nachricht = "Sie koennen kein weiteres Haus auf " + LUT(strasse) + " bauen, da bereits 5 Haeuser vorhanden sind.";
 		return -1;
 	}
 }
-void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe) {
+void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe, string& Nachricht) {
 	if (anz < 0 || anz >= 6) {
+		Nachricht = "Ungueltige Anzahl von Haeusern.";
 		return; // Ungültige Anzahl von Häusern
 	}
 	if (anz == 0) {
-		this->verkaufeStrasse(strasse, spielerListe);
+		this->verkaufeStrasse(strasse, spielerListe, Nachricht);
 		return;
 	}
 	int verkauft = 0;
@@ -309,10 +309,10 @@ void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe)
 	}
 
 	if (verkauft == 0) {
-		cout << "Sie besitzen kein Haus auf " << LUT(strasse) << ".\n";
+		Nachricht = "Sie besitzen kein Haus auf " + LUT(strasse) + ".";
 	}
 	else {
-		cout << verkauft << " Haeuser auf " << LUT(strasse) << " wurden verkauft.\n";
+		Nachricht = to_string(verkauft) + " Haeuser auf " + LUT(strasse) + " wurden verkauft.";
 	}
 }
 int TPlayer::anzahlHaeuserAuf(int strasse) {
@@ -356,6 +356,9 @@ int TPlayer::getGebObjAnz() {
 
 vector<int> TPlayer::getGekObjVector() {
 	return this->GekaufteStrassen;
+}
+vector<int> TPlayer::getHaueser() {
+	return this->GebauteHaeuserSpeicherFormat;
 }
 vector<int> TPlayer::getGebObjVector() {
 	return this->GebauteHaeuser;
@@ -413,15 +416,15 @@ int TPlayer::handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& p, int& ta
 }
 
 // player to cpu 
-bool TPlayer::acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlayer*>& spielerListe, Map& map) {
+bool TPlayer::acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlayer*>& spielerListe, Map& map, string& Nachricht) {
 	int propPrice = streetpricewith2(spaceIndex, spielerListe);
 	int acceptThresholdPercent = 90 + (std::rand() % 21);// min of 90% to max of 110% 
 	int bud = getBudget();
 	if ((offer >= propPrice * (acceptThresholdPercent / 100.0)) && (spielerListe[kaufer]->getBudget() - offer >= 0)) {
 		//std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
 		this->erhalte(offer);
-		this->deleteStrasse(spaceIndex);
-		spielerListe[kaufer]->addStrasse(spaceIndex);
+		this->deleteStrasse(spaceIndex, Nachricht);
+		spielerListe[kaufer]->addStrasse(spaceIndex, Nachricht);
 		spielerListe[kaufer]->bezahle(offer);
 		return true;
 	}
@@ -452,7 +455,7 @@ bool TPlayer::tryBuyStreetcpu(Map& map) {
 }
 
 //buildhouse for cpu
-bool TPlayer::tryBuildHousecpu(vector<TPlayer*>& player, Map& map) {
+bool TPlayer::tryBuildHousecpu(vector<TPlayer*>& player, Map& map, string& Nachricht) {
 	int myID = getID();
 	std::vector<int> myProperties = player[myID]->getGekObjVector();
  	std::vector<int> builtobj = player[myID]->getGebObjVector();
@@ -491,7 +494,7 @@ bool TPlayer::tryBuildHousecpu(vector<TPlayer*>& player, Map& map) {
 
 		if (price <= maxPrice) {
 			bezahle(price);
-			player[myID]->baueHaus(bestProp, player);
+			player[myID]->baueHaus(bestProp, player, Nachricht);
 			built = true;
 			break;
 		}
@@ -526,7 +529,7 @@ bool TPlayer::takebahn(vector<TPlayer*>& player, int costofbahn, int bahnpos,int
 	return false;
 }
 //cpu verkauf haus 
-void TPlayer::cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& map) {
+void TPlayer::cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& map, string& Nachricht) {
 	int benoetigt = 100 + (rand() % 200);
 	if (getBudget() >= benoetigt) return;
 	//cout << "CPU [" << getName() << "] hat nur $" << getBudget() << " und braucht $" << benoetigt << ".\n";
@@ -547,7 +550,7 @@ void TPlayer::cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& ma
 	for (int id : meineStrassen) {
 		if (besitztStrasse(id)) {
 			if (getBudget() >= benoetigt) return;
-			verkaufeStrasse(id, spielerListe);
+			verkaufeStrasse(id, spielerListe, Nachricht);
 			//cout << "→ Verkaufe Haus auf \"" << map.getName(id)<< "\" für $" << map.getPropertyPrice(id) << ".\n";
 		}
 	}
