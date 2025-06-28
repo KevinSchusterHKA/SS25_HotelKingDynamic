@@ -212,6 +212,7 @@ bool load_game(const std::string& filename, GameState& state) {
             std::istringstream iss(line.substr(6));
             std::string token;
             auto& built = state.players.back().builtObjects;
+
             built.clear();
             // Lese bis zu 40 Einträge ein
             for (int i = 0; i < 40; ++i) 

@@ -59,8 +59,10 @@ void TServer::UnitTest() {
     std::vector<TPlayer*> playerRefs;
     vector<int> WurfelWert;
     vector<int> IndexReihenfolge(4, 0);
+    string SpielerNachricht;
     int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1, ReferencePlayer = 0;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt = FALSE, GameFinished = FALSE, UpdateSpielfeld = FALSE, Handel_once_cpu = false, cpudone = false, gleicheWuerfe=true, cpu_train =FALSE;
+    bool DurchKaufen = TRUE;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
@@ -134,6 +136,7 @@ void TServer::UnitTest() {
             
             player[IndexReihenfolge[MomentanerSpieler]].decGefaengnisRunden();
             AnzahlRunden++;
+
             ConfigEngineLogging.newRound();
             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
             HatGewuerfelt = false;
@@ -142,25 +145,26 @@ void TServer::UnitTest() {
                 ConfigEngineLogging.newRound();
                 MomentanerSpieler = 0;
             }
+            switch (IndexReihenfolge[MomentanerSpieler])
+            {
+            case 0:
+                MomentanerSpielerFarbe = Farbe::BG_Rot;
+                break;
+            case 1:
+                MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                break;
+            case 2:
+                MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                break;
+            case 3:
+                MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                break;
+            default:
+                break;
+            }
         }  
 
-        switch (IndexReihenfolge[MomentanerSpieler])
-        {
-        case 0:
-            MomentanerSpielerFarbe = Farbe::BG_Rot;
-            break;
-        case 1:
-            MomentanerSpielerFarbe = Farbe::BG_Gruen;
-            break;
-        case 2:
-            MomentanerSpielerFarbe = Farbe::BG_Gelb;
-            break;
-        case 3:
-            MomentanerSpielerFarbe = Farbe::BG_Cyan;
-            break;
-        default:
-            break;
-        }
+        
         
 
         EingabeCh = MenueOptionen::Reset;
@@ -268,11 +272,14 @@ void TServer::UnitTest() {
                                 }
                             }
                         } while (gleicheWuerfe);
+						// Ausgabe der Würfelergebnisse
+						ControlEngine.SetConsoleFontSize(20);
                         for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
-                            ControlEngine.AusgabeNachricht("Spieler " + to_string(i + 1) + " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10 * i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
+                            ControlEngine.AusgabeNachricht(player[i].getName() +  " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10 * i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
                         }
-                        Sleep(2000);
+                        Sleep(4000);
                         system("cls");
+						ControlEngine.SetConsoleFontSize(8);
                         // Index-Vektor erstellen und richtig resizen!
                         IndexReihenfolge.resize(WurfelWert.size());
                         for (int i = 0; i < (int)WurfelWert.size(); ++i) {
@@ -284,7 +291,23 @@ void TServer::UnitTest() {
                             [&WurfelWert](int a, int b) {
                                 return WurfelWert[a] > WurfelWert[b];
                             });
-
+                        switch (IndexReihenfolge[MomentanerSpieler])
+                        {
+                        case 0:
+                            MomentanerSpielerFarbe = Farbe::BG_Rot;
+                            break;
+                        case 1:
+                            MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                            break;
+                        case 2:
+                            MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                            break;
+                        case 3:
+                            MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                            break;
+                        default:
+                            break;
+                        }
                       
                     }
              		if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
@@ -312,13 +335,12 @@ void TServer::UnitTest() {
                         if (!HatGewuerfelt)
                         {
                             //PLAYERENGINE
-                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler "+to_string(IndexReihenfolge[MomentanerSpieler]+1)+" : wirft den Wuerfel!";
+                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << player[IndexReihenfolge[MomentanerSpieler]].getName() + " : wirft den Wuerfel!";
 
                             player[IndexReihenfolge[MomentanerSpieler]].Wurfelmechn();
 
                             int wuerfel1 = player[IndexReihenfolge[MomentanerSpieler]].getWurfel(0);
                             int wuerfel2 = player[IndexReihenfolge[MomentanerSpieler]].getWurfel(1);
-
                             HatGewuerfelt = true;
 
                             ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe);  
@@ -333,68 +355,63 @@ void TServer::UnitTest() {
                                 player[IndexReihenfolge[MomentanerSpieler]].setPaschCounter(0);
                             }
                             if (player[IndexReihenfolge[MomentanerSpieler]].getPaschCounter() == 3) {
-                                MapEngine.setPlayer(IndexReihenfolge[MomentanerSpieler], 10, -1);//TODO:mit Map absprechen wegen dem Gefaegnis
+                                MapEngine.setPlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getPosition(), -1);//TODO:mit Map absprechen wegen dem Gefaegnis
                                 player[IndexReihenfolge[MomentanerSpieler]].setPaschCounter(0);
                                 break;
                             }
 
                             //MAPENGINE - Bug Bahnfahren erst nächste Runde nach Würfeln
-                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type == 1 && (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==HUMAN))
+                            //if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type == 1 && (player[IndexReihenfolge[MomentanerSpieler]].getHuman()==HUMAN))
+                            //{
+                            //    //MenueAuswahl = Menues::BahnFahren;
+                            //}
+                            //else {
+                            player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], wuerfel1 + wuerfel2, 0));
+                            MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].Msg == "Du erhaeltst eine Freiheitskarte") {
+								player[IndexReihenfolge[MomentanerSpieler]].setGefaengnisFreiKarte(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() + 1);
+                            }
+                            if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                             {
-                                MenueAuswahl = Menues::BahnFahren;
+                                player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                             }
-                            else {
-                                player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], wuerfel1 + wuerfel2, 0));
-                                MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
-                                if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
-                                {
-                                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                                }
-                                if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type == 7)
-                                {
-                                    player[IndexReihenfolge[MomentanerSpieler]].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                                }
-                                if (MRobj[IndexReihenfolge[MomentanerSpieler]].Owner != -1)
-                                {
-                                    player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                                }
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type == 7)
+                            {
+                                player[IndexReihenfolge[MomentanerSpieler]].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
+                            }
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].Owner != -1)
+                            {
+                                player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
+                            }
 
-                                //Logger verschiedene Felder
-                                switch (MRobj[IndexReihenfolge[MomentanerSpieler]].Type) {
-                                case _type::TypeStreet: case _type::TypeStation: case _type::TypePark:
+                            //Logger verschiedene Felder
+                            switch (MRobj[IndexReihenfolge[MomentanerSpieler]].Type) {
+                            case _type::TypeStreet: case _type::TypeStation: case _type::TypePark:
+                                ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
+                                break;
+
+                            case _type::TypeChance:
+                                ConfigEngineLogging.onEventField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);
+                                break;
+
+                            case _type::TypeChest:
+                                ConfigEngineLogging.onChestField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);
+                                break;
+
+                            case _type::TypePrison:
+                                if (!player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis())
+                                {
                                     ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
-                                    break;
-                                    
-                                case _type::TypeChance: 
-                                    ConfigEngineLogging.onEventField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);  
-                                    break;
-
-                                case _type::TypeChest:
-                                    ConfigEngineLogging.onChestField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);  
-                                    break;
-
-                                case _type::TypePrison:
-                                    if (!player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis())
-                                    {
-                                        ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
-                                    }
-                                    break;
-
-                                case _type::TypeTax: 
-                                    ConfigEngineLogging.payTax();
-                                    break;
-                                    
-                                
-
                                 }
+                                break;
 
-                                
-                                
-
-                                
-                                
-                              
+                            case _type::TypeTax:
+                                ConfigEngineLogging.payTax();
+                                break;
                             }
+                            //}
+                            DurchKaufen = FALSE;
+
                         }
                         else {
                             std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(IndexReihenfolge[MomentanerSpieler] + 1) + " hat schon gewuerfelt!";
@@ -418,7 +435,7 @@ void TServer::UnitTest() {
 
                                     int price = MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget());
                                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
-                                    player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
+                                    player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition(), SpielerNachricht);
 
                                     if (price != -1) {
                                         ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
@@ -429,12 +446,13 @@ void TServer::UnitTest() {
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                     {
-                 
+						MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler] );
                         //player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
                         //player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
                         //ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
 
                         // Prüfen ob die Straße schon jemand besitzt
+                        DurchKaufen = TRUE;
                         bool istFrei = true;
 
                         for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++) {
@@ -444,17 +462,18 @@ void TServer::UnitTest() {
                             }
                         }
 
-                        // Wenn Straße frei ist: kaufen
-                        if (istFrei) {
+                        // Wenn Straße frei ist und genug Geld hat: kaufen
+                        if (istFrei && MRobj[IndexReihenfolge[MomentanerSpieler]].Type==TypeStreet) {
                             if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1) {
                                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
                                 if (player[IndexReihenfolge[MomentanerSpieler]].tryBuyStreetcpu(MapEngine))
                                 {
 
                                     int price = MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-                                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
-                                    player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
-
+                                    if(player[IndexReihenfolge[MomentanerSpieler]].getBudget() - price >= 0 && price != -1) {
+                                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
+                                        player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition(), SpielerNachricht);
+                                    }
                                     if (price != -1) {
                                         ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
                                     };
@@ -462,15 +481,19 @@ void TServer::UnitTest() {
                             }
                             else {
                                 int price = MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-
-                                player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
-                                player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition());
+                                if (player[IndexReihenfolge[MomentanerSpieler]].getBudget() - price >= 0 && price != -1) {
+                                    player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
+                                    player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition(), SpielerNachricht);
+                                }
                                 
                                 if (price != -1) {
                                     ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
                                 }
                             }
-                            
+                        }
+                        if (MRobj[IndexReihenfolge[MomentanerSpieler]].Type==TypeStation)
+                        {
+							MenueAuswahl = Menues::BahnFahren;
                         }
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Bauen)
@@ -481,13 +504,12 @@ void TServer::UnitTest() {
                         space = StrasseBauen;
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(IndexReihenfolge[MomentanerSpieler], space, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
                         //player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
-                        int houseBuilt = player[IndexReihenfolge[MomentanerSpieler]].baueHausTEMP(StrasseBauen,playerRefs);
+                        int houseBuilt = player[IndexReihenfolge[MomentanerSpieler]].baueHaus(StrasseBauen,playerRefs, SpielerNachricht);
                         if (houseBuilt != -1) {
                             ConfigEngineLogging.playerBuildsBuilding(houseBuilt); 
                         }
                         StrasseBauen = -1;
                     }
-                   
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
                         std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::endl;
@@ -502,7 +524,7 @@ void TServer::UnitTest() {
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
                         if (target == CPU1) {
-                            if (player[ID].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler],playerRefs, MapEngine))
+                            if (player[ID].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler],playerRefs, MapEngine, SpielerNachricht))
                             {
 
                             }
@@ -529,14 +551,19 @@ void TServer::UnitTest() {
                                 }
                                 if (player[targetPlayerOut].getHuman() == CPU1)
                                 {
-                                    player[targetPlayerOut].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler], playerRefs, MapEngine);
+                                    player[targetPlayerOut].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler], playerRefs, MapEngine, SpielerNachricht);
 
                                 }
                                 else {
                                     ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + player[targetPlayerOut].getID()), "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
                                     if (option == 0)
                                     {
-                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot);
+                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, SpielerNachricht);
+                                    }
+                                    else
+                                    {
+                                        ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
+                                        Sleep(2000);
                                     }
                                 }
                             }
@@ -544,8 +571,8 @@ void TServer::UnitTest() {
 
                         }
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                        bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(playerRefs, MapEngine);//buildhouse
-                        player[IndexReihenfolge[MomentanerSpieler]].cpuHausOderStrassenVerkauf(playerRefs, MapEngine);//verkauf haus
+                        bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(playerRefs, MapEngine, SpielerNachricht);//buildhouse
+                        player[IndexReihenfolge[MomentanerSpieler]].cpuHausOderStrassenVerkauf(playerRefs, MapEngine, SpielerNachricht);//verkauf haus
                         cpudone = true;
                     
                     if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(),AnzahlCpuGegner+AnzahlSpieler,MapEngine))
@@ -610,15 +637,41 @@ void TServer::UnitTest() {
                         MomentanerSpieler++;
                         if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
                             ConfigEngineLogging.newRound();
-                            MomentanerSpieler = 0;
+
+                            ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                            MomentanerSpieler++;
+                            if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
+                                ConfigEngineLogging.newRound();
+                                MomentanerSpieler = 0;
+                            }
+                            switch (IndexReihenfolge[MomentanerSpieler])
+                            {
+                            case 0:
+                                MomentanerSpielerFarbe = Farbe::BG_Rot;
+                                break;
+                            case 1:
+                                MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                                break;
+                            case 2:
+                                MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                                break;
+                            case 3:
+                                MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                                break;
+                            default:
+                                break;
+                            }
+                            cpudone = false;
+
                         }
                         cpudone = false;
                     }
+
                     }
                        if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                            int Strasse = -1,Gebaude = -1;
                            ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
-                           player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs);
+                           player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs, SpielerNachricht);
                            MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
                            //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
                            system("cls");
@@ -643,11 +696,27 @@ void TServer::UnitTest() {
                                 MomentanerSpieler = 0;
                             }
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
-                            
+                            switch (IndexReihenfolge[MomentanerSpieler])
+                            {
+                            case 0:
+                                MomentanerSpielerFarbe = Farbe::BG_Rot;
+                                break;
+                            case 1:
+                                MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                                break;
+                            case 2:
+                                MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                                break;
+                            case 3:
+                                MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                                break;
+                            default:
+                                break;
+                            }
                         }
                         else
                         {
-						    std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spieler " + to_string(IndexReihenfolge[MomentanerSpieler] + 1) + " hat noch nicht gewuerfelt!" << std::endl;
+						    std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << player[IndexReihenfolge[MomentanerSpieler]].getName() + " hat noch nicht gewuerfelt!" << std::endl;
                         }
                         switch (IndexReihenfolge[MomentanerSpieler])
                         {
@@ -689,8 +758,8 @@ void TServer::UnitTest() {
                             for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 PlTemp.budget = player[i].getBudget();
-                                PlTemp.builtObjects = player[i].getGebObjVector(); // TODO: getGebObjVector Rückgabewert 40 std::vector  mit nuller aufgefüllt außer an den Positionen der Straßen Anzahl Gebaute Gebaude. kontrollieren
-                                //PlTemp.hasFreeJailCard = player[i].GetFreeJailCard();
+                                PlTemp.builtObjects = player[i].getHaueser();               // TODO: getGebObjVector Rückgabewert 40 std::vector  mit nuller aufgefüllt außer an den Positionen der Straßen Anzahl Gebaute Gebaude. kontrollieren
+                                PlTemp.hasFreeJailCard = player[i].getGefaengnisFreiKarte();
                                 PlTemp.inJail = player[i].imGefaengnis();
                                 PlTemp.name = player[i].getName();
                                 PlTemp.ownedObjects = player[i].getGekObjVector();
@@ -727,24 +796,27 @@ void TServer::UnitTest() {
 							IndexReihenfolge = GsTemp.diceOrder;
                             MomentanerSpieler = GsTemp.currentPlayerIndex;
                             playerRefs.clear();
-
+                            SpielerNamen.clear();
                             for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
-                                TPlayer temp(   IndexReihenfolge[i], 
-                                                GsTemp.players[IndexReihenfolge[i]].name, 
-                                                GsTemp.players[IndexReihenfolge[i]].budget, 
-                                                GsTemp.players[IndexReihenfolge[i]].position, 
-                                                GsTemp.players[IndexReihenfolge[i]].inJail, 
-                                                GsTemp.players[IndexReihenfolge[i]].inJail,
-                                                GsTemp.players[IndexReihenfolge[i]].ownedObjects, 
-                                                GsTemp.players[IndexReihenfolge[i]].builtObjects,
-                                                SpeicherZuInternFormat(GsTemp.players[IndexReihenfolge[i]].builtObjects));
-								temp.setHuman(GsTemp.players[IndexReihenfolge[i]].isHuman);
-                                player[IndexReihenfolge[i]] = temp;
+                                TPlayer temp(   i, 
+                                                GsTemp.players[i].name, 
+                                                GsTemp.players[i].budget, 
+                                                GsTemp.players[i].position, 
+                                                GsTemp.players[i].inJail, 
+                                                GsTemp.players[i].inJail,
+                                                GsTemp.players[i].ownedObjects, 
+                                                GsTemp.players[i].builtObjects,
+                                                SpeicherZuInternFormat(GsTemp.players[i].builtObjects));
+								temp.setHuman(GsTemp.players[i].isHuman);
+                                temp.setGefaengnisFreiKarte(GsTemp.players[i].hasFreeJailCard);
+								SpielerNamen.push_back(GsTemp.players[i].name);
+                                player[i] = temp;
 								playerRefs.push_back(&player[i]);
                             }
                             MapEngine = Map();
                             MapEngine.loadGame(GsTemp.players);
+							MomentanerSpielerFarbe = static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + IndexReihenfolge[MomentanerSpieler]);
                             RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                         }
                         else
@@ -790,54 +862,55 @@ void TServer::UnitTest() {
                     
                     if (option == 0) //Akzeptieren
                     {
-                        ReferencePlayer = player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot);
+                        ReferencePlayer = player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, SpielerNachricht);
                     }
                     else
                     {
-						ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 20, y / 2 - 1, MomentanerSpielerFarbe);
+						ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
+                        Sleep(2000);
                     }
 					break;
                 case Menues::BahnFahren:
-                    //TODO:Position spieler wird beim Bahnhof nicht richtig aktualisiert
+                    
                     MenueAuswahl = Menues::Spieler;
                     UpdateSpielfeld = TRUE;
-                    std::cout << player[IndexReihenfolge[MomentanerSpieler]].getPosition();
+                    //std::cout << player[IndexReihenfolge[MomentanerSpieler]].getPosition();
 
                     system("cls");
 
                     if (!option)
                     {
-                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
+                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], 0, 1));
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition() - player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl()) {
+                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
                             //KIT Campus|-> Durlach BF
                         case 5:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25  );
                             ConfigEngineLogging.usesTrain("KIT Campus", "Durlach BF");
                             break;
                             //Zuendhuetle|-> Entenfang
                         case 12:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28 );
                             ConfigEngineLogging.usesTrain("Zuendhuetle", "Entenfang");
                             break;
                             //Europaplatz|-> Hauptbahnhof
                         case 15:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35  );
                             ConfigEngineLogging.usesTrain("Europaplatz", "Hauptbahnhof");
                             break;
                             //Durlach BF|-> KIT Campus
                         case 25:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5  );
                             ConfigEngineLogging.usesTrain("Durlach BF", "KIT Campus");
                             break;
                             //Entenfang|-> Zuendhuetle
                         case 28:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12 );
                             ConfigEngineLogging.usesTrain("Entenfang", "Zuendhuetle");
                             break;
                             //Hauptbahnhof | ->Europaplatz
                         case 35:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15 );
                             ConfigEngineLogging.usesTrain("Hauptbahnhof", "Europaplatz");
                             break;
 
@@ -845,7 +918,7 @@ void TServer::UnitTest() {
                         
                     }
                     else {
-                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 0));
+                        //player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 0));
                     }
 
                     MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
@@ -861,6 +934,7 @@ void TServer::UnitTest() {
                     {
                         player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                     }
+                    DurchKaufen = FALSE;
 
                     ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                     break;
@@ -911,9 +985,26 @@ void TServer::UnitTest() {
                     ConfigEngineLogging.newRound();
                     MomentanerSpieler = 0;
                 }
+                switch (IndexReihenfolge[MomentanerSpieler])
+                {
+                case 0:
+                    MomentanerSpielerFarbe = Farbe::BG_Rot;
+                    break;
+                case 1:
+                    MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                    break;
+                case 2:
+                    MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                    break;
+                case 3:
+                    MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                    break;
+                default:
+                    break;
+                }
             }
 
-            while (MRobj[IndexReihenfolge[MomentanerSpieler]].flag)
+            while (MRobj[IndexReihenfolge[MomentanerSpieler]].flag) 
             {
                 MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
                 if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
@@ -925,13 +1016,25 @@ void TServer::UnitTest() {
                     player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                 }
             }
+            if (!DurchKaufen)
+            {
+                if (!(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg == ""))
+                {
+                    ControlEngine.AusgabeNachricht(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg,
+                        x / 2 - MRobj[IndexReihenfolge[MomentanerSpieler]].Msg.size() / 2,
+                        y / 2,
+                        MomentanerSpielerFarbe);
+                    Sleep(4000);
+                }
+                DurchKaufen = TRUE;
+            }
             ControlEngine.AusgabeFeld(MapEngine.toStr(), x / 2 - 110, y / 2 - 44);
             std::vector<std::vector<std::string>> gekObjNamen;
             std::vector<std::vector<std::string>> gebObjNamen;
             std::vector<int> tempBudgets;
             std::vector<int> gekObjAnz;
             std::vector<int> gebObjAnz;               
-            std::cout << MRobj[IndexReihenfolge[MomentanerSpieler]].Msg << "\n";
+            
           
             for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
             {
@@ -955,6 +1058,14 @@ void TServer::UnitTest() {
 
         if (player[IndexReihenfolge[MomentanerSpieler]].getBudget() < 0)
         {
+            while (player[IndexReihenfolge[MomentanerSpieler]].getGekObjAnz() + player[IndexReihenfolge[MomentanerSpieler]].getGebObjAnz() > 0 && player[IndexReihenfolge[MomentanerSpieler]].getBudget() < 0) {
+                int Strasse = -1, Gebaude = -1;
+                ControlEngine.AusgabeVerkaufen(option, Strasse, Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
+                player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs, SpielerNachricht);
+                MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
+                //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
+                system("cls");
+            }
             GameFinished = TRUE;
             Spiellaueft = FALSE;
         }
