@@ -116,4 +116,4 @@ int streetpricewith2(int position, vector<TPlayer*>& spielerListe);
 int housepricewith2(int position, vector<TPlayer*>& spielerListe);
 vector<int> SpeicherZuInternFormat(vector<int> gebauteHaueserSpeicher);
 int WemGehoertStrasse(int feld, vector<TPlayer*>& spielerListe);
-int check_bahn_pos(int playerIndex, int pos, int dice_roll);
+int check_bahn_pos(int pos);
