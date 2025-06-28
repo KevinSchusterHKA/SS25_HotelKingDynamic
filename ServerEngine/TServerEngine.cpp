@@ -291,7 +291,23 @@ void TServer::UnitTest() {
                             [&WurfelWert](int a, int b) {
                                 return WurfelWert[a] > WurfelWert[b];
                             });
-
+                        switch (IndexReihenfolge[MomentanerSpieler])
+                        {
+                        case 0:
+                            MomentanerSpielerFarbe = Farbe::BG_Rot;
+                            break;
+                        case 1:
+                            MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                            break;
+                        case 2:
+                            MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                            break;
+                        case 3:
+                            MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                            break;
+                        default:
+                            break;
+                        }
                       
                     }
              		if (option == MenueOptionen::Highscore) { //HIGHSCORE ANZEIGEN
@@ -543,7 +559,7 @@ void TServer::UnitTest() {
                                     }
                                     else
                                     {
-                                        ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 20, y / 2 - 1, MomentanerSpielerFarbe);
+                                        ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
                                         Sleep(2000);
                                     }
                                 }
@@ -669,7 +685,7 @@ void TServer::UnitTest() {
                         }
                         else
                         {
-						    std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << "Spieler " + to_string(IndexReihenfolge[MomentanerSpieler] + 1) + " hat noch nicht gewuerfelt!" << std::endl;
+						    std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << player[IndexReihenfolge[MomentanerSpieler]].getName() + " hat noch nicht gewuerfelt!" << std::endl;
                         }
                         switch (IndexReihenfolge[MomentanerSpieler])
                         {
@@ -749,24 +765,26 @@ void TServer::UnitTest() {
 							IndexReihenfolge = GsTemp.diceOrder;
                             MomentanerSpieler = GsTemp.currentPlayerIndex;
                             playerRefs.clear();
-
+                            SpielerNamen.clear();
                             for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
-                                TPlayer temp(   IndexReihenfolge[i], 
-                                                GsTemp.players[IndexReihenfolge[i]].name, 
-                                                GsTemp.players[IndexReihenfolge[i]].budget, 
-                                                GsTemp.players[IndexReihenfolge[i]].position, 
-                                                GsTemp.players[IndexReihenfolge[i]].inJail, 
-                                                GsTemp.players[IndexReihenfolge[i]].inJail,
-                                                GsTemp.players[IndexReihenfolge[i]].ownedObjects, 
-                                                GsTemp.players[IndexReihenfolge[i]].builtObjects,
-                                                SpeicherZuInternFormat(GsTemp.players[IndexReihenfolge[i]].builtObjects));
-								temp.setHuman(GsTemp.players[IndexReihenfolge[i]].isHuman);
-                                player[IndexReihenfolge[i]] = temp;
+                                TPlayer temp(   i, 
+                                                GsTemp.players[i].name, 
+                                                GsTemp.players[i].budget, 
+                                                GsTemp.players[i].position, 
+                                                GsTemp.players[i].inJail, 
+                                                GsTemp.players[i].inJail,
+                                                GsTemp.players[i].ownedObjects, 
+                                                GsTemp.players[i].builtObjects,
+                                                SpeicherZuInternFormat(GsTemp.players[i].builtObjects));
+								temp.setHuman(GsTemp.players[i].isHuman);
+								SpielerNamen.push_back(GsTemp.players[i].name);
+                                player[i] = temp;
 								playerRefs.push_back(&player[i]);
                             }
                             MapEngine = Map();
                             MapEngine.loadGame(GsTemp.players);
+							MomentanerSpielerFarbe = static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + IndexReihenfolge[MomentanerSpieler]);
                             RundeVorhanden = TRUE; //Wenn das Spiel korrekt geladen wird
                         }
                         else
@@ -816,7 +834,7 @@ void TServer::UnitTest() {
                     }
                     else
                     {
-						ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 20, y / 2 - 1, MomentanerSpielerFarbe);
+						ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
                         Sleep(2000);
                     }
 					break;

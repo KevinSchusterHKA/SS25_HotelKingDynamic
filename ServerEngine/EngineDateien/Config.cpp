@@ -212,13 +212,9 @@ bool load_game(const std::string& filename, GameState& state) {
             std::istringstream iss(line.substr(6));
             std::string token;
             auto& built = state.players.back().builtObjects;
-            while (std::getline(iss, token, ',')) 
+            while (std::getline(iss, token, ','))
             {
-                if (std::stoi(token)!=0)
-                {
-                    built.at(temp) = std::stoi(token)+1;
-                }
-                temp++;
+                if (!token.empty()) built.push_back(std::stoi(token));
             }
         }
     }
