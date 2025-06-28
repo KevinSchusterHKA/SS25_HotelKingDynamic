@@ -324,7 +324,9 @@ void TServer::UnitTest() {
 
                             int wuerfel1 = player[IndexReihenfolge[MomentanerSpieler]].getWurfel(0);
                             int wuerfel2 = player[IndexReihenfolge[MomentanerSpieler]].getWurfel(1);
-
+                            wuerfel1 = 2;
+							wuerfel2 = 3;   
+							player[IndexReihenfolge[MomentanerSpieler]].setAugenzahl(wuerfel1+wuerfel2);
                             HatGewuerfelt = true;
 
                             ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe);  
@@ -830,37 +832,37 @@ void TServer::UnitTest() {
 
                     if (!option)
                     {
-                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
+                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], 0, 1));
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition() - player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl()) {
+                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
                             //KIT Campus|-> Durlach BF
                         case 5:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25  );
                             ConfigEngineLogging.usesTrain("KIT Campus", "Durlach BF");
                             break;
                             //Zuendhuetle|-> Entenfang
                         case 12:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28 );
                             ConfigEngineLogging.usesTrain("Zuendhuetle", "Entenfang");
                             break;
                             //Europaplatz|-> Hauptbahnhof
                         case 15:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35  );
                             ConfigEngineLogging.usesTrain("Europaplatz", "Hauptbahnhof");
                             break;
                             //Durlach BF|-> KIT Campus
                         case 25:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5  );
                             ConfigEngineLogging.usesTrain("Durlach BF", "KIT Campus");
                             break;
                             //Entenfang|-> Zuendhuetle
                         case 28:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12 );
                             ConfigEngineLogging.usesTrain("Entenfang", "Zuendhuetle");
                             break;
                             //Hauptbahnhof | ->Europaplatz
                         case 35:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15 );
                             ConfigEngineLogging.usesTrain("Hauptbahnhof", "Europaplatz");
                             break;
 
