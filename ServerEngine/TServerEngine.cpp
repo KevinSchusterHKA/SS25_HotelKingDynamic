@@ -621,44 +621,44 @@ void TServer::UnitTest() {
                         }
                         cpudone = true;
                     
-                    if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(),AnzahlCpuGegner+AnzahlSpieler,MapEngine))
+                    if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(),LUT_nextBahn(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), AnzahlCpuGegner + AnzahlSpieler, MapEngine))
                     {
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
-                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition() - player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl()) {
+                        switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
                             //KIT Campus|-> Durlach BF
                         case 5:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25);
                             cpudone = true;
                             ConfigEngineLogging.usesTrain("KIT Campus", "Durlach BF");
                             break;
                             //Zuendhuetle|-> Entenfang
                         case 12:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28);
                             cpudone = true;
                             ConfigEngineLogging.usesTrain("Zuendhuetle", "Entenfang");
                             break;
                             //Europaplatz|-> Hauptbahnhof
                         case 15:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35 );
                             cpudone = true;
                             ConfigEngineLogging.usesTrain("Europaplatz", "Hauptbahnhof");
                             break;
                             //Durlach BF|-> KIT Campus
                         case 25:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5 );
                             cpudone = true;
                             ConfigEngineLogging.usesTrain("Durlach BF", "KIT Campus");
                             break;
                             //Entenfang|-> Zuendhuetle
                         case 28:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12);
                             cpudone = true;
                             ConfigEngineLogging.usesTrain("Entenfang", "Zuendhuetle");
                             break;
                             //Hauptbahnhof | ->Europaplatz
                         case 35:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15 + player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl());
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15);
                             cpudone = true;
                             ConfigEngineLogging.usesTrain("Hauptbahnhof", "Europaplatz");
                             break;
@@ -669,7 +669,16 @@ void TServer::UnitTest() {
                     else {
                         cpudone = true;
                     }
-                    
+                        if (player[IndexReihenfolge[MomentanerSpieler]].getPosition() == 30)
+                        {
+                            if (!(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() > 0)) {
+                                player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis();
+                            }
+                            else
+                            {
+                                player[IndexReihenfolge[MomentanerSpieler]].setGefaengnisFreiKarte(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() - 1);
+                            }
+                        }
                         if (HatGewuerfelt&& cpudone)
                         {
 
