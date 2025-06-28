@@ -686,6 +686,7 @@ void TServer::UnitTest() {
                             }
                             ConfigEngineLogging.newRound();
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+
                             cpudone = false;
                         }
                     }
