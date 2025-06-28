@@ -123,7 +123,7 @@ bool save_game(const std::string& filename, const GameState& state) {
     for (const auto& player : state.players) {
         
         file << "Player=" << player.name << "," << player.budget << "," << player.position
-            << "," << player.inJail << "," << player.hasFreeJailCard << "," << player.isHuman <<"\n";
+            << "," << player.inJail << "," << player.isHuman << "," << player.hasFreeJailCard <<"\n";
 
         // Gekaufte Objekte speichern
         file << "Owned=";
