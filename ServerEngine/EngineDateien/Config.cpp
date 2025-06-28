@@ -212,11 +212,23 @@ bool load_game(const std::string& filename, GameState& state) {
             std::istringstream iss(line.substr(6));
             std::string token;
             auto& built = state.players.back().builtObjects;
-            while (std::getline(iss, token, ',')) 
+            built.clear();
+            // Lese bis zu 40 Einträge ein
+            for (int i = 0; i < 40; ++i) 
             {
-                if (!token.empty()) built.push_back(std::stoi(token));
+            if (std::getline(iss, token, ','))
+            {
+            if (!token.empty())
+                built.push_back(std::stoi(token));
+            else
+                built.push_back(0); 
+        } 
+            else 
+            {
+            built.push_back(0); 
             }
-        }
+            }
+        
     }
     return true;
 }
