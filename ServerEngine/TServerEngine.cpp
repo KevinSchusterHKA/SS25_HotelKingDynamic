@@ -1,6 +1,7 @@
 #include "TServerEngine.h"
 #include <chrono>
 #include <thread>
+#define __AUSGABE_NACHRICHT_ZEIT 1000  
 TServer::TServer(){
 
 }
@@ -59,7 +60,7 @@ void TServer::UnitTest() {
     std::vector<TPlayer*> playerRefs;
     vector<int> WurfelWert;
     vector<int> IndexReihenfolge(4, 0);
-    string SpielerNachricht;
+    string SpielerNachricht="";
     int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1, ReferencePlayer = 0;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt = FALSE, GameFinished = FALSE, UpdateSpielfeld = FALSE, Handel_once_cpu = false, cpudone = false, gleicheWuerfe=true, cpu_train =FALSE;
     bool DurchKaufen = TRUE;
@@ -414,14 +415,14 @@ void TServer::UnitTest() {
 
                         }
                         else {
-                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Spieler " + to_string(IndexReihenfolge[MomentanerSpieler] + 1) + " hat schon gewuerfelt!";
+                            std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Du hast schon gewuerfelt!";
                         }
                     }
                     if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() ==CPU1 )//cpu buy street
                     {
                         bool istFrei = true;
 
-                        for (int i = 0; i < AnzahlSpieler; i++) {
+                        for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++) {
                             if (player[i].besitztStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition())) {
                                 istFrei = false;
                                 break;
@@ -432,11 +433,14 @@ void TServer::UnitTest() {
                             Sleep(500);
                                 if (player[IndexReihenfolge[MomentanerSpieler]].tryBuyStreetcpu(MapEngine))
                                 {
-
                                     int price = MapEngine.buyStreet(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getBudget());
                                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
                                     player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition(), SpielerNachricht);
-
+                                    if (SpielerNachricht != "") {
+                                        ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                                        Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                                        SpielerNachricht = "";
+                                    }
                                     if (price != -1) {
                                         ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
                                     }
@@ -473,6 +477,11 @@ void TServer::UnitTest() {
                                     if(player[IndexReihenfolge[MomentanerSpieler]].getBudget() - price >= 0 && price != -1) {
                                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
                                         player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition(), SpielerNachricht);
+                                        if (SpielerNachricht != "") {
+                                            ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                                            SpielerNachricht = "";
+                                        }
                                     }
                                     if (price != -1) {
                                         ConfigEngineLogging.playerBuysObject(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), price);
@@ -484,6 +493,11 @@ void TServer::UnitTest() {
                                 if (player[IndexReihenfolge[MomentanerSpieler]].getBudget() - price >= 0 && price != -1) {
                                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(price);
                                     player[IndexReihenfolge[MomentanerSpieler]].addStrasse(player[IndexReihenfolge[MomentanerSpieler]].getPosition(), SpielerNachricht);
+                                    if (SpielerNachricht != "") {
+                                        ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                                        Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                                        SpielerNachricht = "";
+                                    }
                                 }
                                 
                                 if (price != -1) {
@@ -505,6 +519,11 @@ void TServer::UnitTest() {
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(IndexReihenfolge[MomentanerSpieler], space, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
                         //player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.buyHouses(MomentanerSpieler, player[IndexReihenfolge[MomentanerSpieler]].getBudget()));
                         int houseBuilt = player[IndexReihenfolge[MomentanerSpieler]].baueHaus(StrasseBauen,playerRefs, SpielerNachricht);
+                        if (SpielerNachricht != "") {
+                            ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                            SpielerNachricht = "";
+                        }
                         if (houseBuilt != -1) {
                             ConfigEngineLogging.playerBuildsBuilding(houseBuilt); 
                         }
@@ -526,7 +545,12 @@ void TServer::UnitTest() {
                         if (target == CPU1) {
                             if (player[ID].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler],playerRefs, MapEngine, SpielerNachricht))
                             {
-
+                                
+                            }
+                            if (SpielerNachricht != "") {
+                                ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                                Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                                SpielerNachricht = "";
                             }
                         }
                         else {
@@ -551,19 +575,30 @@ void TServer::UnitTest() {
                                 }
                                 if (player[targetPlayerOut].getHuman() == CPU1)
                                 {
+                                    
                                     player[targetPlayerOut].acceptTradecpu(Strasse, Angebot, IndexReihenfolge[MomentanerSpieler], playerRefs, MapEngine, SpielerNachricht);
-
+                                    if (SpielerNachricht != "") {
+                                        ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                                        Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                                        SpielerNachricht = "";
+                                    }
                                 }
                                 else {
                                     ControlEngine.AusgabeJaNeinOptionCPU(option, x / 2 - 41, y / 2 - 9, static_cast<Farbe>(static_cast<int>(Farbe::BG_Rot) + player[targetPlayerOut].getID()), "Akzeptierst du den Handel Spieler wem die Strasse gehoert? (schreibe ja oder nein)", Strasse, Angebot);
                                     if (option == 0)
                                     {
+                                        
                                         player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, SpielerNachricht);
+                                        if (SpielerNachricht != "") {
+                                            ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                                            SpielerNachricht = "";
+                                        }
                                     }
                                     else
                                     {
                                         ControlEngine.AusgabeNachricht("Handel abgelehnt!", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
-                                        Sleep(2000);
+                                        Sleep(__AUSGABE_NACHRICHT_ZEIT);
                                     }
                                 }
                             }
@@ -572,7 +607,18 @@ void TServer::UnitTest() {
                         }
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                         bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(playerRefs, MapEngine, SpielerNachricht);//buildhouse
+                        if (SpielerNachricht != "") {
+                            ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                            SpielerNachricht = "";
+                        }
+                        
                         player[IndexReihenfolge[MomentanerSpieler]].cpuHausOderStrassenVerkauf(playerRefs, MapEngine, SpielerNachricht);//verkauf haus
+                        if (SpielerNachricht != "") {
+                            ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                            SpielerNachricht = "";
+                        }
                         cpudone = true;
                     
                     if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(),AnzahlCpuGegner+AnzahlSpieler,MapEngine))
@@ -624,31 +670,25 @@ void TServer::UnitTest() {
                         cpudone = true;
                     }
                     
-                    if (HatGewuerfelt&& cpudone)
-                    {
+                        if (HatGewuerfelt&& cpudone)
+                        {
 
-                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-                        ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-                        HatGewuerfelt = false;
-                        system("cls");
-                        ConfigEngineLogging.newRound();
-                        ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
-                        MomentanerSpieler++;
-                        if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
+                            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                            ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
+                            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                            HatGewuerfelt = false;
+                            system("cls");
                             ConfigEngineLogging.newRound();
-
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                             MomentanerSpieler++;
                             if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
-                                ConfigEngineLogging.newRound();
-                                MomentanerSpieler = 0;
+                                MomentanerSpieler=0;
                             }
+                            ConfigEngineLogging.newRound();
+                            ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
 
                             cpudone = false;
-
                         }
-                        cpudone = false;
                     }
                     switch (IndexReihenfolge[MomentanerSpieler])
                     {
@@ -667,12 +707,16 @@ void TServer::UnitTest() {
                     default:
                         break;
                     }
-                    }
                        if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                            int Strasse = -1,Gebaude = -1;
                            ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
                            player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs, SpielerNachricht);
                            MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
+                           if (SpielerNachricht != "") {
+                               ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                               Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                               SpielerNachricht = "";
+                           }
                            //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
                            system("cls");
                        }
@@ -696,23 +740,6 @@ void TServer::UnitTest() {
                                 MomentanerSpieler = 0;
                             }
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
-                            switch (IndexReihenfolge[MomentanerSpieler])
-                            {
-                            case 0:
-                                MomentanerSpielerFarbe = Farbe::BG_Rot;
-                                break;
-                            case 1:
-                                MomentanerSpielerFarbe = Farbe::BG_Gruen;
-                                break;
-                            case 2:
-                                MomentanerSpielerFarbe = Farbe::BG_Gelb;
-                                break;
-                            case 3:
-                                MomentanerSpielerFarbe = Farbe::BG_Cyan;
-                                break;
-                            default:
-                                break;
-                            }
                         }
                         else
                         {
@@ -863,6 +890,11 @@ void TServer::UnitTest() {
                     if (option == 0) //Akzeptieren
                     {
                         ReferencePlayer = player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, SpielerNachricht);
+                        if (SpielerNachricht != "") {
+                            ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                            SpielerNachricht = "";
+                        }
                     }
                     else
                     {
@@ -1062,6 +1094,11 @@ void TServer::UnitTest() {
                 int Strasse = -1, Gebaude = -1;
                 ControlEngine.AusgabeVerkaufen(option, Strasse, Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
                 player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs, SpielerNachricht);
+                if (SpielerNachricht != "") {
+                    ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                    Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                    SpielerNachricht = "";
+                }
                 MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
                 //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
                 system("cls");

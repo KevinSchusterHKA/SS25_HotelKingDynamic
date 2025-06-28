@@ -207,6 +207,7 @@ bool load_game(const std::string& filename, GameState& state) {
                 if (!token.empty()) owned.push_back(std::stoi(token));
             }
         }
+
             
         else if (line.find("Built=") == 0) {
             std::istringstream iss(line.substr(6));
