@@ -94,7 +94,7 @@ void TControl::AusgabeSpielerInformationen( std::string Namen[4],
 
     for (int i = 0; i < AnzSpieler; i++) { //todo give list of amount of cpu players
         this->AusgabeSpielerBox(Namen[SpielerReihenfolge[i]], Budget[i], AnzahlGekaufterObjekte[i], AnzahlGebauterObjekte[i], i * BreiteMenueSpielerBox+x, y, start[SpielerReihenfolge[i]]);
-		this->AusgabeSpielerInventarAnzeige(Namen[i], GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, start[SpielerReihenfolge[i]]);
+		this->AusgabeSpielerInventarAnzeige( GekaufteObjekte[i], GebauteObjekte[i], i * BreiteMenueSpielerBox + x, y + 7, start[SpielerReihenfolge[i]]);
     }
 }
 
@@ -159,8 +159,7 @@ void TControl::AusgabeSpielerBox(   std::string Namen,
     this->SetFarbe(Farbe::Zuruecksetzen);
 }
 
-void TControl::AusgabeSpielerInventarAnzeige(   std::string Namen,
-                                                std::vector<std::string> GekaufteObjekte,
+void TControl::AusgabeSpielerInventarAnzeige(   std::vector<std::string> GekaufteObjekte,
                                                 std::vector<std::string> GebauteObjekte,
                                                 int x,
                                                 int y,

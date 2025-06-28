@@ -1,5 +1,5 @@
 roundCount=0
-currentPlayerIndex=0
+currentPlayerIndex=3
 playerCount=2
 cpuCount=2
 diceOrder=0,2,3,1

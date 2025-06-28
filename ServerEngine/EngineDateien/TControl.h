@@ -125,7 +125,7 @@ private:
                             int y,
                             Farbe f);
     
-	void AusgabeSpielerInventarAnzeige( std::string Namen,std::vector<std::string> GekaufteObjekte,std::vector<std::string> GebauteObjekte,int x,int y,Farbe f);
+	void AusgabeSpielerInventarAnzeige( std::vector<std::string> GekaufteObjekte,std::vector<std::string> GebauteObjekte,int x,int y,Farbe f);
 public:
     TControl();
     ~TControl();
