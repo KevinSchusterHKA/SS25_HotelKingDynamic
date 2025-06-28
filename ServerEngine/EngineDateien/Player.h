@@ -104,7 +104,7 @@ public:
 	bool acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlayer*>& spielerListe, Map& map, string& Nachricht);
 	bool tryBuyStreetcpu(Map& map);
 	bool tryBuildHousecpu(vector<TPlayer*>& spielerListe, Map& map, string& Nachricht);
-	bool takebahn(vector<TPlayer*>& spielerListe, int costofbahn, int bahnpos, int anzahlplayers, Map& map);
+	bool takebahn(vector<TPlayer*>& spielerListe, int costofbahn, int bahnpos, int nextbahnpos, int anzahlplayers, Map& map);
 	void cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& map, string& Nachricht);
 };
 
@@ -118,4 +118,4 @@ int streetpricewith2(int position, vector<TPlayer*>& spielerListe);
 int housepricewith2(int position, vector<TPlayer*>& spielerListe);
 vector<int> SpeicherZuInternFormat(vector<int> gebauteHaueserSpeicher);
 int WemGehoertStrasse(int feld, vector<TPlayer*>& spielerListe);
-int check_bahn_pos(int pos);
+int LUT_nextBahn(int bahnpost);

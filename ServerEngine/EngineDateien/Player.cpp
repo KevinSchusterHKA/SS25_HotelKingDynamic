@@ -515,18 +515,23 @@ bool TPlayer::tryBuildHousecpu(vector<TPlayer*>& player, Map& map, string& Nachr
 	return built;
 }
 //take zug for cpu
-bool TPlayer::takebahn(vector<TPlayer*>& player, int costofbahn, int bahnpos,int anzahlplayers, Map& map) {
+bool TPlayer::takebahn(vector<TPlayer*>& player, int costofbahn, int bahnpos,int nextbahnpos,int anzahlplayers, Map& map) {
+	if (bahnpos==-1)
+	{
+		return false;
+	}
 	int myID = this->getID();
+	int weightedprob = rand() % (player[myID]->getAugenzahl());
 	if (player[myID]->getBudget() < costofbahn)
 		return false;
 	for (int i = 0; i < anzahlplayers; ++i) {
 		if (player[i]->getID() == myID) continue;
-		if (player[i]->besitztStrasse(bahnpos))
+		if (player[i]->besitztStrasse(bahnpos+weightedprob))
 			return false;
 	}
 	bool free_street = true;
 
-	if (map.getPropertyPrice(bahnpos)>0)
+	if (map.getPropertyPrice(nextbahnpos + weightedprob)>0)
 	{
 		free_street = true;
 
@@ -535,7 +540,7 @@ bool TPlayer::takebahn(vector<TPlayer*>& player, int costofbahn, int bahnpos,int
 		free_street = false;
 
 	}
-	if (!player[myID]->besitztStrasse(bahnpos) && free_street) {
+	if (!player[myID]->besitztStrasse(nextbahnpos + weightedprob) && free_street) {
 		return true;
 	}
 
@@ -707,15 +712,36 @@ int WemGehoertStrasse(int feld, vector<TPlayer*>& spielerListe) {
 	}
 	return -1; // Keine Straße gefunden
 }
-int visitCountsPerPlayer[4] = { 0 };
-int check_bahn_pos(int position) {
-	int trainStationPositions[] = { 5, 12, 15, 25, 28, 35 }; 
-	for (int i = 0; i < 6; ++i) {
-		if (position == trainStationPositions[i]) { 
-			return 1;
-		}
-	}
-	return 0;
-}
+int LUT_nextBahn(int bahnpost) {
 
+	switch (bahnpost) {
+		//KIT Campus|-> Durlach BF
+	case 5:
+		return 25;
+		break;
+		//Zuendhuetle|-> Entenfang
+	case 12:
+		return 28;
+		break;
+		//Europaplatz|-> Hauptbahnhof
+	case 15:
+		return 35;
+		break;
+		//Durlach BF|-> KIT Campus
+	case 25:
+		return 5;
+		break;
+		//Entenfang|-> Zuendhuetle
+	case 28:
+		return 12;
+
+		break;
+		//Hauptbahnhof | ->Europaplatz
+	case 35:
+		return 15;
+		break;
+	default:
+		return -1;
+	}
+}
 
