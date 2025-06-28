@@ -7,14 +7,14 @@
 // Konfiguration laden
 bool load_config(const std::string& filename, GameRules& rules) 
 {
-    std::ifstream file(filename);   // Datei zum Lesen öffnen
+    std::ifstream file(filename);   // Datei zum Lesen Ã¶ffnen
     if (!file.is_open()) return false;
 
     std::string line;
     while (std::getline(file, line)) // Zeilenweise lesen
     {
-        auto pos = line.find('=');  // Trenne Schlüssel und Werte mit =
-        if (pos == std::string::npos) continue; // überspringen von ungültigen Zeichen
+        auto pos = line.find('=');  // Trenne SchlÃ¼ssel und Werte mit =
+        if (pos == std::string::npos) continue; // Ã¼berspringen von ungÃ¼ltigen Zeichen
         std::string key = line.substr(0, pos);
         std::string value = line.substr(pos + 1);
         // Weisen dem passenden Attribut in GameRules den Wert zu
@@ -74,19 +74,19 @@ bool save_highscores(const std::string& filename, const std::vector<HighscoreEnt
 // Highscores sortieren (absteigend)
 void sort_highscores(std::vector<HighscoreEntry>& highscores) {
     std::sort(highscores.begin(), highscores.end(), [](const auto& a, const auto& b) {
-        return a.score > b.score;                   // Größere Punktzahl zuerst
+        return a.score > b.score;                   // GrÃ¶ÃŸere Punktzahl zuerst
         });
 }
 
 // Aktion ins Log schreiben
 bool log_action(const std::string& filename, const std::string& action) {
-    std::ofstream file(filename, std::ios::app);      // An Datei anhängen
+    std::ofstream file(filename, std::ios::app);      // An Datei anhÃ¤ngen
     if (!file.is_open()) return false;
     file << action << "\n";                           // Neue Aktion schreiben
     return true;
 }
 
-// Liest alle Logeinträge in einen Vektor
+// Liest alle LogeintrÃ¤ge in einen Vektor
 bool load_log(const std::string& filename, std::vector<std::string>& logLines) {
     std::ifstream file(filename);
     if (!file.is_open()) return false;
@@ -94,7 +94,7 @@ bool load_log(const std::string& filename, std::vector<std::string>& logLines) {
     logLines.clear();       // Vektor leeren
     std::string line;
     while (std::getline(file, line)) {
-        logLines.push_back(line);       // Zeile hinzufügen
+        logLines.push_back(line);       // Zeile hinzufÃ¼gen
     }
     return true;
 }
@@ -111,7 +111,7 @@ bool save_game(const std::string& filename, const GameState& state) {
     file << "playerCount=" << state.playerCount << "\n";
     file << "cpuCount=" << state.cpuCount << "\n";
 
-    // Reihenfolge der Würfelwürfe schreiben
+    // Reihenfolge der WÃ¼rfelwÃ¼rfe schreiben
     file << "diceOrder=";
     for (size_t i = 0; i < state.diceOrder.size(); ++i) {
         file << state.diceOrder[i];
@@ -153,7 +153,7 @@ bool load_game(const std::string& filename, GameState& state) {
     std::string line;
     state.players.clear();      // Spielerinformationen leeren
 
-    // Lese Zeile für Zeile
+    // Lese Zeile fÃ¼r Zeile
     while (std::getline(file, line)) 
     {
         if (line.find("roundCount=") == 0) 
@@ -218,7 +218,6 @@ bool load_game(const std::string& filename, GameState& state) {
             }
         }
     }
-
     return true;
 }
 

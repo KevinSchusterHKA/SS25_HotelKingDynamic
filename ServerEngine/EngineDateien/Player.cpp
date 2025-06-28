@@ -372,7 +372,7 @@ vector<int> TPlayer::getGebObjVector() {
 }
 // cpu to player
 int TPlayer::handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& p, int& targetPlayerOut, int& propertyIndexOut, Map& map) {
-	if ((rand() % 101) > 108) {
+	if ((rand() % 101) > 35) {
 		//std::cout << "CPU entscheidet sich gegen einen Handelsversuch.\n";
 		targetPlayerOut = -1;
 		propertyIndexOut = -1;
@@ -403,7 +403,10 @@ int TPlayer::handelcpu(int cpuID, int totalPlayers, vector<TPlayer*>& p, int& ta
 	std::vector<int> ownedProperties = p[targetPlayer]->getGekObjVector();
 	int randIndex = rand() % ownedProperties.size();
 	int propIndex = ownedProperties[randIndex];
-
+	if (anzahlHaeuserAuf(propIndex) > 0)
+	{
+		return -1;
+	}
 	int minPercent = 5;
 	int maxPercent = 15;
 	int offerPercent = minPercent + rand() % (maxPercent - minPercent + 1);
@@ -429,6 +432,9 @@ bool TPlayer::acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlay
 	int bud = getBudget();
 	if ((offer >= propPrice * (acceptThresholdPercent / 100.0)) && (spielerListe[kaufer]->getBudget() - offer >= 0)) {
 		//std::cout << "CPU" << id << "akzeptiert das Angebot von " << offer /*<< "' (Schwelle: " << acceptThresholdPercent << "%).\n"*/;
+		if (WieVieleHaueserAufSet(spaceIndex) > 0) {
+			return false;
+		}
 		this->erhalte(offer);
 		this->deleteStrasse(spaceIndex, Nachricht);
 		spielerListe[kaufer]->addStrasse(spaceIndex, Nachricht);
@@ -702,26 +708,14 @@ int WemGehoertStrasse(int feld, vector<TPlayer*>& spielerListe) {
 	return -1; // Keine Straße gefunden
 }
 int visitCountsPerPlayer[4] = { 0 };
-int check_bahn_pos(int playerId, int position,int dice_roll) {
-	int trainStationPositions[] = { 5, 12, 15, 25, 28, 35 };
-		if (visitCountsPerPlayer[playerId] == 1)
-		{
-			position -= dice_roll;
-			visitCountsPerPlayer[playerId] = 0;
-			return 2;
-		}
-	 
+int check_bahn_pos(int position) {
+	int trainStationPositions[] = { 5, 12, 15, 25, 28, 35 }; 
 	for (int i = 0; i < 6; ++i) {
-		if (position == trainStationPositions[i]) {
-		
-			visitCountsPerPlayer[playerId]++;
-			int count = visitCountsPerPlayer[playerId];   
-			return count;
+		if (position == trainStationPositions[i]) { 
+			return 1;
 		}
 	}
 	return 0;
 }
 
-void movcpuonTrainStation(int playerIndex, int augenzahl, std::vector<TPlayer*>& player) {
-	
-}
+
