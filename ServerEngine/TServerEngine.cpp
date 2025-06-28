@@ -340,9 +340,6 @@ void TServer::UnitTest() {
 
                             int wuerfel1 = player[IndexReihenfolge[MomentanerSpieler]].getWurfel(0);
                             int wuerfel2 = player[IndexReihenfolge[MomentanerSpieler]].getWurfel(1);
-                            wuerfel1 = 2;
-							wuerfel2 = 3;   
-							player[IndexReihenfolge[MomentanerSpieler]].setAugenzahl(wuerfel1+wuerfel2);
                             HatGewuerfelt = true;
 
                             ControlEngine.AusgabeWuerfel(wuerfel1, x / 2 - 160, y / 2 - 30, MomentanerSpielerFarbe);  
