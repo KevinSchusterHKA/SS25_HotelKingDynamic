@@ -135,11 +135,13 @@ bool save_game(const std::string& filename, const GameState& state) {
 
         // Gebaute Objekte speichern
         file << "Built=";
-        for (size_t i = 0; i < player.builtObjects.size(); ++i) {
-            file << player.builtObjects[i];
-            if (i < player.builtObjects.size() - 1) file << ",";
-        }
-        file << "\n";
+        for (size_t i = 0; i < 40; ++i) {
+        // Wenn der Vektor kürzer ist, nehmen wir 0
+        int value = (i < player.builtObjects.size()) ? player.builtObjects[i] : 0;
+        file << value;
+        if (i < 39) file << ",";
+}
+file << "\n";
     }
 
     return true;
@@ -205,33 +207,21 @@ bool load_game(const std::string& filename, GameState& state) {
                 if (!token.empty()) owned.push_back(std::stoi(token));
             }
         }
-        else if (line.find("Built=") == 0)
-        {
-            int temp = 0;
-
+            
+        else if (line.find("Built=") == 0) {
             std::istringstream iss(line.substr(6));
             std::string token;
             auto& built = state.players.back().builtObjects;
-
             built.clear();
-            // Lese bis zu 40 Einträge ein
-            for (int i = 0; i < 40; ++i)
-            {
-                if (std::getline(iss, token, ','))
-                {
-                    if (!token.empty())
-                        built.push_back(std::stoi(token));
-                    else
-                        built.push_back(0);
-                }
-                else
-                {
-                    built.push_back(0);
-                }
+            while (std::getline(iss, token, ',')) {
+                if (!token.empty()) built.push_back(std::stoi(token));
             }
-
+            // Auffüllen auf 40 Einträge
+            while (built.size() < 40) {
+                built.push_back(0);
+            }
         }
-        return true;
     }
 
+    return true;
 }
