@@ -326,9 +326,12 @@ int TPlayer::anzahlHaeuserAuf(int strasse) {
 }
 
 vector<string> TPlayer::getGekObjNamen() {
+	vector<int> sortedStrassen = this->GekaufteStrassen;
+	insertionsort(sortedStrassen, 0); // 0 = aufsteigend
+
 	vector<string> temp;
-	for (int i = 0; i < this->GekaufteStrassen.size(); i++) {
-		temp.push_back(LUT(this->GekaufteStrassen[i]));
+	for (int i = 0; i < sortedStrassen.size(); i++) {
+		temp.push_back(LUT(sortedStrassen[i]));
 	}
 	return temp;
 }
@@ -576,12 +579,21 @@ int colorcheck(int playerID, int space, std::vector<int>& ownedProperties) {
 	return colorGroup;
 }
 string LUT(int i) { return _boardarr[i].Name; }
-//int getPreisStrasse(int i, Map& map) {
-//	return map.getPropertyPrice(i);
-//}
-//int getPreisHaus(int i, Map& map) {
-//	return map.getHousePrice(i);
-//}
+void insertionsort(vector<int>& vec, int Sortierrichtung) {
+	for (int i = 1; i < vec.size(); ++i) {
+		int temp = vec[i];
+		int j = i - 1;
+
+		while (j >= 0 &&
+			((Sortierrichtung == 0 && vec[j] > temp) ||			// Aufsteigend
+				(Sortierrichtung == 1 && vec[j] < temp))) {		// Absteigend
+			vec[j + 1] = vec[j];
+			j--;
+		}
+		vec[j + 1] = temp;
+	}
+}
+
 int streetpricewith2(int position, vector<TPlayer*>& spielerListe) {
 	int basePrice = -1;
 

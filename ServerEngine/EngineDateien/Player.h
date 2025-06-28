@@ -106,8 +106,7 @@ public:
 
 
 string LUT(int i);
-//int getPreisStrasse(int feld, Map& map);
-//int getPreisHaus(int feld, Map& map);
+void insertionsort(vector<int>& vec, int Sortierrichtung);
 
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);
 
