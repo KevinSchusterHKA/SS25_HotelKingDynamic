@@ -216,10 +216,8 @@ bool load_game(const std::string& filename, GameState& state) {
             {
                 if (!token.empty()) built.push_back(std::stoi(token));
             }
-            }
         }
     }
-
     return true;
 }
 
