@@ -118,14 +118,14 @@ bool TPlayer::paschcheck() {
 }
 
 void TPlayer::bezahle(int betrag) {
-	if (betrag >= 0) {
-		if (this->Budget - betrag >= 0) {
+	//if (betrag >= 0) {
+		//if (this->Budget - betrag >= 0) {
 			this->Budget -= betrag;
-		}
-		else {
-			cout << "Sie koennen nicht bezahlen" << endl;
-		}
-	}
+		//}
+		//else {
+		//	cout << "Sie koennen nicht bezahlen" << endl;
+		//}
+	//}
 }
 void TPlayer::erhalte(int betrag) { this->Budget += betrag; }
 bool TPlayer::istPleite() { if (this->Budget <= 0) { return true; } return false; }

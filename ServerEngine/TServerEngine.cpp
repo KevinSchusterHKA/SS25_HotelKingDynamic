@@ -274,7 +274,7 @@ void TServer::UnitTest() {
 						// Ausgabe der Würfelergebnisse
 						ControlEngine.SetConsoleFontSize(20);
                         for (int i = 0; i < AnzahlSpieler + AnzahlCpuGegner; i++) {
-                            ControlEngine.AusgabeNachricht(player[IndexReihenfolge[i]].getName() +  " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10 * i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
+                            ControlEngine.AusgabeNachricht(player[i].getName() +  " Wuerfelergebnis:" + to_string(WurfelWert[i]), 10, 10 * i, static_cast<Farbe>(static_cast<int>(Farbe::Rot) + i));
                         }
                         Sleep(4000);
                         system("cls");
