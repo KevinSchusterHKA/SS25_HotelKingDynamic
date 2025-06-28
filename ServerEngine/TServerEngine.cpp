@@ -355,7 +355,7 @@ void TServer::UnitTest() {
                                 player[IndexReihenfolge[MomentanerSpieler]].setPaschCounter(0);
                             }
                             if (player[IndexReihenfolge[MomentanerSpieler]].getPaschCounter() == 3) {
-                                MapEngine.setPlayer(IndexReihenfolge[MomentanerSpieler], 10, -1);//TODO:mit Map absprechen wegen dem Gefaegnis
+                                MapEngine.setPlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getPosition(), -1);//TODO:mit Map absprechen wegen dem Gefaegnis
                                 player[IndexReihenfolge[MomentanerSpieler]].setPaschCounter(0);
                                 break;
                             }
@@ -368,6 +368,9 @@ void TServer::UnitTest() {
                             //else {
                             player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], wuerfel1 + wuerfel2, 0));
                             MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].Msg == "Du erhaeltst eine Freiheitskarte") {
+								player[IndexReihenfolge[MomentanerSpieler]].setGefaengnisFreiKarte(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() + 1);
+                            }
                             if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                             {
                                 player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
@@ -727,8 +730,8 @@ void TServer::UnitTest() {
                             for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 PlTemp.budget = player[i].getBudget();
-                                PlTemp.builtObjects = player[i].getGebObjVector(); // TODO: getGebObjVector Rückgabewert 40 std::vector  mit nuller aufgefüllt außer an den Positionen der Straßen Anzahl Gebaute Gebaude. kontrollieren
-                                //PlTemp.hasFreeJailCard = player[i].GetFreeJailCard();
+                                PlTemp.builtObjects = player[i].getHaueser();               // TODO: getGebObjVector Rückgabewert 40 std::vector  mit nuller aufgefüllt außer an den Positionen der Straßen Anzahl Gebaute Gebaude. kontrollieren
+                                PlTemp.hasFreeJailCard = player[i].getGefaengnisFreiKarte();
                                 PlTemp.inJail = player[i].imGefaengnis();
                                 PlTemp.name = player[i].getName();
                                 PlTemp.ownedObjects = player[i].getGekObjVector();
@@ -778,6 +781,7 @@ void TServer::UnitTest() {
                                                 GsTemp.players[i].builtObjects,
                                                 SpeicherZuInternFormat(GsTemp.players[i].builtObjects));
 								temp.setHuman(GsTemp.players[i].isHuman);
+                                temp.setGefaengnisFreiKarte(GsTemp.players[i].hasFreeJailCard);
 								SpielerNamen.push_back(GsTemp.players[i].name);
                                 player[i] = temp;
 								playerRefs.push_back(&player[i]);

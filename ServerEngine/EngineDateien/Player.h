@@ -24,6 +24,7 @@ private:
 	int PaschCounter = 0;
 	bool ImGefaengnis = false;
 	int GefaengnisRunden = 0;
+	int GefaengnisFreiKarte = 2;
 	vector<int> GekaufteStrassen;
 	vector<int> GebauteHaeuser;
 	vector<int> GebauteHaeuserSpeicherFormat;
@@ -67,6 +68,8 @@ public:
 	void incPaschCounter();
 
 	// Gefängnis
+	int getGefaengnisFreiKarte();
+	void setGefaengnisFreiKarte(int k);
 	void insGefaengnis();
 	void decGefaengnisRunden();
 	bool imGefaengnis();

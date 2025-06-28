@@ -90,10 +90,17 @@ void TPlayer::incPaschCounter() {
 	}
 }
 
+int TPlayer::getGefaengnisFreiKarte()			{ return this->GefaengnisFreiKarte; }
+void TPlayer::setGefaengnisFreiKarte(int k)		{ this->GefaengnisFreiKarte = k; }
 void TPlayer::insGefaengnis() {
-	this->ImGefaengnis = true;
-	this->GefaengnisRunden = 1;
-	this->Position = 10; // Gefängnisfeld
+	if (this->GefaengnisFreiKarte == 0) {
+		this->ImGefaengnis = true;
+		this->GefaengnisRunden = 1;
+		this->Position = 10; // Gefängnisfeld
+	}
+	else {
+		this->setGefaengnisFreiKarte(this->getGefaengnisFreiKarte() - 1);
+	}
 }
 void TPlayer::decGefaengnisRunden() {
 	if (this->GefaengnisRunden > 0) {
