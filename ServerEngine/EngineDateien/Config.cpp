@@ -154,13 +154,13 @@ bool load_game(const std::string& filename, GameState& state) {
     state.players.clear();      // Spielerinformationen leeren
 
     // Lese Zeile für Zeile
-    while (std::getline(file, line)) 
+    while (std::getline(file, line))
     {
-        if (line.find("roundCount=") == 0) 
+        if (line.find("roundCount=") == 0)
         {
             state.roundCount = std::stoi(line.substr(11));
         }
-        else if (line.find("currentPlayerIndex=") == 0) 
+        else if (line.find("currentPlayerIndex=") == 0)
         {
             state.currentPlayerIndex = std::stoi(line.substr(19));
         }
@@ -172,17 +172,17 @@ bool load_game(const std::string& filename, GameState& state) {
         {
             state.cpuCount = std::stoi(line.substr(9));
         }
-        else if (line.find("diceOrder=") == 0) 
+        else if (line.find("diceOrder=") == 0)
         {
             state.diceOrder.clear();
             std::istringstream iss(line.substr(10));
             std::string token;
-            while (std::getline(iss, token, ',')) 
+            while (std::getline(iss, token, ','))
             {
                 state.diceOrder.push_back(std::stoi(token));
             }
         }
-        else if (line.find("Player=") == 0) 
+        else if (line.find("Player=") == 0)
         {
             PlayerState player;
             std::istringstream iss(line.substr(7));
@@ -195,17 +195,17 @@ bool load_game(const std::string& filename, GameState& state) {
             std::getline(iss, token);      player.isHuman = std::stoi(token);
             state.players.push_back(player);
         }
-        else if (line.find("Owned=") == 0) 
+        else if (line.find("Owned=") == 0)
         {
             std::istringstream iss(line.substr(6));
             std::string token;
             auto& owned = state.players.back().ownedObjects;
-            while (std::getline(iss, token, ',')) 
+            while (std::getline(iss, token, ','))
             {
                 if (!token.empty()) owned.push_back(std::stoi(token));
             }
         }
-        else if (line.find("Built=") == 0) 
+        else if (line.find("Built=") == 0)
         {
             int temp = 0;
 
@@ -215,22 +215,23 @@ bool load_game(const std::string& filename, GameState& state) {
 
             built.clear();
             // Lese bis zu 40 Einträge ein
-            for (int i = 0; i < 40; ++i) 
+            for (int i = 0; i < 40; ++i)
             {
-            if (std::getline(iss, token, ','))
-            {
-            if (!token.empty())
-                built.push_back(std::stoi(token));
-            else
-                built.push_back(0); 
-        } 
-            else 
-            {
-            built.push_back(0); 
+                if (std::getline(iss, token, ','))
+                {
+                    if (!token.empty())
+                        built.push_back(std::stoi(token));
+                    else
+                        built.push_back(0);
+                }
+                else
+                {
+                    built.push_back(0);
+                }
             }
-            }
-        
-    }
-    return true;
-}
 
+        }
+        return true;
+    }
+
+}

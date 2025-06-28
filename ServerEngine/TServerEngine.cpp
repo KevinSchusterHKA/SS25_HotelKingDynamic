@@ -644,29 +644,29 @@ void TServer::UnitTest() {
                                 ConfigEngineLogging.newRound();
                                 MomentanerSpieler = 0;
                             }
-                            switch (IndexReihenfolge[MomentanerSpieler])
-                            {
-                            case 0:
-                                MomentanerSpielerFarbe = Farbe::BG_Rot;
-                                break;
-                            case 1:
-                                MomentanerSpielerFarbe = Farbe::BG_Gruen;
-                                break;
-                            case 2:
-                                MomentanerSpielerFarbe = Farbe::BG_Gelb;
-                                break;
-                            case 3:
-                                MomentanerSpielerFarbe = Farbe::BG_Cyan;
-                                break;
-                            default:
-                                break;
-                            }
+
                             cpudone = false;
 
                         }
                         cpudone = false;
                     }
-
+                    switch (IndexReihenfolge[MomentanerSpieler])
+                    {
+                    case 0:
+                        MomentanerSpielerFarbe = Farbe::BG_Rot;
+                        break;
+                    case 1:
+                        MomentanerSpielerFarbe = Farbe::BG_Gruen;
+                        break;
+                    case 2:
+                        MomentanerSpielerFarbe = Farbe::BG_Gelb;
+                        break;
+                    case 3:
+                        MomentanerSpielerFarbe = Farbe::BG_Cyan;
+                        break;
+                    default:
+                        break;
+                    }
                     }
                        if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
                            int Strasse = -1,Gebaude = -1;
