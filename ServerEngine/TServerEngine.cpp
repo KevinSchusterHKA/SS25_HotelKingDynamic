@@ -1075,11 +1075,12 @@ void TServer::UnitTest() {
             std::vector<int> tempBudgets;
             std::vector<int> gekObjAnz;
             std::vector<int> gebObjAnz;               
+			std::vector<std::string> SpielerNamenMitPosition;
             
-          
             for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
             {
 				SpielerNamen.push_back(player[IndexReihenfolge[i]].getName());        // Hier wird angenommen, dass getName() eine std::string zurückgibt
+				SpielerNamenMitPosition.push_back(SpielerNamen[i] + " (" + std::to_string(player[i].getPosition()) + ")");
                 gekObjNamen.push_back(player[IndexReihenfolge[i]].getGekObjNamen()); // Hier wird angenommen, dass getGekObjNamen() eine std::vector<std::string> zurückgibt
                 gebObjNamen.push_back(player[IndexReihenfolge[i]].getGebObjNamen());    // Hier wird angenommen, dass getGebObjNamen() eine std::vector<std::string> zurückgibt
                 tempBudgets.push_back(player[IndexReihenfolge[i]].getBudget());
@@ -1087,7 +1088,7 @@ void TServer::UnitTest() {
                 gebObjAnz.push_back(player[IndexReihenfolge[i]].getGebObjAnz());        // Hier wird angenommen, dass getGebObjAnz() eine int zurückgibt
 
             }
-            ControlEngine.AusgabeSpielerInformationen(SpielerNamen.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler+AnzahlCpuGegner, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen,IndexReihenfolge);
+            ControlEngine.AusgabeSpielerInformationen(SpielerNamenMitPosition.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler+AnzahlCpuGegner, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen,IndexReihenfolge);
 
         }
 
