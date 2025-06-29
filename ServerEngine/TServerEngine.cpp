@@ -63,7 +63,7 @@ void TServer::UnitTest() {
     string SpielerNachricht="";
     int option = 0, AnzahlSpieler = 0, AnzahlCpuGegner = 0, MomentanerSpieler = 0, Rundenzaehler = 1, x = 0, y = 0, AnzahlRunden = 0, StrasseBauen = -1, Angebot = -1, Strasse = -1, target = 0, ID = -1, targetPlayerOut = -1, ReferencePlayer = 0;
     bool Spiellaueft = TRUE, RundeVorhanden = FALSE, HatGewuerfelt = FALSE, GameFinished = FALSE, UpdateSpielfeld = FALSE, Handel_once_cpu = false, cpudone = false, gleicheWuerfe=true, cpu_train =FALSE;
-    bool DurchKaufen = TRUE;
+    bool ZeigeMRobjMsg = TRUE;
     char EingabeCh = MenueOptionen::Reset;
     MapReturnObj MRobj[4];
 	Farbe MomentanerSpielerFarbe = Farbe::BG_Rot; // Standardfarbe für den ersten Spieler
@@ -331,7 +331,7 @@ void TServer::UnitTest() {
                 case Menues::Spieler:
                     CursorPos = { short(x / 2 - 160), short(y / 2 - 40 + ControlEngine.GetAnzMenuepunkteSpielerOptionen()) };
                     ControlEngine.UpdateCursorPosition(CursorPos);
-                    DurchKaufen = FALSE;
+                    ZeigeMRobjMsg = TRUE;
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln )
                     {
                         if (!HatGewuerfelt)
@@ -460,7 +460,7 @@ void TServer::UnitTest() {
                         //ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
 
                         // Prüfen ob die Straße schon jemand besitzt
-                        DurchKaufen = TRUE;
+                        ZeigeMRobjMsg = FALSE;
                         bool istFrei = true;
 
                         for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++) {
@@ -1065,7 +1065,7 @@ void TServer::UnitTest() {
                     player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                 }
             }
-            if (!DurchKaufen)
+            if (ZeigeMRobjMsg)
             {
                 if (!(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg == ""))
                 {
