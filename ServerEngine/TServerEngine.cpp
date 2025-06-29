@@ -373,6 +373,10 @@ void TServer::UnitTest() {
                             if (MRobj[IndexReihenfolge[MomentanerSpieler]].Msg == "Du erhaeltst eine Freiheitskarte") {
 								player[IndexReihenfolge[MomentanerSpieler]].setGefaengnisFreiKarte(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() + 1);
                             }
+                            // Ereigniskarten die den Spieler bewegen
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr) {
+								player[IndexReihenfolge[MomentanerSpieler]].setPosition(MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr);
+                            }
                             if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                             {
                                 player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
