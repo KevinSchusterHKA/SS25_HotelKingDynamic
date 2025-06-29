@@ -1053,7 +1053,9 @@ void TServer::UnitTest() {
 
             while (MRobj[IndexReihenfolge[MomentanerSpieler]].flag) 
             {
+                string message = MRobj[IndexReihenfolge[MomentanerSpieler]].Msg;
                 MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
+                MRobj[IndexReihenfolge[MomentanerSpieler]].Msg = message;
                 if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                 {
                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
