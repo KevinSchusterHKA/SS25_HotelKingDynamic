@@ -293,8 +293,8 @@ const MapReturnObj _chestCards[] = {
 
 const MapReturnObj _chanceCards[] = {
     MapReturnObj(0, TypeGo, -1, 0, 0, "Ruecke vor bis auf Los (Ziehe 200" + string(1, _symbolchars[Coin]) + " ein)"),
-    MapReturnObj(39, TypeGo, -1, 0, 0, "Ruecke vor bis zur Schlossallee. Falls du ueber Los kommst, ziehe 200" + string(1, _symbolchars[Coin]) + " ein"),
-    MapReturnObj(11, TypeGo, -1, 0, 0, "Ruecke vor bis zur Seestrasse. Falls du ueber Los kommst, ziehe 200" + string(1, _symbolchars[Coin]) + " ein"),
+    MapReturnObj(39, TypeGo, -1, 0, 0, "Ruecke vor bis zur Schlossplatz. Falls du ueber Los kommst, ziehe 200" + string(1, _symbolchars[Coin]) + " ein"),
+    MapReturnObj(11, TypeGo, -1, 0, 0, "Ruecke vor bis zur Palmbach. Falls du ueber Los kommst, ziehe 200" + string(1, _symbolchars[Coin]) + " ein"),
     MapReturnObj(-1, TypeTax, -1, 50, 0, "Zahle 50" + string(1, _symbolchars[Coin]) + " Strafe"),
     MapReturnObj(-1, TypeGo, -1, 0, 1, "Du erhaeltst eine Freiheitskarte"),
     MapReturnObj(10, TypeGo, -1, 0, -1, "Gehe ins Gefaengnis. Begib dich direkt dorthin. Gehe nicht ueber Los, ziehe nicht 200" + string(1, _symbolchars[Coin]) + " ein"),

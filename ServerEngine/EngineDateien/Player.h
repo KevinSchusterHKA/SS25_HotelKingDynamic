@@ -24,7 +24,7 @@ private:
 	int PaschCounter = 0;
 	bool ImGefaengnis = false;
 	int GefaengnisRunden = 0;
-	int GefaengnisFreiKarte = 2;
+	int GefaengnisFreiKarte = 0;
 	vector<int> GekaufteStrassen;
 	vector<int> GebauteHaeuser;
 	vector<int> GebauteHaeuserSpeicherFormat;
@@ -111,7 +111,7 @@ public:
 
 string LUT(int i);
 void insertionsort(vector<int>& vec, int Sortierrichtung);
-
+bool AlleStrassenVerkauft(vector<TPlayer*>& spielerListe);
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties);
 
 int streetpricewith2(int position, vector<TPlayer*>& spielerListe);

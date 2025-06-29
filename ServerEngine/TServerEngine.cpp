@@ -356,7 +356,7 @@ void TServer::UnitTest() {
                             else {
                                 player[IndexReihenfolge[MomentanerSpieler]].setPaschCounter(0);
                             }
-                            if (player[IndexReihenfolge[MomentanerSpieler]].getPaschCounter() == 3) {
+                            if (player[IndexReihenfolge[MomentanerSpieler]].getPaschCounter() == 3 && player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() == 0) {
                                 MapEngine.setPlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getPosition(), -1);//TODO:mit Map absprechen wegen dem Gefaegnis
                                 player[IndexReihenfolge[MomentanerSpieler]].setPaschCounter(0);
                                 break;
@@ -372,6 +372,10 @@ void TServer::UnitTest() {
                             MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
                             if (MRobj[IndexReihenfolge[MomentanerSpieler]].Msg == "Du erhaeltst eine Freiheitskarte") {
 								player[IndexReihenfolge[MomentanerSpieler]].setGefaengnisFreiKarte(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() + 1);
+                            }
+                            // Ereigniskarten die den Spieler bewegen
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr) {
+								player[IndexReihenfolge[MomentanerSpieler]].setPosition(MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr);
                             }
                             if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                             {
@@ -672,7 +676,7 @@ void TServer::UnitTest() {
                         if (player[IndexReihenfolge[MomentanerSpieler]].getPosition() == 30)
                         {
                             if (!(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() > 0)) {
-                                player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis();
+                                player[IndexReihenfolge[MomentanerSpieler]].insGefaengnis();
                             }
                             else
                             {
@@ -720,7 +724,10 @@ void TServer::UnitTest() {
                         int Strasse = -1,Gebaude = -1;
                         ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
                         player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs, SpielerNachricht);
-                        MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
+                        for (size_t i = 0; i < Gebaude; i++)
+                        {
+                            MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
+                        }
                         if (SpielerNachricht != "") {
                             ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
                             Sleep(__AUSGABE_NACHRICHT_ZEIT);
@@ -926,32 +933,32 @@ void TServer::UnitTest() {
                         switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
                             //KIT Campus|-> Durlach BF
                         case 5:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25  );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25);
                             ConfigEngineLogging.usesTrain("KIT Campus", "Durlach BF");
                             break;
                             //Zuendhuetle|-> Entenfang
                         case 12:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28 );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28);
                             ConfigEngineLogging.usesTrain("Zuendhuetle", "Entenfang");
                             break;
                             //Europaplatz|-> Hauptbahnhof
                         case 15:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35  );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35);
                             ConfigEngineLogging.usesTrain("Europaplatz", "Hauptbahnhof");
                             break;
                             //Durlach BF|-> KIT Campus
                         case 25:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5  );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5);
                             ConfigEngineLogging.usesTrain("Durlach BF", "KIT Campus");
                             break;
                             //Entenfang|-> Zuendhuetle
                         case 28:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12 );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12);
                             ConfigEngineLogging.usesTrain("Entenfang", "Zuendhuetle");
                             break;
                             //Hauptbahnhof | ->Europaplatz
                         case 35:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15 );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15);
                             ConfigEngineLogging.usesTrain("Hauptbahnhof", "Europaplatz");
                             break;
 
@@ -1046,7 +1053,9 @@ void TServer::UnitTest() {
 
             while (MRobj[IndexReihenfolge[MomentanerSpieler]].flag) 
             {
+                string message = MRobj[IndexReihenfolge[MomentanerSpieler]].Msg;
                 MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
+                MRobj[IndexReihenfolge[MomentanerSpieler]].Msg = message;
                 if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                 {
                     player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
@@ -1111,8 +1120,11 @@ void TServer::UnitTest() {
                 //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
                 system("cls");
             }
-            GameFinished = TRUE;
-            Spiellaueft = FALSE;
+            if (player[IndexReihenfolge[MomentanerSpieler]].getBudget() < 0) {
+                GameFinished = TRUE;
+                Spiellaueft = FALSE;
+            }
+            
         }
         
     }
