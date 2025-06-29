@@ -1112,8 +1112,11 @@ void TServer::UnitTest() {
                 //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
                 system("cls");
             }
-            GameFinished = TRUE;
-            Spiellaueft = FALSE;
+            if (player[IndexReihenfolge[MomentanerSpieler]].getBudget() < 0) {
+                GameFinished = TRUE;
+                Spiellaueft = FALSE;
+            }
+            
         }
         
     }
