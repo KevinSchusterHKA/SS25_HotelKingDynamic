@@ -607,13 +607,16 @@ void TServer::UnitTest() {
 
                         }
                         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                        bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(playerRefs, MapEngine, SpielerNachricht);//buildhouse
-                        if (SpielerNachricht != "") {
-                            ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
-                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
-                            SpielerNachricht = "";
+                        int count = rand() % 4 + 1;
+                        for (size_t i = 0; i < count; i++)
+                        {
+                            bool answer = player[IndexReihenfolge[MomentanerSpieler]].tryBuildHousecpu(playerRefs, MapEngine, SpielerNachricht);//buildhouse
+                            if (SpielerNachricht != "") {
+                                ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                                Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                                SpielerNachricht = "";
+                            }
                         }
-                        
                         player[IndexReihenfolge[MomentanerSpieler]].cpuHausVerkauf(playerRefs, MapEngine, SpielerNachricht);//verkauf haus
                         if (SpielerNachricht != "") {
                             ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
