@@ -95,7 +95,7 @@ void TPlayer::setGefaengnisFreiKarte(int k)		{ this->GefaengnisFreiKarte = k; }
 void TPlayer::insGefaengnis() {
 	if (this->GefaengnisFreiKarte == 0) {
 		this->ImGefaengnis = true;
-		this->GefaengnisRunden = 1;
+		this->GefaengnisRunden = 2;
 		this->Position = 10; // Gefängnisfeld
 	}
 	else {
