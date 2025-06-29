@@ -147,7 +147,7 @@ void TPlayer::addStrasse(int strasse, string& Nachricht) {
 
 	// Prüfen ob Spieler die Straße bereits besitzt
 	for (int s = 0; s < this->GekaufteStrassen.size(); s++) {
-		if (s == strasse) {
+		if (GekaufteStrassen[s] == strasse) {
 			Nachricht = "Strasse " + LUT(strasse) + " gehoert dir bereits.";
 			return;
 		}
