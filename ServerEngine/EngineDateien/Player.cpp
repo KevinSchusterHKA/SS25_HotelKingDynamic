@@ -216,7 +216,7 @@ int TPlayer::WieVieleHaueserAufSet(int feld) {
 	return count;
 }
 
-int TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, string& Nachricht) {
+int TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, string& Nachricht, Map& map) {
 	// Prüfen ob Käufer genug Budget hat
 	if (this->getBudget() < angebot) {
 		Nachricht = "Du hast nicht genug Budget fuer dieses Angebot.";
@@ -247,6 +247,7 @@ int TPlayer::Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, stri
 			// Straße übertragen
 			verkaufer->deleteStrasse(feld, Nachricht);
 			this->addStrasse(feld, Nachricht);
+			map.setOwner(verkaufer->getID(), this->getID(), feld);
 
 			Nachricht = "Handel erfolgreich: Strasse " + LUT(feld) + " von Spieler " + to_string(verkaufer->getID()) + " gekauft fuer " + to_string(angebot) + ".";
 			return verkaufer->getID();
@@ -294,10 +295,10 @@ void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe,
 		Nachricht = "Ungueltige Anzahl von Haeusern.";
 		return; // Ungültige Anzahl von Häusern
 	}
-	if (anz == 0) {
+	/*if (anz == 0) {
 		this->verkaufeStrasse(strasse, spielerListe, Nachricht);
 		return;
-	}
+	}*/
 	int verkauft = 0;
 
 	for (int i = 0; i < this->GebauteHaeuser.size(); ) {
@@ -439,6 +440,7 @@ bool TPlayer::acceptTradecpu(int spaceIndex, int offer, int kaufer, vector<TPlay
 		this->deleteStrasse(spaceIndex, Nachricht);
 		spielerListe[kaufer]->addStrasse(spaceIndex, Nachricht);
 		spielerListe[kaufer]->bezahle(offer);
+		map.setOwner(this->getID(), kaufer, spaceIndex);
 		return true;
 	}
 	else {
@@ -565,13 +567,13 @@ void TPlayer::cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& ma
 			}
 		}
 	}
-	for (int id : meineStrassen) {
-		if (besitztStrasse(id)) {
-			if (getBudget() >= benoetigt) return;
-			verkaufeStrasse(id, spielerListe, Nachricht);
-			//cout << "→ Verkaufe Haus auf \"" << map.getName(id)<< "\" für $" << map.getPropertyPrice(id) << ".\n";
-		}
-	}
+	//for (int id : meineStrassen) {
+	//	if (besitztStrasse(id)) {
+	//		if (getBudget() >= benoetigt) return;
+	//		verkaufeStrasse(id, spielerListe, Nachricht);
+	//		//cout << "→ Verkaufe Haus auf \"" << map.getName(id)<< "\" für $" << map.getPropertyPrice(id) << ".\n";
+	//	}
+	//}
 	//cout << "CPU [" << getName() << "] konnte nicht genug Geld aufbringen.\n";
 }
 
