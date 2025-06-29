@@ -724,7 +724,10 @@ void TServer::UnitTest() {
                         int Strasse = -1,Gebaude = -1;
                         ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
                         player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs, SpielerNachricht);
-                        MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
+                        for (size_t i = 0; i < Gebaude; i++)
+                        {
+                            MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
+                        }
                         if (SpielerNachricht != "") {
                             ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
                             Sleep(__AUSGABE_NACHRICHT_ZEIT);
