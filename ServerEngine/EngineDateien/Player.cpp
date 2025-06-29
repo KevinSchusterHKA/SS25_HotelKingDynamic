@@ -264,7 +264,7 @@ int TPlayer::baueHaus(int strasse, vector<TPlayer*>& spielerListe, string& Nachr
 		Nachricht = "Feld " + LUT(strasse) + " ist keine Strasse und kann nicht gekauft werden.";
 		return -1;
 	}
-	if (this->WieVieleHaueserAufSet(strasse) < 5) {
+	if (this->anzahlHaeuserAuf(strasse) < 5) {
 		if (AlleStrassenVerkauft(spielerListe)) {
 			if (this->getBudget() - housepricewith2(strasse, spielerListe) >= 0) {
 				// Haus bauen
@@ -346,6 +346,9 @@ vector<string> TPlayer::getGebObjNamen() {
 	vector<string> temp;
 	for (int i = 0; i < this->GebauteHaeuserSpeicherFormat.size(); i++) {
 		if (GebauteHaeuserSpeicherFormat[i] != 0) {
+			if (GebauteHaeuserSpeicherFormat[i] == 5) {
+				temp.push_back(LUT(i) + ", Hotel");
+			}
 			temp.push_back(LUT(i)+", Anz: "+to_string(GebauteHaeuserSpeicherFormat[i]));
 		}
 	}
@@ -548,7 +551,7 @@ bool TPlayer::takebahn(vector<TPlayer*>& player, int costofbahn, int bahnpos,int
 	return false;
 }
 //cpu verkauf haus 
-void TPlayer::cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& map, string& Nachricht) {
+void TPlayer::cpuHausVerkauf(vector<TPlayer*>& spielerListe, Map& map, string& Nachricht) {
 	int benoetigt = 100 + (rand() % 200);
 	if (getBudget() >= benoetigt) return;
 	//cout << "CPU [" << getName() << "] hat nur $" << getBudget() << " und braucht $" << benoetigt << ".\n";
@@ -559,6 +562,7 @@ void TPlayer::cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& ma
 			for (int i = 0; i < hausAnzahl; ++i) {
 				int geld = housepricewith2(space, spielerListe)/2;
 				erhalte(geld);
+				this->GebauteHaeuserSpeicherFormat[space]--;
 				std::vector<int>::iterator  it = std::find(GebauteHaeuser.begin(), GebauteHaeuser.end(), space);
 				if (it != GebauteHaeuser.end()) GebauteHaeuser.erase(it);
 				//cout << "Verkaufe Haus auf \"" << map.getName(space)<< "\" für $" << geld << ".\n";
