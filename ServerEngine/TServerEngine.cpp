@@ -624,10 +624,10 @@ void TServer::UnitTest() {
                             SpielerNachricht = "";
                         }
                         cpudone = true;
-                    
+                        system("cls");
                     if (player[IndexReihenfolge[MomentanerSpieler]].takebahn(playerRefs, MRobj[IndexReihenfolge[MomentanerSpieler]].Rent, player[IndexReihenfolge[MomentanerSpieler]].getPosition(),LUT_nextBahn(player[IndexReihenfolge[MomentanerSpieler]].getPosition()), AnzahlCpuGegner + AnzahlSpieler, MapEngine))
                     {
-                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 1));
+                        player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], 0, 1));
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                         switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
                             //KIT Campus|-> Durlach BF
@@ -676,7 +676,7 @@ void TServer::UnitTest() {
                         if (player[IndexReihenfolge[MomentanerSpieler]].getPosition() == 30)
                         {
                             if (!(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() > 0)) {
-                                player[IndexReihenfolge[MomentanerSpieler]].insGefaengnis();
+                                 player[IndexReihenfolge[MomentanerSpieler]].insGefaengnis();
                             }
                             else
                             {
@@ -697,9 +697,9 @@ void TServer::UnitTest() {
                             if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
                                 MomentanerSpieler=0;
                             }
-                            ConfigEngineLogging.newRound();
+                             ConfigEngineLogging.newRound();
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
-
+ 
                             cpudone = false;
                         }
                     }
