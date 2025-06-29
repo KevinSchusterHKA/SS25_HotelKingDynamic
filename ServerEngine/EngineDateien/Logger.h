@@ -19,6 +19,9 @@ public:
 	void payTax();
 	void newGame();
 	void usesTrain(std::string origin, std::string destination);
+	void loadGame(int round);
+	void goToPrison();
+	
 	
 
 private:

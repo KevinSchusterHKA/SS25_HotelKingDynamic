@@ -138,8 +138,8 @@ void TServer::UnitTest() {
             player[IndexReihenfolge[MomentanerSpieler]].decGefaengnisRunden();
             AnzahlRunden++;
 
-            ConfigEngineLogging.newRound();
-            ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+            //ConfigEngineLogging.newRound();
+            //ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
             HatGewuerfelt = false;
             MomentanerSpieler++;
             if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
@@ -396,13 +396,7 @@ void TServer::UnitTest() {
                                 ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                                 break;
 
-                            case _type::TypeChance:
-                                ConfigEngineLogging.onEventField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);
-                                break;
 
-                            case _type::TypeChest:
-                                ConfigEngineLogging.onChestField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);
-                                break;
 
                             case _type::TypePrison:
                                 if (!player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis())
@@ -411,13 +405,34 @@ void TServer::UnitTest() {
                                 }
                                 break;
 
-                            case _type::TypeTax:
+                            }
+                           
+
+                            switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
+                                //Gemeinschaftsfelder
+                            case 2: case 17: case 33: 
+                                ConfigEngineLogging.onChestField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);
+                                break;
+                                //ereignisfelder
+                            case 7: case 22: case 36:
+                                ConfigEngineLogging.onEventField(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg);
+                                break;
+                            case 4:
+                                //Steuerfelder
                                 ConfigEngineLogging.payTax();
                                 break;
+                                //Losfeld
+                            case 0:
+                                ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
+                                break;
+                                //GefängnisFeld
+                            case 30:
+                                ConfigEngineLogging.goToPrison();
                             }
-                            //}
 
                         }
+
+                        
                         else {
                             std::cout << setw(ControlEngine.GetLaengstenStringMenueSpielOptionen()) << std::left << "Du hast schon gewuerfelt!";
                         }
@@ -686,13 +701,13 @@ void TServer::UnitTest() {
                             std::this_thread::sleep_for(std::chrono::milliseconds(500));
                             HatGewuerfelt = false;
                             system("cls");
-                            ConfigEngineLogging.newRound();
-                            ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
+                            //ConfigEngineLogging.newRound();
+                            //ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
                             MomentanerSpieler++;
                             if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
                                 MomentanerSpieler=0;
                             }
-                             ConfigEngineLogging.newRound();
+                           ConfigEngineLogging.newRound();
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
  
                             cpudone = false;
@@ -747,7 +762,7 @@ void TServer::UnitTest() {
                             ConfigEngineLogging.newRound();
                             MomentanerSpieler++;
                             if ((MomentanerSpieler >= AnzahlSpieler + AnzahlCpuGegner) && RundeVorhanden) {
-                                ConfigEngineLogging.newRound();
+                                
                                 MomentanerSpieler = 0;
                             }
                             ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
@@ -835,6 +850,7 @@ void TServer::UnitTest() {
                             MomentanerSpieler = GsTemp.currentPlayerIndex;
                             playerRefs.clear();
                             SpielerNamen.clear();
+                            ConfigEngineLogging.loadGame(GsTemp.roundCount+1);
                             for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
                             {
                                 TPlayer temp(   i, 
