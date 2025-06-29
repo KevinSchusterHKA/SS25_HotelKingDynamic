@@ -331,6 +331,7 @@ void TServer::UnitTest() {
                 case Menues::Spieler:
                     CursorPos = { short(x / 2 - 160), short(y / 2 - 40 + ControlEngine.GetAnzMenuepunkteSpielerOptionen()) };
                     ControlEngine.UpdateCursorPosition(CursorPos);
+                    DurchKaufen = FALSE;
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln )
                     {
                         if (!HatGewuerfelt)
@@ -411,7 +412,6 @@ void TServer::UnitTest() {
                                 break;
                             }
                             //}
-                            DurchKaufen = FALSE;
 
                         }
                         else {
@@ -556,7 +556,7 @@ void TServer::UnitTest() {
                         else {
                             MenueAuswahl = Menues::Handel;
                         }
-					    
+
 					    //TODO: ConfigEngineLogging.playerTradesObject("Objekt wurde gehandelt");
                     }
                     if (player[IndexReihenfolge[MomentanerSpieler]].getHuman() == CPU1)//cpu logic
@@ -716,19 +716,19 @@ void TServer::UnitTest() {
                     default:
                         break;
                     }
-                       if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
-                           int Strasse = -1,Gebaude = -1;
-                           ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
-                           player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs, SpielerNachricht);
-                           MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
-                           if (SpielerNachricht != "") {
-                               ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
-                               Sleep(__AUSGABE_NACHRICHT_ZEIT);
-                               SpielerNachricht = "";
-                           }
-                           //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
-                           system("cls");
-                       }
+                    if (option + MenueOptionen::Wuerfeln == MenueOptionen::Verkaufen) {
+                        int Strasse = -1,Gebaude = -1;
+                        ControlEngine.AusgabeVerkaufen(option, Strasse,Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
+                        player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs, SpielerNachricht);
+                        MapEngine.sellHouse(IndexReihenfolge[MomentanerSpieler], Strasse);
+                        if (SpielerNachricht != "") {
+                            ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                            SpielerNachricht = "";
+                        }
+                        //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
+                        system("cls");
+                    }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::RundeBeenden)
                     {
                         if (HatGewuerfelt)
@@ -975,7 +975,6 @@ void TServer::UnitTest() {
                     {
                         player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                     }
-                    DurchKaufen = FALSE;
 
                     ConfigEngineLogging.playerOnStreet(MapEngine.getName(player[IndexReihenfolge[MomentanerSpieler]].getPosition()));
                     break;
@@ -1067,7 +1066,6 @@ void TServer::UnitTest() {
                         MomentanerSpielerFarbe);
                     Sleep(4000);
                 }
-                DurchKaufen = TRUE;
             }
             ControlEngine.AusgabeFeld(MapEngine.toStr(), x / 2 - 110, y / 2 - 44);
             std::vector<std::vector<std::string>> gekObjNamen;
