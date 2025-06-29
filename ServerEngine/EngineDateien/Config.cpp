@@ -71,11 +71,20 @@ bool save_highscores(const std::string& filename, const std::vector<HighscoreEnt
     return true;
 }
 
-// Highscores sortieren (absteigend)
+// Highscores sortieren (absteigend) mit Insertion Sort
 void sort_highscores(std::vector<HighscoreEntry>& highscores) {
-    std::sort(highscores.begin(), highscores.end(), [](const auto& a, const auto& b) {
-        return a.score > b.score;                   // Größere Punktzahl zuerst
-        });
+    for (size_t i = 1; i < highscores.size(); ++i) {
+        HighscoreEntry key = highscores[i]; // Das zu sortierende Element
+        int j = i - 1;
+
+        // Verschieben der kleineren Elemente nach rechts
+        while (j >= 0 && highscores[j].score < key.score) { // Absteigend sortieren
+            highscores[j + 1] = highscores[j];
+            --j;
+        }
+
+        highscores[j + 1] = key; // Einfügen des aktuellen Elements an die richtige Stelle
+    }
 }
 
 // Aktion ins Log schreiben
