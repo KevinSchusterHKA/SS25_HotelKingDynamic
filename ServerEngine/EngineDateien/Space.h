@@ -222,7 +222,7 @@ public:
 
 			break;
 		case TypeChance:
-			out = _chanceCards[(int)(rand()%13)];
+			out = _chanceCards[(int)(rand()%14)];
 			break;
 		case TypeChest:
 			out = _chestCards[(int)(rand() %15)];

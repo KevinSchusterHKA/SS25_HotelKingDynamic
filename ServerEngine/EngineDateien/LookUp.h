@@ -281,12 +281,12 @@ const MapReturnObj _chestCards[] = {
     MapReturnObj(10, TypeGo, -1, 0, -1, "Gehe ins Gefaengnis. Begib dich direkt dorthin. Gehe nicht ueber Los, ziehe nicht 200" + string(1, _symbolchars[Coin]) + " ein"),
     MapReturnObj(-1, TypeGo, -1, -100, 0, "Dein Urlaubsfonds wird faellig. Ziehe 100" + string(1, _symbolchars[Coin]) + " ein"),
     MapReturnObj(-1, TypeGo, -1, -20, 0, "Steuerrueckzahlung. Ziehe 20" + string(1, _symbolchars[Coin]) + " ein"),
-    MapReturnObj(-1, TypeGo, -2, -10, 0, "Es ist dein Geburtstag. Ziehe 10" + string(1, _symbolchars[Coin]) + " von jedem Spieler ein"),
+    //MapReturnObj(-1, TypeGo, -2, -10, 0, "Es ist dein Geburtstag. Ziehe 10" + string(1, _symbolchars[Coin]) + " von jedem Spieler ein"),
     MapReturnObj(-1, TypeGo, -1, -100, 0, "Deine Lebensversicherung wird faellig. Ziehe 100" + string(1, _symbolchars[Coin]) + " ein"),
     MapReturnObj(-1, TypeTax, -1, 100, 0, "Krankenhausgebuehren. Zahle 100" + string(1, _symbolchars[Coin]) + ""),
     MapReturnObj(-1, TypeTax, -1, 50, 0, "Schulgebuehren. Zahle 50" + string(1, _symbolchars[Coin]) + ""),
     MapReturnObj(-1, TypeGo, -1, -25, 0, "Beratungshonorar. Ziehe 25" + string(1, _symbolchars[Coin]) + " ein"),
-    //MapReturnObj(-1, TypeTax, -3, 40, 0, "Strassenreparaturkosten. Zahle 40" + string(1, _symbolchars[Coin]) + " pro Haus und 120" + string(1, _symbolchars[Coin]) + " pro Hotel"),
+    MapReturnObj(-1, TypeTax, -3, 40, 0, "Strassenreparaturkosten. Zahle 40" + string(1, _symbolchars[Coin]) + " pro Haus und 120" + string(1, _symbolchars[Coin]) + " pro Hotel"),
     MapReturnObj(-1, TypeGo, -1, -10, 0, "Du hast den zweiten Preis in einem Schoenheitswettbewerb gewonnen. Ziehe 10" + string(1, _symbolchars[Coin]) + " ein"),
     MapReturnObj(-1, TypeGo, -1, -100, 0, "Du hast geerbt. Ziehe 100" + string(1, _symbolchars[Coin]) + " ein"),
 };
@@ -303,7 +303,7 @@ const MapReturnObj _chanceCards[] = {
     MapReturnObj(-1, TypeGo, -1, -20, 0, "Ziehe 20" + string(1, _symbolchars[Coin]) + " ein"),
     MapReturnObj(-1, TypeTax, -1, 50, 0, "Zahle 50" + string(1, _symbolchars[Coin]) + " fuer eine Feier"),
     MapReturnObj(-1, TypeGo, -1, -25, 0, "Ziehe 25" + string(1, _symbolchars[Coin]) + " ein"),
-    //MapReturnObj(-1, TypeTax, -3, 40, 0, "Strassenreparaturkosten. Zahle 40" + string(1, _symbolchars[Coin]) + " pro Haus und 120" + string(1, _symbolchars[Coin]) + " pro Hotel"),
+    MapReturnObj(-1, TypeTax, -3, 40, 0, "Strassenreparaturkosten. Zahle 40" + string(1, _symbolchars[Coin]) + " pro Haus und 120" + string(1, _symbolchars[Coin]) + " pro Hotel"),
     MapReturnObj(-1, TypeGo, -1, -10, 0, "Du hast den zweiten Preis in einem Schoenheitswettbewerb gewonnen. Ziehe 10" + string(1, _symbolchars[Coin]) + " ein"),
     MapReturnObj(-1, TypeGo, -1, -100, 0, "Du hast geerbt. Ziehe 100" + string(1, _symbolchars[Coin]) + " ein"),
 };
