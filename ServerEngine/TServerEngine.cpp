@@ -617,7 +617,7 @@ void TServer::UnitTest() {
                             SpielerNachricht = "";
                         }
                         
-                        player[IndexReihenfolge[MomentanerSpieler]].cpuHausOderStrassenVerkauf(playerRefs, MapEngine, SpielerNachricht);//verkauf haus
+                        player[IndexReihenfolge[MomentanerSpieler]].cpuHausVerkauf(playerRefs, MapEngine, SpielerNachricht);//verkauf haus
                         if (SpielerNachricht != "") {
                             ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
                             Sleep(__AUSGABE_NACHRICHT_ZEIT);
