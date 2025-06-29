@@ -12,7 +12,7 @@ class TServer
 public:
 	TServer();
 	~TServer();
-	void UnitTest();
+	void RunGame();
 	int GetLongestStringVector(std::vector<std::string> s) {
 		int temp = 0;
 		for (std::string var : s) {

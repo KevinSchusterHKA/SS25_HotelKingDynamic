@@ -9,7 +9,7 @@ TServer::TServer(){
 TServer::~TServer(){
 }
 
-void TServer::UnitTest() {
+void TServer::RunGame() {
     enum MenueOptionen {
         Reset = -1,
         Start = 0,
@@ -331,9 +331,10 @@ void TServer::UnitTest() {
                 case Menues::Spieler:
                     CursorPos = { short(x / 2 - 160), short(y / 2 - 40 + ControlEngine.GetAnzMenuepunkteSpielerOptionen()) };
                     ControlEngine.UpdateCursorPosition(CursorPos);
-                    ZeigeMRobjMsg = TRUE;
+                    ZeigeMRobjMsg = FALSE;
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Wuerfeln )
                     {
+						ZeigeMRobjMsg = TRUE;
                         if (!HatGewuerfelt)
                         {
                             //PLAYERENGINE
@@ -470,7 +471,6 @@ void TServer::UnitTest() {
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                     {
                         // Prüfen ob die Straße schon jemand besitzt
-                        ZeigeMRobjMsg = FALSE;
                         bool istFrei = true;
 
                         for (int i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++) {
@@ -1076,17 +1076,7 @@ void TServer::UnitTest() {
                     player[MRobj[IndexReihenfolge[MomentanerSpieler]].Owner].erhalte(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);
                 }
             }
-            if (ZeigeMRobjMsg)
-            {
-                if (!(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg == ""))
-                {
-                    ControlEngine.AusgabeNachricht(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg,
-                        x / 2 - MRobj[IndexReihenfolge[MomentanerSpieler]].Msg.size() / 2,
-                        y / 2,
-                        MomentanerSpielerFarbe);
-                    Sleep(4000);
-                }
-            }
+            
             ControlEngine.AusgabeFeld(MapEngine.toStr(), x / 2 - 110, y / 2 - 44);
             std::vector<std::vector<std::string>> gekObjNamen;
             std::vector<std::vector<std::string>> gebObjNamen;
@@ -1107,7 +1097,18 @@ void TServer::UnitTest() {
 
             }
             ControlEngine.AusgabeSpielerInformationen(SpielerNamenMitPosition.data(), tempBudgets.data(), gekObjAnz.data(), gebObjAnz.data(), AnzahlSpieler+AnzahlCpuGegner, x / 2 - 90, y / 2 - 36, gekObjNamen, gebObjNamen,IndexReihenfolge);
-
+            if (ZeigeMRobjMsg)
+            {
+                if (!(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg == ""))
+                {
+                    ControlEngine.AusgabeNachricht(MRobj[IndexReihenfolge[MomentanerSpieler]].Msg,
+                        x / 2 - MRobj[IndexReihenfolge[MomentanerSpieler]].Msg.size() / 2,
+                        y / 2,
+                        MomentanerSpielerFarbe);
+                    Sleep(__AUSGABE_NACHRICHT_ZEIT);
+                }
+				ZeigeMRobjMsg = FALSE;
+            }
         }
 
 
@@ -1163,7 +1164,7 @@ void TServer::UnitTest() {
 
 int main() {
     TServer server;
-    server.UnitTest();
+    server.RunGame();
     return 0;
 }
 
