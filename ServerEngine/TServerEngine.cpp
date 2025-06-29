@@ -374,7 +374,7 @@ void TServer::UnitTest() {
 								player[IndexReihenfolge[MomentanerSpieler]].setGefaengnisFreiKarte(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() + 1);
                             }
                             // Ereigniskarten die den Spieler bewegen
-                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr) {
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[5].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[5].SpaceNr) {
 								player[IndexReihenfolge[MomentanerSpieler]].setPosition(MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr);
                             }
                             if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
@@ -454,11 +454,6 @@ void TServer::UnitTest() {
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                     {
-						//MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler] );
-                        //player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
-                        //player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
-                        //ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
-
                         // Prüfen ob die Straße schon jemand besitzt
                         ZeigeMRobjMsg = FALSE;
                         bool istFrei = true;
@@ -532,6 +527,8 @@ void TServer::UnitTest() {
                             ConfigEngineLogging.playerBuildsBuilding(houseBuilt); 
                         }
                         StrasseBauen = -1;
+                        system("cls");
+
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Handeln) // Bug
                     {
@@ -633,42 +630,37 @@ void TServer::UnitTest() {
                             //KIT Campus|-> Durlach BF
                         case 5:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(25);
-                            cpudone = true;
                             ConfigEngineLogging.usesTrain("KIT Campus", "Durlach BF");
                             break;
                             //Zuendhuetle|-> Entenfang
                         case 12:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(28);
-                            cpudone = true;
                             ConfigEngineLogging.usesTrain("Zuendhuetle", "Entenfang");
                             break;
                             //Europaplatz|-> Hauptbahnhof
                         case 15:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(35 );
-                            cpudone = true;
                             ConfigEngineLogging.usesTrain("Europaplatz", "Hauptbahnhof");
                             break;
                             //Durlach BF|-> KIT Campus
                         case 25:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(5 );
-                            cpudone = true;
                             ConfigEngineLogging.usesTrain("Durlach BF", "KIT Campus");
                             break;
                             //Entenfang|-> Zuendhuetle
                         case 28:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(12);
-                            cpudone = true;
                             ConfigEngineLogging.usesTrain("Entenfang", "Zuendhuetle");
                             break;
                             //Hauptbahnhof | ->Europaplatz
                         case 35:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(15);
-                            cpudone = true;
                             ConfigEngineLogging.usesTrain("Hauptbahnhof", "Europaplatz");
                             break;
 
                         }
-
+                        HatGewuerfelt = true;
+                        cpudone = true;
                     }
                     else {
                         cpudone = true;
