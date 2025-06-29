@@ -105,7 +105,7 @@ public:
 	bool tryBuyStreetcpu(Map& map);
 	bool tryBuildHousecpu(vector<TPlayer*>& spielerListe, Map& map, string& Nachricht);
 	bool takebahn(vector<TPlayer*>& spielerListe, int costofbahn, int bahnpos, int nextbahnpos, int anzahlplayers, Map& map);
-	void cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& map, string& Nachricht);
+	void cpuHausVerkauf(vector<TPlayer*>& spielerListe, Map& map, string& Nachricht);
 };
 
 
