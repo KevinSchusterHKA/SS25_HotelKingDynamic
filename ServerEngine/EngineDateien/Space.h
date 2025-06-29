@@ -222,10 +222,10 @@ public:
 
 			break;
 		case TypeChance:
-			out = _chanceCards[(int)(rand()%14)];
+			out = _chanceCards[(int)(rand()%13)];
 			break;
 		case TypeChest:
-			out = _chestCards[(int)(rand() %16)];
+			out = _chestCards[(int)(rand() %15)];
 			break;
 		case TypeGo:
 			out.Rent = -200;

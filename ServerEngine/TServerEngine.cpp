@@ -450,7 +450,7 @@ void TServer::UnitTest() {
                     }
                     if (option + MenueOptionen::Wuerfeln == MenueOptionen::Kaufen )
                     {
-						MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler] );
+						//MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler] );
                         //player[MomentanerSpieler].bezahle(MapEngine.buyStreet(MomentanerSpieler, player[MomentanerSpieler].getBudget()));
                         //player[MomentanerSpieler].addStrasse(player[MomentanerSpieler].getPosition());
                         //ConfigEngineLogging.playerBuysObject("Straße wurde gekauft"); //TODO: Mit MapEngine absprechen wegen String
@@ -588,7 +588,7 @@ void TServer::UnitTest() {
                                     if (option == 0)
                                     {
                                         
-                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, SpielerNachricht);
+                                        player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, SpielerNachricht, MapEngine);
                                         if (SpielerNachricht != "") {
                                             ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
                                             Sleep(__AUSGABE_NACHRICHT_ZEIT);
@@ -898,7 +898,7 @@ void TServer::UnitTest() {
                     
                     if (option == 0) //Akzeptieren
                     {
-                        ReferencePlayer = player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, SpielerNachricht);
+                        ReferencePlayer = player[IndexReihenfolge[MomentanerSpieler]].Handeln(playerRefs, Strasse, Angebot, SpielerNachricht, MapEngine);
                         if (SpielerNachricht != "") {
                             ControlEngine.AusgabeNachricht(SpielerNachricht, x / 2 - SpielerNachricht.size() / 2, y / 2 - 1, MomentanerSpielerFarbe);
                             Sleep(__AUSGABE_NACHRICHT_ZEIT);
@@ -962,7 +962,7 @@ void TServer::UnitTest() {
                         //player[IndexReihenfolge[MomentanerSpieler]].bezahle(MapEngine.movePlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getAugenzahl(), 0));
                     }
 
-                    MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
+                    //MRobj[IndexReihenfolge[MomentanerSpieler]] = MapEngine.getSpaceProps(IndexReihenfolge[MomentanerSpieler]);
                     if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                     {
                         player[IndexReihenfolge[MomentanerSpieler]].bezahle(MRobj[IndexReihenfolge[MomentanerSpieler]].Rent);

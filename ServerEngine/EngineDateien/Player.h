@@ -83,7 +83,7 @@ public:
 	void verkaufeStrasse(int strasse, vector<TPlayer*>& spielerListe, string& Nachricht);
 	bool besitztStrasse(int strasse);
 	bool istStrassenSetHandelbar(int feld, vector<TPlayer*>& spielerListe);
-	int Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, string& Nachricht);
+	int Handeln(vector<TPlayer*>& spielerListe, int feld, int angebot, string& Nachricht, Map& map);
 
 	int baueHaus(int strasse, vector<TPlayer*>& spielerListe, string& Nachricht);
 	void verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe, string& Nachricht);
