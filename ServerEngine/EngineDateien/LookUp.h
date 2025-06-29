@@ -64,7 +64,7 @@ const string _playerchars[] = { (string)(_fgcolortable[fgred] + 'A' + _fgcolorta
 const char _symbolchars[] = {   'H',//(char)127,
                                 (char)174,
                                 (char)175,
-                                (char)184,
+                                '$',
                                 (char)179,
                                 (char)196,
                                 (char)218,

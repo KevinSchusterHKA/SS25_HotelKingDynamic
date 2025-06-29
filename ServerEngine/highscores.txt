@@ -1,4 +1,2 @@
-Jannis,6232
-Christoph,-27
-CPU-Gegner1,7868
-CPU-Gegner2,1677
+Jannis,5302
+Christoph,-10

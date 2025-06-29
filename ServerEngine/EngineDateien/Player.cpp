@@ -69,7 +69,11 @@ void TPlayer::Wurfelmechn() {
 	for (int i = 0; i < 2; i++) {
 		this->setWurfel(this->wurfeln(), i);
 	}
+	this->setWurfel(3, 0);
+	this->setWurfel(2,1);
+
 	this->setAugenzahl(this->getWurfel(0) + this->getWurfel(1));
+	this->setAugenzahl(5);
 	this->incPosition(this->getAugenzahl());
 }
 void TPlayer::Paschwurf() {
@@ -526,6 +530,7 @@ bool TPlayer::takebahn(vector<TPlayer*>& player, int costofbahn, int bahnpos,int
 	}
 	int myID = this->getID();
 	int weightedprob = rand() % (player[myID]->getAugenzahl());
+	weightedprob = 4;
 	if (player[myID]->getBudget() < costofbahn)
 		return false;
 	for (int i = 0; i < anzahlplayers; ++i) {

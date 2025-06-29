@@ -245,6 +245,7 @@ public:
 		default:
 			break;
 		}
+		out.Type = Config.Type;
 		return out;
 	}
 
