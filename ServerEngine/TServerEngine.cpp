@@ -355,7 +355,7 @@ void TServer::UnitTest() {
                             else {
                                 player[IndexReihenfolge[MomentanerSpieler]].setPaschCounter(0);
                             }
-                            if (player[IndexReihenfolge[MomentanerSpieler]].getPaschCounter() == 3) {
+                            if (player[IndexReihenfolge[MomentanerSpieler]].getPaschCounter() == 3 && player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() == 0) {
                                 MapEngine.setPlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getPosition(), -1);//TODO:mit Map absprechen wegen dem Gefaegnis
                                 player[IndexReihenfolge[MomentanerSpieler]].setPaschCounter(0);
                                 break;
@@ -672,7 +672,7 @@ void TServer::UnitTest() {
                         if (player[IndexReihenfolge[MomentanerSpieler]].getPosition() == 30)
                         {
                             if (!(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() > 0)) {
-                                player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis();
+                                player[IndexReihenfolge[MomentanerSpieler]].insGefaengnis();
                             }
                             else
                             {
@@ -926,32 +926,32 @@ void TServer::UnitTest() {
                         switch (player[IndexReihenfolge[MomentanerSpieler]].getPosition()) {
                             //KIT Campus|-> Durlach BF
                         case 5:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25  );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(25);
                             ConfigEngineLogging.usesTrain("KIT Campus", "Durlach BF");
                             break;
                             //Zuendhuetle|-> Entenfang
                         case 12:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28 );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(28);
                             ConfigEngineLogging.usesTrain("Zuendhuetle", "Entenfang");
                             break;
                             //Europaplatz|-> Hauptbahnhof
                         case 15:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35  );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(35);
                             ConfigEngineLogging.usesTrain("Europaplatz", "Hauptbahnhof");
                             break;
                             //Durlach BF|-> KIT Campus
                         case 25:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5  );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(5);
                             ConfigEngineLogging.usesTrain("Durlach BF", "KIT Campus");
                             break;
                             //Entenfang|-> Zuendhuetle
                         case 28:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12 );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(12);
                             ConfigEngineLogging.usesTrain("Entenfang", "Zuendhuetle");
                             break;
                             //Hauptbahnhof | ->Europaplatz
                         case 35:
-                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15 );
+                            player[IndexReihenfolge[MomentanerSpieler]].setPosition(15);
                             ConfigEngineLogging.usesTrain("Hauptbahnhof", "Europaplatz");
                             break;
 
@@ -1113,8 +1113,11 @@ void TServer::UnitTest() {
                 //Logik wegen dem Verkaufen - Abfrage ob Gebaude und Strasse in Besitz zum Verkaufen 
                 system("cls");
             }
-            GameFinished = TRUE;
-            Spiellaueft = FALSE;
+            if (player[IndexReihenfolge[MomentanerSpieler]].getBudget() < 0) {
+                GameFinished = TRUE;
+                Spiellaueft = FALSE;
+            }
+            
         }
         
     }

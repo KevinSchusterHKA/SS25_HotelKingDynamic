@@ -55,7 +55,7 @@ int TPlayer::getPosition() { return this->Position; }
 void TPlayer::setPosition(int p) { this->Position = p; }
 void TPlayer::incPosition(int p) {
 	this->Position += p;
-	if (this->Position == 30) { // Ins Gefängnis gehen
+	if (this->Position == 30 && this->getGefaengnisFreiKarte() == 0) { // Ins Gefängnis gehen
 		this->insGefaengnis();
 	}
 	if (this->Position >= 40) { // Eine Runde Übergangen
@@ -265,8 +265,7 @@ int TPlayer::baueHaus(int strasse, vector<TPlayer*>& spielerListe, string& Nachr
 		return -1;
 	}
 	if (this->WieVieleHaueserAufSet(strasse) < 5) {
-		std::vector<int> myProperties = this->getGekObjVector();
-		if (0 <= colorcheck(this->getID(), strasse, myProperties) && colorcheck(this->getID(), strasse, myProperties) <= 7) {
+		if (AlleStrassenVerkauft(spielerListe)) {
 			if (this->getBudget() - housepricewith2(strasse, spielerListe) >= 0) {
 				// Haus bauen
 				this->GebauteHaeuser.push_back(strasse);
@@ -281,7 +280,7 @@ int TPlayer::baueHaus(int strasse, vector<TPlayer*>& spielerListe, string& Nachr
 			}
 		}
 		else {
-			Nachricht = "Sie besitzen nicht das Set von der " + LUT(strasse) + ".";
+			Nachricht = "Es wurden noch nicht alle Strassen verkauft.";
 			return -1;
 		}
 	}
@@ -291,7 +290,7 @@ int TPlayer::baueHaus(int strasse, vector<TPlayer*>& spielerListe, string& Nachr
 	}
 }
 void TPlayer::verkaufeHaus(int strasse, int anz, vector<TPlayer*>& spielerListe, string& Nachricht) {
-	if (anz < 0 || anz >= 6) {
+	if (anz <= 0 || anz >= 6) {
 		Nachricht = "Ungueltige Anzahl von Haeusern.";
 		return; // Ungültige Anzahl von Häusern
 	}
@@ -579,6 +578,20 @@ void TPlayer::cpuHausOderStrassenVerkauf(vector<TPlayer*>& spielerListe, Map& ma
 
 
 //test ob man  haus bauen darf
+bool AlleStrassenVerkauft(vector<TPlayer*>& spielerListe) {
+	int totalOwnedStreets = 0;
+	for (std::size_t i = 0; i < spielerListe.size(); ++i) {
+		if (spielerListe[i] != nullptr) {
+			totalOwnedStreets += spielerListe[i]->getGekObjAnz();
+		}
+	}
+	if (totalOwnedStreets == 22) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 int colorcheck(int playerID, int space, std::vector<int>& ownedProperties) {
 	int colorGroup = -1;
 	for (int i = 0; i < 8; ++i) {
@@ -649,7 +662,7 @@ int streetpricewith2(int position, vector<TPlayer*>& spielerListe) {
 	int totalOwnedStreets = 0;
 	for (std::size_t i = 0; i < spielerListe.size(); ++i) {
 		if (spielerListe[i] != nullptr) {
-			totalOwnedStreets += spielerListe[i]->getGekObjAnz() + spielerListe[i]->getGebObjAnz();
+			totalOwnedStreets += spielerListe[i]->getGekObjAnz();
 		}
 	}
 
@@ -688,7 +701,7 @@ int housepricewith2(int position, vector<TPlayer*>& spielerListe) {
 	int totalOwnedStreets = 0;
 	for (std::size_t i = 0; i < spielerListe.size(); ++i) {
 		if (spielerListe[i] != nullptr) {
-			totalOwnedStreets += spielerListe[i]->getGekObjAnz() + spielerListe[i]->getGebObjAnz();
+			totalOwnedStreets += spielerListe[i]->getGebObjAnz();
 		}
 	}
 	double finalPrice = basePrice * pow(1.02, totalOwnedStreets);
