@@ -1126,15 +1126,26 @@ void TServer::UnitTest() {
             }
             
         }
-        
     }
+    system("cls");
     if (GameFinished) {
+        ControlEngine.AusgabeNachricht("Das Spiel wurde Beendet!", x / 2 - 12, y / 2, Farbe::BG_Magenta);
         std::vector<HighscoreEntry> temp;
         for (size_t i = 0; i < AnzahlSpieler+AnzahlCpuGegner; i++)
         {
             temp.push_back({ player[i].getName(),player[i].Score(playerRefs) });
         }
-		save_highscores("highscores.txt", temp); //TODO: Funktionalität testen
+        std::vector<std::string> playerNames;
+        std::vector<int> playerScore;
+        sort_highscores(temp);
+        save_highscores("highscores.txt", temp); //TODO: Funktionalität testen
+
+        for (size_t i = 0; i < temp.size(); i++)
+        {
+            playerNames.push_back(temp[i].playerName);
+            playerScore.push_back(temp[i].score);
+        }
+        ControlEngine.AusgabeHighscore(playerNames.data(),playerScore.data(),temp.size(), x / 2 - this->GetLongestStringVector(playerNames) / 2 - 4, y / 2 + 4);
     }
 }
 
