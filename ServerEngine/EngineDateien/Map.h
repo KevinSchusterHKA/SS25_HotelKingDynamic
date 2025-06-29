@@ -57,6 +57,7 @@ public:
 			for (int space : player.ownedObjects)
 			{
 				Spaces[space].setOwner(i);
+				RemainingSpaces--;
 				Spaces[space].setPrice(_factor);
 				int streetcolor = ownsStreets(i, space);
 				if (streetcolor != -1)
