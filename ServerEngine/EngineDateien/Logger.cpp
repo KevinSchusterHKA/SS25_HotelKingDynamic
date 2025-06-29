@@ -128,3 +128,30 @@ void Logger::usesTrain(std::string origin, std::string destination) {
     writeToFile("Der Spieler ist mit der Bahn von "+origin+ " nach " + destination +" gefahren\n\t\t");
 
 }
+
+void Logger::loadGame(int round) {
+    this->round = round;
+    path = "log";
+
+
+
+    std::time_t now = std::time(nullptr);
+    std::tm localTimeStruct;
+
+
+    if (localtime_s(&localTimeStruct, &now) == 0) {
+        std::ostringstream oss;
+        oss << std::put_time(&localTimeStruct, "%Y-%m-%d_%H-%M-%S");
+        writeToFile("\n-----------------------Spielstand wurde geladen! " + oss.str() + "--------------------------\n");
+
+    }
+    else {
+        std::cerr << "LoggerFehler: Zeit konnte nicht ermittelt werden" << std::endl;
+    }
+    writeToFile("Runde " + std::to_string(round) + ":\n\t");
+    writeToFile("\n\t" + actualPlayer + ":\n\t\t");
+}
+
+void Logger::goToPrison() {
+    writeToFile("Der Spieler muss ins Gefängnis! \n\t\t");
+}
