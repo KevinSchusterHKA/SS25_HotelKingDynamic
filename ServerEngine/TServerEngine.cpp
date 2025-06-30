@@ -373,7 +373,7 @@ void TServer::RunGame() {
 								player[IndexReihenfolge[MomentanerSpieler]].setGefaengnisFreiKarte(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() + 1);
                             }
                             // Ereigniskarten die den Spieler bewegen
-                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[5].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[0].SpaceNr) {
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[2].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[5].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[0].SpaceNr) {
 								player[IndexReihenfolge[MomentanerSpieler]].setPosition(MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr);
                             }
                             if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[5].SpaceNr) {
