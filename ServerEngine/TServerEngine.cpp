@@ -132,10 +132,10 @@ void TServer::RunGame() {
         if (player[IndexReihenfolge[MomentanerSpieler]].imGefaengnis())
         {
             ConfigEngineLogging.playerMoney(player[IndexReihenfolge[MomentanerSpieler]].getName(), player[IndexReihenfolge[MomentanerSpieler]].getBudget());
-            
+            MapEngine.setPlayer(IndexReihenfolge[MomentanerSpieler], player[IndexReihenfolge[MomentanerSpieler]].getPosition(), -1);
             player[IndexReihenfolge[MomentanerSpieler]].decGefaengnisRunden();
             AnzahlRunden++;
-
+            UpdateSpielfeld = true;
             //ConfigEngineLogging.newRound();
             //ConfigEngineLogging.newPlayer(player[IndexReihenfolge[MomentanerSpieler]].getName());
             HatGewuerfelt = false;
@@ -377,7 +377,7 @@ void TServer::RunGame() {
 								player[IndexReihenfolge[MomentanerSpieler]].setPosition(MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr);
                             }
                             if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[5].SpaceNr) {
-								player[IndexReihenfolge[MomentanerSpieler]].insGefaengnis(); // Gefängnis
+								player[IndexReihenfolge[MomentanerSpieler]].setPosition(MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr); // Gefängnis
                             }
                             if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                             {
@@ -686,13 +686,7 @@ void TServer::RunGame() {
                     }
                         if (player[IndexReihenfolge[MomentanerSpieler]].getPosition() == 30)
                         {
-                            if (!(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() > 0)) {
-                                 player[IndexReihenfolge[MomentanerSpieler]].insGefaengnis();
-                            }
-                            else
-                            {
-                                player[IndexReihenfolge[MomentanerSpieler]].setGefaengnisFreiKarte(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() - 1);
-                            }
+                            player[IndexReihenfolge[MomentanerSpieler]].insGefaengnis();
                         }
                         if (HatGewuerfelt&& cpudone)
                         {
