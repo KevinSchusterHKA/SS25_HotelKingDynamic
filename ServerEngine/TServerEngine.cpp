@@ -51,9 +51,7 @@ void TServer::RunGame() {
      "11. Handelsoptionen: Spieler koennen untereinander handeln, um ihre Position zu verbessern.",
      "12. Wuerfel: Bei einem Pasch duerfen Sie erneut wuerfeln, aber bei dreimaligem Pasch muessen Sie ins Gefaengnis.",
      "13. Strassenbahn: Spieler koennen die Strassenbahn benutzen, um schneller voranzukommen.",
-     "14. Haueser und Hotels: Bevor man eine Strasse von Strassenset verkaufen kann darf keine Gebaeude mehr auf einer dieser Strassen sein.",
-     "15. Strassen Verkaufen: Um eine Strasse zu Verkaufen geben Sie als Gebaeudeanzahl die Zahl 0 ein.",
-     "16. Fairplay: Spielen Sie fair und respektieren Sie die Regeln."
+     "14. Fairplay: Spielen Sie fair und respektieren Sie die Regeln."
     };
     COORD CursorPos = { 0,0 };
 	std::vector<std::string> SpielerNamen;
@@ -375,8 +373,11 @@ void TServer::RunGame() {
 								player[IndexReihenfolge[MomentanerSpieler]].setGefaengnisFreiKarte(player[IndexReihenfolge[MomentanerSpieler]].getGefaengnisFreiKarte() + 1);
                             }
                             // Ereigniskarten die den Spieler bewegen
-                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[5].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[5].SpaceNr) {
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[0].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[1].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chanceCards[5].SpaceNr || MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[0].SpaceNr) {
 								player[IndexReihenfolge[MomentanerSpieler]].setPosition(MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr);
+                            }
+                            if (MRobj[IndexReihenfolge[MomentanerSpieler]].SpaceNr == _chestCards[5].SpaceNr) {
+								player[IndexReihenfolge[MomentanerSpieler]].insGefaengnis(); // Gefängnis
                             }
                             if ((MRobj[IndexReihenfolge[MomentanerSpieler]].Rent != -1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 1) && (MRobj[IndexReihenfolge[MomentanerSpieler]].Type != 7))
                             {
