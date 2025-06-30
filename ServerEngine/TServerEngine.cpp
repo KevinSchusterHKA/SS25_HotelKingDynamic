@@ -649,31 +649,43 @@ void TServer::RunGame() {
                             //KIT Campus|-> Durlach BF
                         case 5:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(25);
+                            ControlEngine.AusgabeNachricht("CPU nimmt die Bahn: KIT Campus->Durlach BF", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
                             ConfigEngineLogging.usesTrain("KIT Campus", "Durlach BF");
                             break;
                             //Zuendhuetle|-> Entenfang
                         case 12:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(28);
+                            ControlEngine.AusgabeNachricht("CPU nimmt die Bahn: Zuendhuetle->Entenfang", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
                             ConfigEngineLogging.usesTrain("Zuendhuetle", "Entenfang");
                             break;
                             //Europaplatz|-> Hauptbahnhof
                         case 15:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(35 );
+                            ControlEngine.AusgabeNachricht("CPU nimmt die Bahn: Europaplatz->Hauptbahnhof", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
                             ConfigEngineLogging.usesTrain("Europaplatz", "Hauptbahnhof");
                             break;
                             //Durlach BF|-> KIT Campus
                         case 25:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(5 );
+                            ControlEngine.AusgabeNachricht("CPU nimmt die Bahn: Durlach BF->KIT Campus", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
                             ConfigEngineLogging.usesTrain("Durlach BF", "KIT Campus");
                             break;
                             //Entenfang|-> Zuendhuetle
                         case 28:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(12);
+                            ControlEngine.AusgabeNachricht("CPU nimmt die Bahn: Entenfang->Zuendhuetle", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
                             ConfigEngineLogging.usesTrain("Entenfang", "Zuendhuetle");
                             break;
                             //Hauptbahnhof | ->Europaplatz
                         case 35:
                             player[IndexReihenfolge[MomentanerSpieler]].setPosition(15);
+                            ControlEngine.AusgabeNachricht("CPU nimmt die Bahn: Hauptbahnhof->Europaplatz", x / 2 - 9, y / 2 - 1, MomentanerSpielerFarbe);
+                            Sleep(__AUSGABE_NACHRICHT_ZEIT);
                             ConfigEngineLogging.usesTrain("Hauptbahnhof", "Europaplatz");
                             break;
 
