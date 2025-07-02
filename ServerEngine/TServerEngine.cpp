@@ -1126,7 +1126,7 @@ void TServer::RunGame() {
 
         if (player[IndexReihenfolge[MomentanerSpieler]].getBudget() < 0)
         {
-            while (player[IndexReihenfolge[MomentanerSpieler]].getGekObjAnz() + player[IndexReihenfolge[MomentanerSpieler]].getGebObjAnz() > 0 && player[IndexReihenfolge[MomentanerSpieler]].getBudget() < 0) {
+            while (player[IndexReihenfolge[MomentanerSpieler]].getGebObjAnz() > 0 && player[IndexReihenfolge[MomentanerSpieler]].getBudget() < 0) {
                 int Strasse = -1, Gebaude = -1;
                 ControlEngine.AusgabeVerkaufen(option, Strasse, Gebaude, x / 2 - 215, y / 2 - 20, MomentanerSpielerFarbe);
                 player[IndexReihenfolge[MomentanerSpieler]].verkaufeHaus(Strasse, Gebaude, playerRefs, SpielerNachricht);
